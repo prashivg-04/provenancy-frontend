@@ -1,14 +1,19 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
+import { useAuth } from '../context/AuthContext'
 
 export default function Login() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
+  const [role, setRole] = useState('student')
+  const { login } = useAuth()
+  const navigate = useNavigate()
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    console.log('[v0] Login attempt:', { email, password })
+    login(email, password, role)
+    navigate('/dashboard')
   }
 
   return (
@@ -52,6 +57,37 @@ export default function Login() {
 
             {/* Login Form */}
             <form onSubmit={handleSubmit} className="space-y-6">
+              {/* Role Selection */}
+              <div className="space-y-2">
+                <label className="text-xs uppercase tracking-widest text-muted-foreground">
+                  Login As
+                </label>
+                <div className="grid grid-cols-2 gap-3">
+                  <button
+                    type="button"
+                    onClick={() => setRole('student')}
+                    className={`p-3 rounded-md border transition-all text-xs font-medium ${
+                      role === 'student'
+                        ? 'bg-primary text-primary-foreground border-primary'
+                        : 'bg-card border-border hover:border-primary text-foreground'
+                    }`}
+                  >
+                    Student
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setRole('supervisor')}
+                    className={`p-3 rounded-md border transition-all text-xs font-medium ${
+                      role === 'supervisor'
+                        ? 'bg-primary text-primary-foreground border-primary'
+                        : 'bg-card border-border hover:border-primary text-foreground'
+                    }`}
+                  >
+                    Supervisor
+                  </button>
+                </div>
+              </div>
+
               {/* Email */}
               <div className="space-y-2">
                 <label htmlFor="email" className="text-xs uppercase tracking-widest text-muted-foreground">
