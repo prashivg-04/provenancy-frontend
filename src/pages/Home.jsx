@@ -49,7 +49,7 @@ export default function Home() {
             {/* Right Column - Certificate */}
             <div className="flex justify-center md:justify-end">
               <div className="w-48 h-56 bg-card border border-border/30 rounded-lg p-6 flex flex-col items-center justify-center relative overflow-hidden">
-                <div className="absolute inset-0 opacity-10 bg-gradient-to-b from-primary to-transparent"></div>
+                <div className="absolute inset-0 opacity-10 bg-linear-to-b from-primary to-transparent"></div>
                 <div className="relative z-10 text-center">
                   <div className="w-16 h-16 bg-primary/20 rounded-lg flex items-center justify-center mx-auto mb-4">
                     <span className="text-2xl">🛡️</span>
@@ -160,7 +160,7 @@ export default function Home() {
           <div className="grid md:grid-cols-3 gap-8">
             {/* Profile Card 1 */}
             <div className="bg-card border border-border/20 rounded-lg overflow-hidden">
-              <div className="h-24 bg-gradient-to-r from-primary/20 to-transparent"></div>
+              <div className="h-24 bg-linear-to-r from-primary/20 to-transparent"></div>
               <div className="p-6 -mt-8 relative z-10">
                 <div className="w-12 h-12 bg-card border-2 border-border rounded-full flex items-center justify-center mx-auto mb-4">
                   <span className="text-lg">👤</span>
@@ -177,7 +177,7 @@ export default function Home() {
 
             {/* Profile Card 2 */}
             <div className="bg-card border border-border/20 rounded-lg overflow-hidden">
-              <div className="h-24 bg-gradient-to-r from-primary/20 to-transparent"></div>
+              <div className="h-24 bg-linear-to-r from-primary/20 to-transparent"></div>
               <div className="p-6 -mt-8 relative z-10">
                 <div className="w-12 h-12 bg-card border-2 border-border rounded-full flex items-center justify-center mx-auto mb-4">
                   <span className="text-lg">👤</span>

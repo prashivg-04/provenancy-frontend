@@ -40,7 +40,7 @@ export default function Login() {
       <main className="flex-1 flex items-center justify-center px-6 py-12 bg-background relative overflow-hidden">
         {/* Atmospheric background */}
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-2xl h-full opacity-10 pointer-events-none">
-          <div className="absolute inset-0 bg-gradient-to-b from-primary via-transparent to-transparent blur-3xl"></div>
+          <div className="absolute inset-0 bg-linear-to-b from-primary via-transparent to-transparent blur-3xl"></div>
         </div>
 
         {/* Form Container */}
