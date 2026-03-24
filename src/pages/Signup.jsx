@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
+import { useAuth } from '../context/AuthContext'
 
 export default function Signup() {
   const [formData, setFormData] = useState({
@@ -9,6 +10,8 @@ export default function Signup() {
     password: '',
   })
   const [showPassword, setShowPassword] = useState(false)
+  const { signup } = useAuth()
+  const navigate = useNavigate()
 
   const handleChange = (e) => {
     const { name, value } = e.target
@@ -27,7 +30,8 @@ export default function Signup() {
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    console.log('[v0] Signup attempt:', formData)
+    signup(formData.fullName, formData.email, formData.role, formData.password)
+    navigate('/dashboard')
   }
 
   return (
