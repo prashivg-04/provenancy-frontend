@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Provenancy | Institutional Work Record</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "tertiary": "#c8c6c6",
+                        "secondary": "#b5c8df",
+                        "surface-container": "#201f1f",
+                        "surface-dim": "#131313",
+                        "secondary-container": "#36485b",
+                        "surface-bright": "#393939",
+                        "on-tertiary-container": "#999797",
+                        "outline-variant": "#454652",
+                        "error-container": "#93000a",
+                        "inverse-on-surface": "#313030",
+                        "inverse-primary": "#4c56af",
+                        "on-secondary": "#203243",
+                        "surface-container-lowest": "#0e0e0e",
+                        "primary-fixed": "#e0e0ff",
+                        "on-error": "#690005",
+                        "on-tertiary": "#303030",
+                        "primary-container": "#1a237e",
+                        "tertiary-fixed": "#e4e2e1",
+                        "surface-container-highest": "#353534",
+                        "primary-fixed-dim": "#bdc2ff",
+                        "outline": "#908f9d",
+                        "on-surface": "#e5e2e1",
+                        "background": "#131313",
+                        "on-tertiary-fixed": "#1b1c1c",
+                        "on-primary-fixed-variant": "#343d96",
+                        "on-secondary-fixed-variant": "#36485b",
+                        "on-primary-fixed": "#000767",
+                        "error": "#ffb4ab",
+                        "tertiary-fixed-dim": "#c8c6c6",
+                        "on-primary": "#1b247f",
+                        "surface-container-high": "#2a2a2a",
+                        "on-secondary-fixed": "#091d2e",
+                        "surface-tint": "#bdc2ff",
+                        "on-background": "#e5e2e1",
+                        "on-primary-container": "#8690ee",
+                        "on-secondary-container": "#a4b7cd",
+                        "surface-variant": "#353534",
+                        "secondary-fixed": "#d1e4fb",
+                        "inverse-surface": "#e5e2e1",
+                        "on-tertiary-fixed-variant": "#474747",
+                        "primary": "#bdc2ff",
+                        "secondary-fixed-dim": "#b5c8df",
+                        "tertiary-container": "#303030",
+                        "surface-container-low": "#1c1b1b",
+                        "on-surface-variant": "#c6c5d4",
+                        "surface": "#131313",
+                        "on-error-container": "#ffdad6"
+                    },
+                    fontFamily: {
+                        "headline": ["Inter"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    },
+                    borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+                },
+            },
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        .glass-panel {
+            background: rgba(42, 42, 42, 0.8);
+            backdrop-filter: blur(20px);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface flex min-h-screen overflow-hidden">
+<!-- SideNavBar Shared Component -->
+<aside class="w-64 border-r border-outline-variant border-opacity-15 bg-surface-container-low flex flex-col shrink-0">
+<div class="p-8">
+<h1 class="text-on-surface font-headline font-semibold text-lg tracking-tight">Provenancy</h1>
+<p class="text-on-surface-variant text-[10px] font-label uppercase tracking-widest mt-1">Institutional Work Record</p>
+</div>
+<nav class="flex-1 mt-4 px-4 space-y-1">
+<a class="flex items-center gap-3 px-4 py-3 bg-primary-container text-on-primary-container rounded-lg transition-colors" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">dashboard</span>
+<span class="text-sm font-medium">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-all" href="#">
+<span class="material-symbols-outlined">work</span>
+<span class="text-sm font-medium">My Engagements</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-all" href="#">
+<span class="material-symbols-outlined">military_tech</span>
+<span class="text-sm font-medium">Skills</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-all" href="#">
+<span class="material-symbols-outlined">person</span>
+<span class="text-sm font-medium">Profile</span>
+</a>
+</nav>
+<div class="p-6 mt-auto">
+<div class="flex items-center gap-3 p-3 bg-surface-container-lowest rounded-lg border border-outline-variant border-opacity-10">
+<img alt="User Avatar" class="w-8 h-8 rounded-full" data-alt="Close-up professional portrait of a male user" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCEQmUspWjmKbeDx7guE3z_zIOht5duCq2hZINea1zAWdYqxD1TsETKBIYje3RVS_mVGWDwyM1nPZQLDZvf-wDDSN6fszbGPHVgVNkOg4sQr4FJEYHctq6_N5cQJvHGZYC3XL8Fj7WNkyYtKEwqE-cyrN1qX2MsTKgd3NR_FUI8TxIg6py6R6y7DNdR1lOr8iMJl7dcbTns5l8egDIkyLLrPbnJfmTXQc1bPEGeIPGQ07cyDK6Y0DZiPQ4QgjVj5u3j27UWlR4TBev8"/>
+<div class="flex flex-col">
+<span class="text-xs font-semibold text-on-surface">Alex Rivera</span>
+<span class="text-[10px] text-on-surface-variant">ID: PV-88219</span>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content Shell -->
+<div class="flex-1 flex flex-col overflow-hidden bg-surface">
+<!-- TopNavBar Shared Component -->
+<header class="h-16 border-b border-outline-variant border-opacity-15 px-8 flex items-center justify-between">
+<div>
+<!-- Product name hidden as per JSON -->
+</div>
+<div class="flex items-center gap-6">
+<button class="relative text-on-surface-variant hover:text-on-surface transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-0 right-0 w-2 h-2 bg-primary rounded-full ring-2 ring-surface"></span>
+</button>
+<div class="w-8 h-8 rounded-full bg-surface-container-highest border border-outline-variant border-opacity-20 overflow-hidden">
+<img alt="User Profile" class="w-full h-full object-cover" data-alt="Circular professional profile avatar image" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAojXy7fn9RLWYZt3QmBHkyV9CkiNGm61JnXk8tjbLNKm9HnMoKM3wlIMmteyXMkISl6T_hwqJ6Jpmz_d4Usv4oaRrYfOdoibH_eVgjbmMR3JNAfQYeuoept2lAqXjHKA55-W68MGWiLIRv2s17p9eSqKYYs9e7lHy83TtvKRtWo19jxzwQIn69-REUk3wDGeor2W-Z3Cp6a_wXvPUG8ThH2ijVdxjw6j_cvNE48IrTBZniD_FQyYqx-US10sXFUmBb191WqvAyi_46"/>
+</div>
+</div>
+</header>
+<!-- Scrollable Canvas -->
+<main class="flex-1 overflow-y-auto p-10 space-y-12">
+<!-- Hero Data Grid -->
+<section class="grid grid-cols-12 gap-8">
+<div class="col-span-12 lg:col-span-8 flex flex-col justify-end">
+<h2 class="text-on-surface-variant font-label text-xs uppercase tracking-[0.2em] mb-2">Institutional Overview</h2>
+<h3 class="text-on-surface text-4xl font-headline font-light tracking-tight">Verified Professional Ledger</h3>
+</div>
+<!-- Stat Cards with Institutional Precision -->
+<div class="col-span-12 lg:col-span-2 flex flex-col border-l border-outline-variant border-opacity-20 pl-6">
+<span class="text-5xl font-headline font-bold text-primary tracking-tighter">12</span>
+<span class="text-xs font-label text-on-surface-variant mt-2 uppercase tracking-widest">Verified<br/>Engagements</span>
+</div>
+<div class="col-span-12 lg:col-span-2 flex flex-col border-l border-outline-variant border-opacity-20 pl-6">
+<span class="text-5xl font-headline font-bold text-on-surface-variant opacity-40 tracking-tighter">02</span>
+<span class="text-xs font-label text-on-surface-variant mt-2 uppercase tracking-widest">Pending<br/>Verification</span>
+</div>
+</section>
+<!-- Main Dashboard Layout -->
+<section class="grid grid-cols-12 gap-12">
+<!-- Recent Engagements: Editorial List Layout -->
+<div class="col-span-12 lg:col-span-7 space-y-8">
+<div class="flex items-center justify-between border-b border-outline-variant border-opacity-20 pb-4">
+<h4 class="text-sm font-semibold text-on-surface uppercase tracking-wider">Record Chronology</h4>
+<a class="text-[10px] text-primary uppercase font-bold tracking-widest hover:underline underline-offset-4" href="#">Expand Registry</a>
+</div>
+<div class="space-y-10">
+<!-- Engagement Item 1 -->
+<div class="group relative flex items-start gap-6">
+<div class="w-1 bg-primary-container h-full absolute -left-6 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+<div class="shrink-0 pt-1">
+<div class="w-10 h-10 flex items-center justify-center bg-surface-container-high rounded-md">
+<span class="material-symbols-outlined text-secondary">terminal</span>
+</div>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start">
+<div>
+<h5 class="text-lg font-medium text-on-surface">Software Intern</h5>
+<p class="text-sm text-tertiary">TechCorp Solutions • London, UK</p>
+</div>
+<div class="px-2 py-1 bg-surface-container-highest rounded flex items-center gap-2">
+<span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
+<span class="text-[10px] font-label font-bold text-on-primary-container tracking-wider uppercase">Verified</span>
+</div>
+</div>
+<p class="mt-3 text-sm text-on-surface-variant leading-relaxed max-w-lg">
+                                    Full-stack development contribution within the Core Platform team. Authored 42 production-level PRs across the microservices architecture.
+                                </p>
+<div class="mt-4 flex items-center gap-4 text-[10px] font-label text-outline uppercase tracking-widest">
+<span>Issued Jun 2023</span>
+<span>•</span>
+<span>Ref ID: TC-884-X</span>
+</div>
+</div>
+</div>
+<!-- Engagement Item 2 -->
+<div class="group relative flex items-start gap-6 opacity-75 grayscale hover:grayscale-0 hover:opacity-100 transition-all">
+<div class="shrink-0 pt-1">
+<div class="w-10 h-10 flex items-center justify-center bg-surface-container-high rounded-md">
+<span class="material-symbols-outlined text-secondary">science</span>
+</div>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start">
+<div>
+<h5 class="text-lg font-medium text-on-surface">Research Assistant</h5>
+<p class="text-sm text-tertiary">University Science Lab • Oxford</p>
+</div>
+<div class="px-2 py-1 bg-surface-container-low border border-outline-variant border-opacity-30 rounded flex items-center gap-2">
+<span class="text-[10px] font-label font-bold text-on-surface-variant tracking-wider uppercase opacity-60">Pending</span>
+</div>
+</div>
+<p class="mt-3 text-sm text-on-surface-variant leading-relaxed max-w-lg">
+                                    Statistical modeling for environmental impact studies. Coordinating data collection across three regional monitoring stations.
+                                </p>
+<div class="mt-4 flex items-center gap-4 text-[10px] font-label text-outline uppercase tracking-widest">
+<span>Submitted Aug 2023</span>
+<span>•</span>
+<span>Awaiting Supervisor Signature</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Right Column: Skills & Verifier Sidebar -->
+<div class="col-span-12 lg:col-span-5 space-y-12">
+<!-- Verified Skills Section -->
+<div class="bg-surface-container-low p-8 rounded-xl border border-outline-variant border-opacity-10">
+<h4 class="text-xs font-semibold text-on-surface uppercase tracking-widest mb-8 flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">verified</span>
+                            Endorsed Proficiencies
+                        </h4>
+<div class="space-y-6">
+<!-- Skill Entry -->
+<div>
+<div class="flex justify-between items-end mb-2">
+<span class="text-sm font-medium text-on-surface">Python Architecture</span>
+<span class="text-[10px] text-primary-fixed-dim uppercase font-bold tracking-tighter">Gold Standard</span>
+</div>
+<div class="h-1 w-full bg-surface-container-highest overflow-hidden">
+<div class="h-full bg-primary w-4/5"></div>
+</div>
+<div class="mt-2 flex gap-2">
+<span class="text-[9px] px-1.5 py-0.5 border border-outline-variant text-on-surface-variant rounded">Django</span>
+<span class="text-[9px] px-1.5 py-0.5 border border-outline-variant text-on-surface-variant rounded">NumPy</span>
+</div>
+</div>
+<!-- Skill Entry -->
+<div>
+<div class="flex justify-between items-end mb-2">
+<span class="text-sm font-medium text-on-surface">Project Management</span>
+<span class="text-[10px] text-tertiary uppercase font-bold tracking-tighter">Verified Level II</span>
+</div>
+<div class="h-1 w-full bg-surface-container-highest overflow-hidden">
+<div class="h-full bg-primary-container w-3/5"></div>
+</div>
+<div class="mt-2 flex gap-2">
+<span class="text-[9px] px-1.5 py-0.5 border border-outline-variant text-on-surface-variant rounded">Agile</span>
+<span class="text-[9px] px-1.5 py-0.5 border border-outline-variant text-on-surface-variant rounded">Scrum</span>
+</div>
+</div>
+<!-- Skill Entry -->
+<div>
+<div class="flex justify-between items-end mb-2">
+<span class="text-sm font-medium text-on-surface">SQL &amp; Database Admin</span>
+<span class="text-[10px] text-primary-fixed-dim uppercase font-bold tracking-tighter">Expert</span>
+</div>
+<div class="h-1 w-full bg-surface-container-highest overflow-hidden">
+<div class="h-full bg-primary w-11/12"></div>
+</div>
+<div class="mt-2 flex gap-2">
+<span class="text-[9px] px-1.5 py-0.5 border border-outline-variant text-on-surface-variant rounded">PostgreSQL</span>
+<span class="text-[9px] px-1.5 py-0.5 border border-outline-variant text-on-surface-variant rounded">NoSQL</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Credential Integrity Info -->
+<div class="p-6 bg-surface-container-lowest border border-outline-variant border-opacity-15 rounded-lg">
+<div class="flex items-start gap-4">
+<span class="material-symbols-outlined text-primary text-xl">security</span>
+<div class="space-y-2">
+<h5 class="text-xs font-bold text-on-surface uppercase tracking-wider">Immutable Record Integrity</h5>
+<p class="text-xs text-on-surface-variant leading-relaxed">
+                                    Your institutional work record is cryptographically secured. Every verified engagement contains a digital signature that can be audited by third-party institutions.
+                                </p>
+<button class="mt-2 text-[10px] text-on-primary-container bg-primary-container px-3 py-1.5 rounded-md hover:bg-primary transition-colors font-bold uppercase tracking-widest">
+                                    Download Full Transcript
+                                </button>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+</div>
+</body></html>

@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "tertiary": "#c8c6c6",
+              "secondary": "#b5c8df",
+              "surface-container": "#201f1f",
+              "surface-dim": "#131313",
+              "secondary-container": "#36485b",
+              "surface-bright": "#393939",
+              "on-tertiary-container": "#999797",
+              "outline-variant": "#454652",
+              "error-container": "#93000a",
+              "inverse-on-surface": "#313030",
+              "inverse-primary": "#4c56af",
+              "on-secondary": "#203243",
+              "surface-container-lowest": "#0e0e0e",
+              "primary-fixed": "#e0e0ff",
+              "on-error": "#690005",
+              "on-tertiary": "#303030",
+              "primary-container": "#1a237e",
+              "tertiary-fixed": "#e4e2e1",
+              "surface-container-highest": "#353534",
+              "primary-fixed-dim": "#bdc2ff",
+              "outline": "#908f9d",
+              "on-surface": "#e5e2e1",
+              "background": "#131313",
+              "on-tertiary-fixed": "#1b1c1c",
+              "on-primary-fixed-variant": "#343d96",
+              "on-secondary-fixed-variant": "#36485b",
+              "on-primary-fixed": "#000767",
+              "error": "#ffb4ab",
+              "tertiary-fixed-dim": "#c8c6c6",
+              "on-primary": "#1b247f",
+              "surface-container-high": "#2a2a2a",
+              "on-secondary-fixed": "#091d2e",
+              "surface-tint": "#bdc2ff",
+              "on-background": "#e5e2e1",
+              "on-primary-container": "#8690ee",
+              "on-secondary-container": "#a4b7cd",
+              "surface-variant": "#353534",
+              "secondary-fixed": "#d1e4fb",
+              "inverse-surface": "#e5e2e1",
+              "on-tertiary-fixed-variant": "#474747",
+              "primary": "#bdc2ff",
+              "secondary-fixed-dim": "#b5c8df",
+              "tertiary-container": "#303030",
+              "surface-container-low": "#1c1b1b",
+              "on-surface-variant": "#c6c5d4",
+              "surface": "#131313",
+              "on-error-container": "#ffdad6"
+            },
+            fontFamily: {
+              "headline": ["Inter"],
+              "body": ["Inter"],
+              "label": ["Inter"]
+            },
+            borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; background-color: #131313; color: #e5e2e1; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24; }
+        .glass-card { background: rgba(53, 53, 52, 0.8); backdrop-filter: blur(20px); }
+        .ledger-line { border-bottom: 1px solid rgba(69, 70, 82, 0.15); }
+    </style>
+</head>
+<body class="bg-background text-on-surface">
+<div class="flex min-h-screen">
+<!-- SideNavBar -->
+<aside class="w-64 border-r border-outline-variant/15 flex flex-col bg-surface-container-low">
+<div class="p-8">
+<h1 class="text-xl font-headline font-semibold tracking-tight text-on-surface">Provenancy</h1>
+<p class="text-[0.6875rem] font-label text-on-surface-variant/70 tracking-widest uppercase mt-1">Institutional Work Record</p>
+</div>
+<nav class="flex-1 px-4 space-y-2">
+<a class="flex items-center gap-3 px-4 py-3 rounded-md text-on-surface-variant hover:bg-surface-container transition-colors" href="#">
+<span class="material-symbols-outlined text-lg" data-icon="dashboard">dashboard</span>
+<span class="font-medium text-sm">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-md text-on-surface-variant hover:bg-surface-container transition-colors" href="#">
+<span class="material-symbols-outlined text-lg" data-icon="work">work</span>
+<span class="font-medium text-sm">My Engagements</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-md bg-primary-container/20 text-primary transition-colors" href="#">
+<span class="material-symbols-outlined text-lg" data-icon="military_tech">military_tech</span>
+<span class="font-medium text-sm">Skills</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-md text-on-surface-variant hover:bg-surface-container transition-colors" href="#">
+<span class="material-symbols-outlined text-lg" data-icon="person">person</span>
+<span class="font-medium text-sm">Profile</span>
+</a>
+</nav>
+<div class="p-6 mt-auto">
+<div class="flex items-center gap-3 p-3 rounded-xl bg-surface-container-lowest">
+<img alt="User Avatar" class="w-10 h-10 rounded-full object-cover grayscale" data-alt="Close-up portrait of a professional individual" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD4dhKe3Dk65I_vICvRE2ykK-lrXvDeGotskqIHBIiU_vi9H-f9ucJUGNbfXGaUPxbQmN-nvJJE7bYcnC8ztfF-oTLZRkdMpFlqfIoT6jGhSLbFSZX2VIRmm2YJzOaWlD0AoFIaKdpQ3wL2Yg8JAPs3Bth-RB0NfZpYGz9J9isIUVUuyqf27uchfBY4gGxotYklSSpUSFv-6vfUINfbYgEjQ3NwredRcx_pQ2BbjZ-18AhyP3ZU7WHMRjVH8lQeU_bAY-Do4YBJwHvd"/>
+<div class="overflow-hidden">
+<p class="text-xs font-semibold truncate">Alex Sterling</p>
+<p class="text-[10px] text-on-surface-variant/60 truncate">ID: PRV-9921-X</p>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="flex-1 flex flex-col overflow-y-auto">
+<!-- TopNavBar -->
+<header class="h-16 border-b border-outline-variant/15 flex items-center justify-end px-12 gap-6 bg-surface">
+<button class="relative p-2 text-on-surface-variant hover:text-on-surface">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+<span class="absolute top-2 right-2 w-1.5 h-1.5 bg-primary rounded-full"></span>
+</button>
+<div class="w-8 h-8 rounded-full border border-outline-variant/30 p-0.5">
+<img alt="User Profile" class="w-full h-full rounded-full grayscale" data-alt="Minimalist profile avatar thumbnail" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBXGbYSmbi3tfG2rW5MTRxPAQHv_Vk1ralfUpqlGAhCKzLh9TcL8ajoIrIFID0xFRsXpYSpgXVW2nspSxkDBNjVpM0BaQK7qfXo7dra3Pi9Pdfxmg1Q2rjUe-5KHI0J7qtykL9s4DJjYpDX3vDn0hDD0onbqkrmNd2gZOHRXWoV87MgXQ788Umihi93LDQPaFUHprFpPUfr5q2jxtDiXT52z7XoJ_7L9k7GeGyle-6onFKHqhLIgmMN0YhqSFbLDzw6ab4IOtbHOmdK"/>
+</div>
+</header>
+<div class="p-12 max-w-7xl w-full mx-auto space-y-16">
+<!-- Header Section -->
+<section class="space-y-4">
+<h2 class="text-4xl font-headline font-light tracking-tight text-on-surface">Skill Repository</h2>
+<p class="text-on-surface-variant max-w-2xl leading-relaxed">A dual-layered ledger representing both professional aspirations and institutional validations. All verified skills are backed by cryptographic work signatures.</p>
+</section>
+<!-- Verified Skills: The Institutional Ledger -->
+<section class="space-y-8">
+<div class="flex items-end justify-between border-b border-outline-variant/30 pb-4">
+<div class="space-y-1">
+<h3 class="text-lg font-medium text-primary tracking-wide">Verified Skills</h3>
+<p class="text-xs text-on-surface-variant/60">Institutional Proof of Competence</p>
+</div>
+<div class="text-right">
+<span class="text-2xl font-headline font-light">14</span>
+<span class="text-[10px] uppercase tracking-widest block text-on-surface-variant/40">Total Validations</span>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-0.5 bg-outline-variant/10 border border-outline-variant/10">
+<!-- Ledger Item -->
+<div class="bg-surface-container-low p-8 flex flex-col justify-between min-h-[160px] group hover:bg-surface-container transition-all">
+<div class="flex justify-between items-start">
+<span class="text-xs font-label tracking-widest text-on-surface-variant/40">V-ID: 001</span>
+<div class="flex items-center gap-2 px-2 py-1 bg-primary-container/10 rounded-full">
+<span class="w-1.5 h-1.5 bg-primary rounded-full"></span>
+<span class="text-[10px] font-label text-primary">VERIFIED</span>
+</div>
+</div>
+<div>
+<h4 class="text-2xl font-light mb-1">Python</h4>
+<p class="text-xs text-on-surface-variant/60">12 verifications from 4 institutions</p>
+</div>
+</div>
+<div class="bg-surface-container-low p-8 flex flex-col justify-between min-h-[160px] group hover:bg-surface-container transition-all">
+<div class="flex justify-between items-start">
+<span class="text-xs font-label tracking-widest text-on-surface-variant/40">V-ID: 002</span>
+<div class="flex items-center gap-2 px-2 py-1 bg-primary-container/10 rounded-full">
+<span class="w-1.5 h-1.5 bg-primary rounded-full"></span>
+<span class="text-[10px] font-label text-primary">VERIFIED</span>
+</div>
+</div>
+<div>
+<h4 class="text-2xl font-light mb-1">Agile</h4>
+<p class="text-xs text-on-surface-variant/60">8 verifications from Project Managers</p>
+</div>
+</div>
+<div class="bg-surface-container-low p-8 flex flex-col justify-between min-h-[160px] group hover:bg-surface-container transition-all">
+<div class="flex justify-between items-start">
+<span class="text-xs font-label tracking-widest text-on-surface-variant/40">V-ID: 003</span>
+<div class="flex items-center gap-2 px-2 py-1 bg-primary-container/10 rounded-full">
+<span class="w-1.5 h-1.5 bg-primary rounded-full"></span>
+<span class="text-[10px] font-label text-primary">VERIFIED</span>
+</div>
+</div>
+<div>
+<h4 class="text-2xl font-light mb-1">Data Analysis</h4>
+<p class="text-xs text-on-surface-variant/60">5 verifications in Financial Auditing</p>
+</div>
+</div>
+<div class="bg-surface-container-low p-8 flex flex-col justify-between min-h-[160px] group hover:bg-surface-container transition-all">
+<div class="flex justify-between items-start">
+<span class="text-xs font-label tracking-widest text-on-surface-variant/40">V-ID: 004</span>
+<div class="flex items-center gap-2 px-2 py-1 bg-primary-container/10 rounded-full">
+<span class="w-1.5 h-1.5 bg-primary rounded-full"></span>
+<span class="text-[10px] font-label text-primary">VERIFIED</span>
+</div>
+</div>
+<div>
+<h4 class="text-2xl font-light mb-1">Technical Writing</h4>
+<p class="text-xs text-on-surface-variant/60">4 verifications across Documentation</p>
+</div>
+</div>
+<div class="bg-surface-container-low p-8 flex flex-col justify-between min-h-[160px] group hover:bg-surface-container transition-all">
+<div class="flex justify-between items-start">
+<span class="text-xs font-label tracking-widest text-on-surface-variant/40">V-ID: 005</span>
+<div class="flex items-center gap-2 px-2 py-1 bg-primary-container/10 rounded-full">
+<span class="w-1.5 h-1.5 bg-primary rounded-full"></span>
+<span class="text-[10px] font-label text-primary">VERIFIED</span>
+</div>
+</div>
+<div>
+<h4 class="text-2xl font-light mb-1">UI/UX Design</h4>
+<p class="text-xs text-on-surface-variant/60">3 verifications from Product Leads</p>
+</div>
+</div>
+<div class="bg-surface-container p-8 flex flex-col items-center justify-center min-h-[160px] border-2 border-dashed border-outline-variant/20 hover:border-primary/40 cursor-pointer transition-all">
+<span class="material-symbols-outlined text-outline mb-2" data-icon="add">add</span>
+<span class="text-[10px] tracking-widest text-outline uppercase font-label">Request Verification</span>
+</div>
+</div>
+</section>
+<!-- Declared Skills: The Working Draft -->
+<section class="space-y-6">
+<div class="flex items-center justify-between">
+<div class="space-y-1">
+<h3 class="text-lg font-medium text-on-surface tracking-wide">Declared Skills</h3>
+<p class="text-xs text-on-surface-variant/60">Self-attested competencies pending validation</p>
+</div>
+<button class="text-xs px-4 py-2 border border-outline-variant/15 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-all rounded-md">
+                            Add Declared Skill
+                        </button>
+</div>
+<div class="flex flex-wrap gap-3">
+<div class="group px-5 py-3 bg-surface-container-low border-b border-outline-variant/10 flex items-center gap-4 hover:border-outline-variant transition-all cursor-default">
+<span class="text-sm font-medium text-on-surface-variant group-hover:text-on-surface">Java</span>
+<span class="material-symbols-outlined text-xs text-on-surface-variant/30 group-hover:text-on-surface-variant/80" data-icon="close">close</span>
+</div>
+<div class="group px-5 py-3 bg-surface-container-low border-b border-outline-variant/10 flex items-center gap-4 hover:border-outline-variant transition-all cursor-default">
+<span class="text-sm font-medium text-on-surface-variant group-hover:text-on-surface">AWS</span>
+<span class="material-symbols-outlined text-xs text-on-surface-variant/30 group-hover:text-on-surface-variant/80" data-icon="close">close</span>
+</div>
+<div class="group px-5 py-3 bg-surface-container-low border-b border-outline-variant/10 flex items-center gap-4 hover:border-outline-variant transition-all cursor-default">
+<span class="text-sm font-medium text-on-surface-variant group-hover:text-on-surface">React</span>
+<span class="material-symbols-outlined text-xs text-on-surface-variant/30 group-hover:text-on-surface-variant/80" data-icon="close">close</span>
+</div>
+<div class="group px-5 py-3 bg-surface-container-low border-b border-outline-variant/10 flex items-center gap-4 hover:border-outline-variant transition-all cursor-default">
+<span class="text-sm font-medium text-on-surface-variant group-hover:text-on-surface">Docker</span>
+<span class="material-symbols-outlined text-xs text-on-surface-variant/30 group-hover:text-on-surface-variant/80" data-icon="close">close</span>
+</div>
+<div class="group px-5 py-3 bg-surface-container-low border-b border-outline-variant/10 flex items-center gap-4 hover:border-outline-variant transition-all cursor-default">
+<span class="text-sm font-medium text-on-surface-variant group-hover:text-on-surface">GraphQL</span>
+<span class="material-symbols-outlined text-xs text-on-surface-variant/30 group-hover:text-on-surface-variant/80" data-icon="close">close</span>
+</div>
+<div class="group px-5 py-3 bg-surface-container-low border-b border-outline-variant/10 flex items-center gap-4 hover:border-outline-variant transition-all cursor-default">
+<span class="text-sm font-medium text-on-surface-variant group-hover:text-on-surface">Redux</span>
+<span class="material-symbols-outlined text-xs text-on-surface-variant/30 group-hover:text-on-surface-variant/80" data-icon="close">close</span>
+</div>
+<div class="group px-5 py-3 bg-surface-container-low border-b border-outline-variant/10 flex items-center gap-4 hover:border-outline-variant transition-all cursor-default">
+<span class="text-sm font-medium text-on-surface-variant group-hover:text-on-surface">Tailwind CSS</span>
+<span class="material-symbols-outlined text-xs text-on-surface-variant/30 group-hover:text-on-surface-variant/80" data-icon="close">close</span>
+</div>
+<div class="group px-5 py-3 bg-surface-container-low border-b border-outline-variant/10 flex items-center gap-4 hover:border-outline-variant transition-all cursor-default">
+<span class="text-sm font-medium text-on-surface-variant group-hover:text-on-surface">Figma</span>
+<span class="material-symbols-outlined text-xs text-on-surface-variant/30 group-hover:text-on-surface-variant/80" data-icon="close">close</span>
+</div>
+</div>
+</section>
+<!-- Insights / Analytics Bento Section -->
+<section class="grid grid-cols-12 gap-6 pb-24">
+<div class="col-span-12 lg:col-span-8 bg-surface-container-low p-8 border border-outline-variant/5 rounded-xl">
+<div class="flex justify-between mb-8">
+<h3 class="text-sm font-semibold uppercase tracking-[0.2em] text-on-surface-variant/60">Validation Timeline</h3>
+<span class="text-[10px] text-primary">Last 6 Months</span>
+</div>
+<div class="h-48 flex items-end justify-between gap-4">
+<div class="w-full bg-primary/5 h-[30%] rounded-sm relative group">
+<div class="absolute inset-x-0 bottom-0 bg-primary/20 h-0 group-hover:h-full transition-all"></div>
+</div>
+<div class="w-full bg-primary/5 h-[45%] rounded-sm relative group">
+<div class="absolute inset-x-0 bottom-0 bg-primary/20 h-0 group-hover:h-full transition-all"></div>
+</div>
+<div class="w-full bg-primary/5 h-[80%] rounded-sm relative group">
+<div class="absolute inset-x-0 bottom-0 bg-primary/20 h-0 group-hover:h-full transition-all"></div>
+</div>
+<div class="w-full bg-primary/5 h-[60%] rounded-sm relative group">
+<div class="absolute inset-x-0 bottom-0 bg-primary/20 h-0 group-hover:h-full transition-all"></div>
+</div>
+<div class="w-full bg-primary/5 h-[90%] rounded-sm relative group">
+<div class="absolute inset-x-0 bottom-0 bg-primary h-full transition-all"></div>
+</div>
+<div class="w-full bg-primary/5 h-[40%] rounded-sm relative group">
+<div class="absolute inset-x-0 bottom-0 bg-primary/20 h-0 group-hover:h-full transition-all"></div>
+</div>
+</div>
+<div class="flex justify-between mt-4">
+<span class="text-[10px] font-label text-on-surface-variant/40">JAN</span>
+<span class="text-[10px] font-label text-on-surface-variant/40">FEB</span>
+<span class="text-[10px] font-label text-on-surface-variant/40">MAR</span>
+<span class="text-[10px] font-label text-on-surface-variant/40">APR</span>
+<span class="text-[10px] font-label text-on-surface-variant/40 text-primary">MAY</span>
+<span class="text-[10px] font-label text-on-surface-variant/40">JUN</span>
+</div>
+</div>
+<div class="col-span-12 lg:col-span-4 bg-primary-container p-8 rounded-xl flex flex-col justify-between relative overflow-hidden">
+<div class="absolute top-0 right-0 p-4 opacity-10">
+<span class="material-symbols-outlined text-9xl" data-icon="military_tech">military_tech</span>
+</div>
+<div class="relative z-10">
+<h3 class="text-sm font-semibold uppercase tracking-[0.2em] text-on-primary-container">Next Milestone</h3>
+<p class="text-2xl font-light mt-4 leading-tight">Institutional Expert Certification</p>
+</div>
+<div class="relative z-10 space-y-2">
+<div class="flex justify-between text-[10px] text-on-primary-container/80">
+<span>PROGRESS</span>
+<span>85%</span>
+</div>
+<div class="h-1 bg-on-primary-container/10 rounded-full overflow-hidden">
+<div class="h-full bg-primary w-[85%]"></div>
+</div>
+<p class="text-[10px] text-on-primary-container/60 mt-4 italic">3 more verifications needed in "Architecture"</p>
+</div>
+</div>
+</section>
+</div>
+</main>
+</div>
+</body></html>

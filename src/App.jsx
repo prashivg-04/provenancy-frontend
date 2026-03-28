@@ -1,15 +1,42 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
 import { AuthProvider, useAuth } from './context/AuthContext'
+import Layout from './components/Layout'
+
+// Pages
 import Home from './pages/Home'
 import Login from './pages/Login'
 import Signup from './pages/Signup'
 import StudentDashboard from './pages/StudentDashboard'
+import StudentEngagements from './pages/StudentEngagements'
+import StudentSkills from './pages/StudentSkills'
+import EngagementCreate from './pages/EngagementCreate'
+import EngagementDetail from './pages/EngagementDetail'
+import Profile from './pages/Profile'
 import SupervisorDashboard from './pages/SupervisorDashboard'
+import SupervisorRequests from './pages/SupervisorRequests'
+import SupervisorProfile from './pages/SupervisorProfile'
+import PublicStudentProfile from './pages/PublicStudentProfile'
+import PublicSupervisorProfile from './pages/PublicSupervisorProfile'
 
-function ProtectedRoute({ children }) {
+// Optional: Role-based protection wrapper
+function ProtectedRoute({ children, allowedRole = null }) {
   const { user } = useAuth()
   if (!user) return <Navigate to="/login" />
+  if (allowedRole) {
+    if (Array.isArray(allowedRole)) {
+      if (!allowedRole.includes(user.role)) return <Navigate to="/" />
+    } else {
+      if (user.role !== allowedRole) return <Navigate to="/" />
+    }
+  }
   return children
+}
+
+function RoleBasedRedirect() {
+  const { user } = useAuth()
+  if (!user) return <Navigate to="/login" />
+  if (user.role === 'supervisor') return <Navigate to="/supervisor" />
+  return <Navigate to="/dashboard" />
 }
 
 function AppRoutes() {
@@ -17,16 +44,89 @@ function AppRoutes() {
 
   return (
     <Routes>
-      <Route path="/" element={<Home />} />
-      <Route path="/login" element={user ? <Navigate to="/dashboard" /> : <Login />} />
-      <Route path="/signup" element={user ? <Navigate to="/dashboard" /> : <Signup />} />
-      <Route 
-        path="/dashboard" 
+      {/* Public / Generic Routes */}
+      <Route path="/" element={<Layout><Home /></Layout>} />
+      <Route path="/login" element={user ? <RoleBasedRedirect /> : <Layout><Login /></Layout>} />
+      <Route path="/signup" element={user ? <RoleBasedRedirect /> : <Layout><Signup /></Layout>} />
+      
+      {/* Public Profiles Rendered Inside Layout For Navbar Identity */}
+      <Route path="/profile/:id" element={<PublicStudentProfile />} />
+      <Route path="/supervisor/:id" element={<PublicSupervisorProfile />} />
+
+      {/* Student Workspace Paths */}
+      <Route
+        path="/dashboard"
         element={
-          <ProtectedRoute>
-            {user?.role === 'supervisor' ? <SupervisorDashboard /> : <StudentDashboard />}
+          <ProtectedRoute allowedRole="student">
+            <StudentDashboard />
           </ProtectedRoute>
-        } 
+        }
+      />
+      <Route
+        path="/engagements"
+        element={
+          <ProtectedRoute allowedRole="student">
+            <StudentEngagements />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/engagements/create"
+        element={
+          <ProtectedRoute allowedRole="student">
+            <EngagementCreate />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/engagements/:id"
+        element={
+          <ProtectedRoute allowedRole={["student", "supervisor"]}>
+            <EngagementDetail />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/skills"
+        element={
+          <ProtectedRoute allowedRole="student">
+            <StudentSkills />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/profile"
+        element={
+          <ProtectedRoute allowedRole="student">
+            <Profile />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Supervisor Workspace Paths */}
+      <Route
+        path="/supervisor"
+        element={
+          <ProtectedRoute allowedRole="supervisor">
+            <SupervisorDashboard />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/supervisor/requests"
+        element={
+          <ProtectedRoute allowedRole="supervisor">
+            <SupervisorRequests />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/supervisor/profile"
+        element={
+          <ProtectedRoute allowedRole="supervisor">
+            <SupervisorProfile />
+          </ProtectedRoute>
+        }
       />
     </Routes>
   )

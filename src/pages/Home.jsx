@@ -1,61 +1,48 @@
 import { Link } from 'react-router-dom'
+import { ShieldCheck, Landmark, Shield, ScrollText, Activity, Fingerprint, PenTool, BookCheck, CheckCircle, Share2, BadgeCheck } from 'lucide-react'
+import Footer from '../components/Footer'
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-background text-foreground">
-      {/* Navigation */}
-      <nav className="h-16 flex items-center justify-between px-6 md:px-12 border-b border-border/20 bg-background sticky top-0 z-50">
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-            <span className="text-foreground font-bold">✓</span>
-          </div>
-          <span className="font-semibold text-lg tracking-tight">Provenancy</span>
-        </div>
-        <div className="flex items-center gap-4">
-          <Link to="/login" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-            Login
-          </Link>
-          <Link to="/signup" className="text-sm px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors">
-            Signup
-          </Link>
-        </div>
-      </nav>
-
-      {/* Hero Section */}
-      <section className="px-6 md:px-12 py-24 md:py-32 border-b border-border/20">
-        <div className="mx-auto max-w-6xl">
-          <div className="grid md:grid-cols-2 gap-12 items-center">
-            {/* Left Column */}
-            <div>
-              <p className="text-xs uppercase tracking-widest text-muted-foreground mb-4">Institutional Authority</p>
-              <h1 className="text-5xl md:text-6xl font-bold mb-6 leading-tight">
-                The definitive record of <span className="italic text-primary">professional growth.</span>
-              </h1>
-              <p className="text-base text-muted-foreground leading-relaxed mb-8 max-w-lg">
-                Provenancy provides a secure, supervisor-verified work record system designed for students and early professionals. We transform informal experience into permanent, immutable institutional assets.
-              </p>
-              <div className="flex items-center gap-8">
-                <div className="flex items-center gap-2">
-                  <span className="text-primary">✓</span>
-                  <span className="text-sm text-muted-foreground">Verified by Supervisors</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="text-primary">✓</span>
-                  <span className="text-sm text-muted-foreground">Institutional Standards</span>
-                </div>
+    <div className="bg-background text-foreground font-body min-h-[calc(100vh-4rem)]">
+      {/* Intro Section: The Digital Ledger */}
+      <section className="py-24 px-6 max-w-7xl mx-auto border-b border-border/10">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+          <div className="lg:col-span-7">
+            <p className="text-accent font-medium tracking-widest text-xs mb-4 uppercase">Institutional Authority</p>
+            <h1 className="text-5xl font-light leading-tight mb-8">
+              The definitive record of <span className="text-accent italic">professional growth</span>.
+            </h1>
+            <p className="text-muted-foreground text-lg max-w-xl leading-relaxed">
+              Provenancy provides a secure, supervisor-verified work record system designed for students and early professionals. We transform informal experience into permanent, immutable institutional assets.
+            </p>
+            <div className="mt-12 flex flex-wrap gap-4">
+              <div className="flex items-center gap-3 px-4 py-2 bg-muted rounded-lg border border-border/5">
+                <ShieldCheck className="w-5 h-5 text-primary-foreground" />
+                <span className="text-sm font-semibold text-muted-foreground">Verified by Supervisors</span>
+              </div>
+              <div className="flex items-center gap-3 px-4 py-2 bg-muted rounded-lg border border-border/5">
+                <Landmark className="w-5 h-5 text-primary-foreground" />
+                <span className="text-sm font-semibold text-muted-foreground">Institutional Standards</span>
               </div>
             </div>
-
-            {/* Right Column - Certificate */}
-            <div className="flex justify-center md:justify-end">
-              <div className="w-48 h-56 bg-card border border-border/30 rounded-lg p-6 flex flex-col items-center justify-center relative overflow-hidden">
-                <div className="absolute inset-0 opacity-10 bg-linear-to-b from-primary to-transparent"></div>
-                <div className="relative z-10 text-center">
-                  <div className="w-16 h-16 bg-primary/20 rounded-lg flex items-center justify-center mx-auto mb-4">
-                    <span className="text-2xl">🛡️</span>
+          </div>
+          
+          <div className="lg:col-span-5 relative">
+            <div className="aspect-square rounded-xl overflow-hidden bg-card p-8 flex items-center justify-center border border-border/5">
+              {/* Abstract Visual Representative of a Ledger */}
+              <div className="w-full h-full border border-border/20 rounded-lg p-6 relative flex flex-col gap-4 bg-background/50">
+                <div className="h-4 w-2/3 bg-muted rounded-full"></div>
+                <div className="h-4 w-full bg-border rounded-full"></div>
+                <div className="h-4 w-1/2 bg-border rounded-full"></div>
+                <div className="mt-auto flex justify-between items-end">
+                  <div className="w-24 h-24 rounded bg-primary/20 border border-primary flex items-center justify-center shadow-[0_0_20px_rgba(26,35,126,0.3)]">
+                    <Shield className="text-primary-foreground w-12 h-12" />
                   </div>
-                  <p className="text-xs uppercase tracking-widest text-muted-foreground mb-3">Verified Entry ID</p>
-                  <p className="text-lg font-mono font-semibold text-foreground">DFF-082-2024</p>
+                  <div className="text-right">
+                    <p className="text-[10px] uppercase tracking-widest text-muted-foreground/60 mb-1 font-semibold">Verified Entry ID</p>
+                    <p className="text-xs font-mono text-accent">#PX-882-2024</p>
+                  </div>
                 </div>
               </div>
             </div>
@@ -64,82 +51,105 @@ export default function Home() {
       </section>
 
       {/* Verified Work Records Section */}
-      <section className="px-6 md:px-12 py-24 border-b border-border/20">
-        <div className="mx-auto max-w-6xl">
-          <h2 className="text-3xl font-bold mb-16 text-foreground">Verified Work Records</h2>
-          <div className="grid md:grid-cols-2 gap-8">
-            {/* Feature 1 */}
-            <div className="bg-card border border-border/20 rounded-lg p-8">
-              <div className="w-12 h-12 bg-primary/20 rounded-lg flex items-center justify-center mb-4">
-                <span className="text-xl">📋</span>
-              </div>
-              <h3 className="text-xl font-bold mb-3 text-foreground">The Permanent Record</h3>
-              <p className="text-sm text-muted-foreground leading-relaxed">
-                Every hour logged, every skill demonstrated, and every milestone achieved is recorded with cryptographic integrity. Your history is no longer a static CV, but a living ledger.
-              </p>
-              <p className="text-xs text-muted-foreground mt-6">✓ 99.8% ATTRIBUTION ACCURACY</p>
+      <section className="py-24 px-6 max-w-7xl mx-auto border-b border-border/10">
+        <div className="mb-16">
+          <h2 className="text-3xl font-light mb-4 text-foreground">Verified Work Records</h2>
+          <div className="w-12 h-0.5 bg-accent"></div>
+        </div>
+        
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          {/* Bento Grid Style Item */}
+          <div className="md:col-span-2 bg-card border border-border/5 p-10 rounded-xl flex flex-col justify-between min-h-[400px]">
+            <div>
+              <ScrollText className="w-10 h-10 text-accent mb-6" />
+              <h3 className="text-2xl font-medium mb-4 text-foreground">The Permanent Record</h3>
+              <p className="text-muted-foreground leading-relaxed max-w-md">Every hour logged, every skill demonstrated, and every milestone achieved is recorded with cryptographic integrity. Your history is no longer a static CV, but a living ledger.</p>
             </div>
-
-            {/* Feature 2 */}
-            <div className="bg-card border border-border/20 rounded-lg p-8">
-              <div className="w-12 h-12 bg-primary/20 rounded-lg flex items-center justify-center mb-4">
-                <span className="text-xl">👤</span>
+            <div className="mt-8 flex items-center gap-4 border-t border-border/10 pt-8">
+              <div className="w-10 h-10 rounded-full bg-border flex items-center justify-center">
+                <Activity className="w-5 h-5 text-muted-foreground" />
               </div>
-              <h3 className="text-xl font-bold mb-3 text-foreground">Identity Integrity</h3>
-              <p className="text-sm text-muted-foreground leading-relaxed">
-                Multi-factor verification ensures that the professional identity attached to every record is authentic and unchanged.
-              </p>
+              <span className="text-xs text-muted-foreground font-semibold tracking-wide uppercase">99.9% ATTRIBUTION ACCURACY</span>
+            </div>
+          </div>
+          
+          {/* Feature Card */}
+          <div className="bg-muted p-8 rounded-xl border border-border/5">
+            <div className="h-full flex flex-col">
+              <Fingerprint className="w-8 h-8 text-primary-foreground mb-4" />
+              <h4 className="text-xl font-medium mb-4 text-foreground">Identity Integrity</h4>
+              <p className="text-muted-foreground text-sm leading-relaxed mb-6">Multi-factor verification ensures that the professional identity attached to every record is authentic and undisputed.</p>
+              <div className="mt-auto w-full h-32 rounded-lg bg-cover bg-center grayscale opacity-50 border border-border/10" style={{ backgroundImage: 'url(https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&q=80&w=2070)'}}></div>
             </div>
           </div>
         </div>
       </section>
 
       {/* Supervisor Authorization Section */}
-      <section className="px-6 md:px-12 py-24 border-b border-border/20">
-        <div className="mx-auto max-w-6xl">
-          <div className="grid md:grid-cols-2 gap-12 items-center">
-            <div>
-              <h2 className="text-3xl font-bold mb-8 text-foreground">Supervisor Authorization</h2>
-              <p className="text-base text-muted-foreground leading-relaxed mb-8">
-                Provenancy begins at the source. Supervisors provide real-time digital signatures, validating tasks as they are completed. This eliminates the uncertainty of 'self-reported' experience.
-              </p>
-              <div className="space-y-4">
-                <div className="flex gap-3">
-                  <span className="text-primary mt-1">✓</span>
-                  <div>
-                    <p className="font-semibold text-foreground">Digital Attestation</p>
-                    <p className="text-sm text-muted-foreground">Cryptographically signed approvals for every logged session.</p>
-                  </div>
+      <section className="bg-background py-24 px-6 border-b border-border/10 relative overflow-hidden">
+        <div className="absolute top-1/2 left-0 w-[500px] h-[500px] bg-primary/5 rounded-full blur-[100px] -translate-y-1/2 -ml-64 pointer-events-none"></div>
+
+        <div className="max-w-7xl mx-auto flex flex-col md:flex-row gap-16 items-center relative z-10">
+          <div className="md:w-1/2">
+            <h2 className="text-3xl font-light mb-6 text-foreground">Supervisor Authorization</h2>
+            <p className="text-muted-foreground text-lg mb-8 leading-relaxed">
+              Provenance begins at the source. Supervisors provide real-time digital signatures, validating tasks as they are completed. This eliminates the uncertainty of "self-reported" experience.
+            </p>
+            
+            <div className="space-y-6">
+              <div className="flex gap-4">
+                <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center shrink-0 border border-primary/30">
+                  <PenTool className="w-4 h-4 text-primary-foreground" />
                 </div>
-                <div className="flex gap-3">
-                  <span className="text-primary mt-1">✓</span>
-                  <div>
-                    <p className="font-semibold text-foreground">Institutional Oversight</p>
-                    <p className="text-sm text-muted-foreground">Administrative dashboards for university and corporate oversight.</p>
-                  </div>
+                <div>
+                  <h5 className="font-medium text-foreground">Digital Attestation</h5>
+                  <p className="text-sm text-muted-foreground mt-1">Cryptographically signed approvals for every logged session.</p>
+                </div>
+              </div>
+              <div className="flex gap-4">
+                <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center shrink-0 border border-primary/30">
+                  <BookCheck className="w-4 h-4 text-primary-foreground" />
+                </div>
+                <div>
+                  <h5 className="font-medium text-foreground">Institutional Oversight</h5>
+                  <p className="text-sm text-muted-foreground mt-1">Administrative dashboards for university and corporate oversight.</p>
                 </div>
               </div>
             </div>
-
-            {/* Portal Preview */}
-            <div className="bg-card border border-border/20 rounded-lg p-8">
-              <div className="flex justify-between items-center mb-6">
-                <p className="text-xs uppercase tracking-widest text-muted-foreground">Authorization Portal</p>
-                <span className="text-lg">⚙️</span>
-              </div>
-              <div className="space-y-4">
-                <div className="bg-background rounded p-4 border border-border/20">
-                  <p className="text-xs uppercase tracking-widest text-muted-foreground mb-2">Software Internship</p>
-                  <p className="text-sm text-foreground font-medium">Logged: 12.5 Hours</p>
-                  <div className="mt-3 flex justify-end">
-                    <button className="text-xs px-3 py-1 bg-primary text-primary-foreground rounded hover:bg-primary/90 transition-colors">
-                      Approve
-                    </button>
-                  </div>
+          </div>
+          
+          <div className="md:w-1/2 w-full">
+            <div className="bg-muted p-1 rounded-xl shadow-[0_24px_48px_-12px_rgba(0,0,0,0.5)] overflow-hidden border border-border/10">
+              <div className="bg-border/30 p-6 rounded-t-lg border-b border-border/10 flex justify-between items-center">
+                <span className="text-xs font-semibold uppercase tracking-widest text-muted-foreground border-b-border/20 border-b pb-1">Authorization Portal</span>
+                <div className="flex gap-2">
+                  <div className="w-2 h-2 rounded-full bg-red-400"></div>
+                  <div className="w-2 h-2 rounded-full bg-accent"></div>
                 </div>
-                <div className="bg-background rounded p-4 border border-border/20">
-                  <p className="text-xs uppercase tracking-widest text-muted-foreground mb-2">Lab Research</p>
-                  <p className="text-sm text-muted-foreground">⏳ Pending</p>
+              </div>
+              <div className="p-8 space-y-6">
+                <div className="flex flex-col sm:flex-row justify-between items-center gap-4 p-4 bg-background rounded-lg border border-border/10">
+                  <div className="flex items-center gap-4 w-full">
+                    <div className="w-10 h-10 shrink-0 rounded bg-border"></div>
+                    <div>
+                      <p className="text-sm font-medium text-foreground">Software Internship</p>
+                      <p className="text-[10px] text-muted-foreground/60 uppercase tracking-widest mt-1">Logged: 12.5 Hours</p>
+                    </div>
+                  </div>
+                  <button className="w-full sm:w-auto shrink-0 bg-primary/20 text-[10px] px-4 py-2 border border-primary/30 rounded-full text-primary-foreground uppercase font-bold tracking-tighter hover:bg-primary transition-colors">Authorize</button>
+                </div>
+                <div className="flex flex-col sm:flex-row justify-between items-center gap-4 p-4 bg-background/50 opacity-60 rounded-lg border border-border/5">
+                  <div className="flex items-center gap-4 w-full">
+                    <div className="w-10 h-10 shrink-0 rounded bg-border"></div>
+                    <div>
+                      <p className="text-sm font-medium text-muted-foreground">Lab Research</p>
+                      <p className="text-[10px] text-muted-foreground/40 uppercase tracking-widest mt-1">Logged: 08.0 Hours</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-1.5 text-accent shrink-0">
+                    <CheckCircle className="w-4 h-4" />
+                    <span className="text-[10px] uppercase font-bold tracking-tighter">Verified</span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -147,97 +157,64 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Public Provenancy Profiles Section */}
-      <section className="px-6 md:px-12 py-24 border-b border-border/20">
-        <div className="mx-auto max-w-6xl">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold mb-4 text-foreground">Public Provenancy Profiles</h2>
-            <p className="text-base text-muted-foreground">
-              Share your verified achievements with employers and institutions via a secure, unalterable public link.
-            </p>
+      {/* Public Provenancy Profiles */}
+      <section className="py-24 px-6 max-w-7xl mx-auto">
+        <div className="text-center mb-16">
+          <h2 className="text-3xl font-light mb-4 text-foreground">Public Provenancy Profiles</h2>
+          <p className="text-muted-foreground max-w-2xl mx-auto text-lg">Share your verified achievements with employers and institutions via a secure, unalterable public link.</p>
+        </div>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {/* Profile Card 1 */}
+          <div className="bg-card border border-border/10 p-6 rounded-lg hover:border-primary/30 transition-all group shadow-sm">
+            <div className="w-16 h-16 bg-muted rounded-full mb-6 overflow-hidden border border-border/20">
+              <img className="w-full h-full object-cover grayscale opacity-90 group-hover:grayscale-0 transition-all" alt="Avatar" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=100"/>
+            </div>
+            <h5 className="text-lg font-medium mb-1 text-foreground">James Chen</h5>
+            <p className="text-xs text-muted-foreground mb-4">Final Year, CS Student</p>
+            <div className="flex flex-wrap gap-2 mb-6">
+              <span className="bg-border/30 px-2 py-1 rounded text-[10px] text-muted-foreground font-medium">Python</span>
+              <span className="bg-border/30 px-2 py-1 rounded text-[10px] text-muted-foreground font-medium">Agile</span>
+            </div>
+            <div className="flex items-center justify-between text-[10px] font-semibold text-muted-foreground/60 border-t border-border/10 pt-4">
+              <span>428 VERIFIED HOURS</span>
+              <Share2 className="text-accent w-3.5 h-3.5" />
+            </div>
           </div>
-
-          <div className="grid md:grid-cols-3 gap-8">
-            {/* Profile Card 1 */}
-            <div className="bg-card border border-border/20 rounded-lg overflow-hidden">
-              <div className="h-24 bg-linear-to-r from-primary/20 to-transparent"></div>
-              <div className="p-6 -mt-8 relative z-10">
-                <div className="w-12 h-12 bg-card border-2 border-border rounded-full flex items-center justify-center mx-auto mb-4">
-                  <span className="text-lg">👤</span>
-                </div>
-                <h3 className="font-bold text-center mb-2 text-foreground">James Chen</h3>
-                <p className="text-xs text-center text-muted-foreground mb-4">Third Year, CS Student</p>
-                <div className="flex gap-2 justify-center mb-4">
-                  <span className="text-xs px-2 py-1 bg-primary/10 text-primary rounded">Python</span>
-                  <span className="text-xs px-2 py-1 bg-primary/10 text-primary rounded">APIs</span>
-                </div>
-                <p className="text-xs text-center text-muted-foreground/50">1254 VERIFIED HOURS</p>
-              </div>
+          
+          {/* Profile Card 2 */}
+          <div className="bg-card border border-border/10 p-6 rounded-lg hover:border-primary/30 transition-all group shadow-sm">
+            <div className="w-16 h-16 bg-muted rounded-full mb-6 overflow-hidden border border-border/20">
+              <img className="w-full h-full object-cover grayscale opacity-90 group-hover:grayscale-0 transition-all" alt="Avatar" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=100"/>
             </div>
-
-            {/* Profile Card 2 */}
-            <div className="bg-card border border-border/20 rounded-lg overflow-hidden">
-              <div className="h-24 bg-linear-to-r from-primary/20 to-transparent"></div>
-              <div className="p-6 -mt-8 relative z-10">
-                <div className="w-12 h-12 bg-card border-2 border-border rounded-full flex items-center justify-center mx-auto mb-4">
-                  <span className="text-lg">👤</span>
-                </div>
-                <h3 className="font-bold text-center mb-2 text-foreground">Sarah Miller</h3>
-                <p className="text-xs text-center text-muted-foreground mb-4">Marketing Associate</p>
-                <div className="flex gap-2 justify-center mb-4">
-                  <span className="text-xs px-2 py-1 bg-primary/10 text-primary rounded">Strategy</span>
-                  <span className="text-xs px-2 py-1 bg-primary/10 text-primary rounded">Content</span>
-                </div>
-                <p className="text-xs text-center text-muted-foreground/50">1224 VERIFIED HOURS</p>
-              </div>
+            <h5 className="text-lg font-medium mb-1 text-foreground">Sarah Miller</h5>
+            <p className="text-xs text-muted-foreground mb-4">Marketing Associate</p>
+            <div className="flex flex-wrap gap-2 mb-6">
+              <span className="bg-border/30 px-2 py-1 rounded text-[10px] text-muted-foreground font-medium">Strategy</span>
+              <span className="bg-border/30 px-2 py-1 rounded text-[10px] text-muted-foreground font-medium">Content</span>
             </div>
-
-            {/* CTA Card */}
-            <div className="bg-primary text-primary-foreground rounded-lg p-8 flex flex-col justify-center text-center">
-              <h3 className="text-2xl font-bold mb-3">Ready to certify your expertise?</h3>
-              <p className="text-sm text-primary-foreground/90 mb-6">
-                Join the network of thousands of professionals building institutional trust.
-              </p>
-              <Link to="/signup" className="inline-block px-6 py-2 bg-primary-foreground text-primary rounded-md font-semibold hover:bg-primary-foreground/90 transition-colors">
-                Get Started
+            <div className="flex items-center justify-between text-[10px] font-semibold text-muted-foreground/60 border-t border-border/10 pt-4">
+              <span>1,204 VERIFIED HOURS</span>
+              <Share2 className="text-accent w-3.5 h-3.5" />
+            </div>
+          </div>
+          
+          {/* Feature Callout Card */}
+          <div className="lg:col-span-2 bg-primary p-8 rounded-xl flex flex-col justify-center relative overflow-hidden group shadow-lg">
+            <div className="relative z-10 flex flex-col h-full items-start justify-center">
+              <h3 className="text-2xl font-semibold text-primary-foreground mb-3 tracking-tight">Ready to certify your expertise?</h3>
+              <p className="text-primary-foreground/80 mb-8 max-w-sm leading-relaxed text-sm">Join the network of thousands of professionals building institutional trust.</p>
+              <Link to="/signup">
+                <button className="bg-primary-foreground text-primary px-8 py-3 rounded-md font-bold transition-transform hover:scale-105 shadow-xl">Get Started</button>
               </Link>
             </div>
+            <BadgeCheck className="absolute -right-8 -bottom-8 w-64 h-64 text-primary-foreground/10 group-hover:scale-110 transition-transform duration-700" />
           </div>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="bg-card border-t border-border/20 px-6 md:px-12 py-12">
-        <div className="mx-auto max-w-6xl">
-          <div className="grid md:grid-cols-3 gap-8 mb-12">
-            <div>
-              <h4 className="font-semibold mb-4 text-foreground">Provenancy</h4>
-              <p className="text-sm text-muted-foreground">Building the global infrastructure for professional trust and immutable work verification.</p>
-            </div>
-            <div>
-              <h4 className="font-semibold mb-4 text-foreground">System</h4>
-              <ul className="space-y-2 text-sm text-muted-foreground">
-                <li><a href="#" className="hover:text-primary transition-colors">Verification Protocol</a></li>
-                <li><a href="#" className="hover:text-primary transition-colors">Security Standards</a></li>
-                <li><a href="#" className="hover:text-primary transition-colors">API Access</a></li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-semibold mb-4 text-foreground">Institution</h4>
-              <ul className="space-y-2 text-sm text-muted-foreground">
-                <li><a href="#" className="hover:text-primary transition-colors">Legal Ledger</a></li>
-                <li><a href="#" className="hover:text-primary transition-colors">Privacy Policy</a></li>
-                <li><a href="#" className="hover:text-primary transition-colors">Compliance</a></li>
-              </ul>
-            </div>
-          </div>
-
-          <div className="border-t border-border/20 pt-8 flex justify-between items-center text-xs text-muted-foreground/50 uppercase tracking-widest">
-            <p>© 2024 Provenancy Systems. All Rights Reserved.</p>
-            <p>Verification System v4.0 - Schema: 482A</p>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   )
 }

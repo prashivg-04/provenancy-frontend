@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Provenance | Engagement Detail</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "outline": "#908f9d",
+              "surface-container-highest": "#353534",
+              "primary-fixed-dim": "#bdc2ff",
+              "tertiary-fixed": "#e4e2e1",
+              "primary-container": "#1a237e",
+              "tertiary-fixed-dim": "#c8c6c6",
+              "on-primary": "#1b247f",
+              "on-secondary-fixed-variant": "#36485b",
+              "on-primary-fixed": "#000767",
+              "error": "#ffb4ab",
+              "on-tertiary-fixed": "#1b1c1c",
+              "on-primary-fixed-variant": "#343d96",
+              "on-surface": "#e5e2e1",
+              "background": "#131313",
+              "on-tertiary-container": "#999797",
+              "surface-bright": "#393939",
+              "surface-dim": "#131313",
+              "secondary-container": "#36485b",
+              "surface-container": "#201f1f",
+              "tertiary": "#c8c6c6",
+              "secondary": "#b5c8df",
+              "on-tertiary": "#303030",
+              "surface-container-lowest": "#0e0e0e",
+              "primary-fixed": "#e0e0ff",
+              "on-error": "#690005",
+              "on-secondary": "#203243",
+              "inverse-primary": "#4c56af",
+              "inverse-on-surface": "#313030",
+              "outline-variant": "#454652",
+              "error-container": "#93000a",
+              "tertiary-container": "#303030",
+              "secondary-fixed-dim": "#b5c8df",
+              "on-error-container": "#ffdad6",
+              "surface": "#131313",
+              "surface-container-low": "#1c1b1b",
+              "on-surface-variant": "#c6c5d4",
+              "on-background": "#e5e2e1",
+              "surface-tint": "#bdc2ff",
+              "surface-container-high": "#2a2a2a",
+              "on-secondary-fixed": "#091d2e",
+              "primary": "#bdc2ff",
+              "on-tertiary-fixed-variant": "#474747",
+              "secondary-fixed": "#d1e4fb",
+              "inverse-surface": "#e5e2e1",
+              "surface-variant": "#353534",
+              "on-secondary-container": "#a4b7cd",
+              "on-primary-container": "#8690ee"
+            },
+            fontFamily: {
+              "headline": ["Inter"],
+              "body": ["Inter"],
+              "label": ["Inter"]
+            },
+            borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+          },
+        },
+      }
+    </script>
+<style>
+      body { font-family: 'Inter', sans-serif; }
+      .glass-card {
+        background: rgba(42, 42, 42, 0.8);
+        backdrop-filter: blur(20px);
+      }
+      .ledger-dot {
+        height: 6px;
+        width: 6px;
+        background-color: #bdc2ff;
+        border-radius: 50%;
+        display: inline-block;
+      }
+    </style>
+</head>
+<body class="bg-background text-on-surface min-h-screen flex">
+<!-- SideNavBar (Shared Component) -->
+<aside class="w-64 border-r border-outline-variant/15 flex flex-col h-screen sticky top-0 bg-surface">
+<div class="p-8 flex flex-col gap-2">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 bg-surface-container-high rounded flex items-center justify-center">
+<img alt="Institution Logo" class="w-6 h-6" data-alt="University or Institution official minimal logo" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAfWSWDFBPmRVCwo7GWhClO74zronpjq9prT3Sn-bM5O5SP6N3xPU-EjUKIbXTAo-jvrhyJUWIZMdWee3Kk4iyitrGiIObLNfHi0nd58RSXmvZUtImW3A607JUR9I0BBBkXJuN_hkSGGo7oY81Yu6HxlXYpuVnRoiyHn5hmcqm0rT4OQ4FT8FqRQO3AySL-b-mFnDQi_l1hELRmj9eVYbfM9QyHmPi0wrWBxzgaQyE-tMMUq_dAvzEF7_vTEnbgV31pyTojodjnPr9-"/>
+</div>
+<div>
+<h1 class="text-on-surface font-semibold text-sm leading-tight">Record Management</h1>
+<p class="text-on-surface-variant text-[10px] uppercase tracking-wider">Student Work System</p>
+</div>
+</div>
+</div>
+<nav class="flex-1 px-4 py-4 space-y-1">
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-low rounded-lg transition-colors group" href="#">
+<span class="material-symbols-outlined text-[20px]">dashboard</span>
+<span class="text-sm font-medium">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 bg-primary-container text-on-primary-container rounded-lg transition-colors group" href="#">
+<span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">work</span>
+<span class="text-sm font-medium">My Engagements</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-low rounded-lg transition-colors group" href="#">
+<span class="material-symbols-outlined text-[20px]">military_tech</span>
+<span class="text-sm font-medium">Skills</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-low rounded-lg transition-colors group" href="#">
+<span class="material-symbols-outlined text-[20px]">person</span>
+<span class="text-sm font-medium">Profile</span>
+</a>
+</nav>
+<div class="p-6 border-t border-outline-variant/15">
+<div class="flex items-center gap-3 px-2">
+<div class="w-8 h-8 rounded-full bg-surface-container-highest overflow-hidden">
+<img alt="User Profile" class="w-full h-full object-cover" data-alt="Professional user profile headshot" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDsqUhaAOPxeePwJ8i-HGVy5WN6UFpwPRdjDOccLhqgjqcjrjByvy4iVq-l6VCd4RLow6_4S6u4YIWFy-NAgOmc6PgQ5A14jZksxJ4Zxc0gx5mb3z7Yhwhc6PpjNJeVh5ClSI-9J57_zQJxfrujF4NcB0VZ2xhiJyc9r39FuMUmGqHR87dVUSAkMC3mTIw-hK7KOhyPXficp3A9NO7zXXvdQu0jyYADjgBM93NDW6zyHuf4W5b9qePZLAhSBXB5us4n3oNfq5lTlTXP"/>
+</div>
+<div class="overflow-hidden">
+<p class="text-xs font-semibold truncate">Alex Chen</p>
+<p class="text-[10px] text-on-surface-variant truncate">ID: 29401-BX</p>
+</div>
+</div>
+</div>
+</aside>
+<main class="flex-1 flex flex-col">
+<!-- TopNavBar (Shared Component) -->
+<header class="h-16 border-b border-outline-variant/15 flex items-center justify-between px-12 bg-surface/50 backdrop-blur-md sticky top-0 z-50">
+<div class="flex items-center gap-2">
+<span class="text-on-surface font-medium tracking-tight">Work Engagements</span>
+<span class="text-outline-variant">/</span>
+<span class="text-on-surface-variant text-sm">TechCorp Solutions</span>
+</div>
+<div class="flex items-center gap-6">
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-sm">search</span>
+<input class="bg-surface-container-low border-none rounded-full py-1.5 pl-10 pr-4 text-sm w-64 focus:ring-1 focus:ring-primary/30 transition-all placeholder:text-on-surface-variant/50" placeholder="Search records..." type="text"/>
+</div>
+<div class="flex items-center gap-4">
+<button class="text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">settings</span>
+</button>
+</div>
+</div>
+</header>
+<!-- Content Canvas -->
+<div class="flex-1 overflow-y-auto p-12 space-y-16 max-w-6xl mx-auto w-full">
+<!-- Hero Header Section: Editorial Layout -->
+<section class="flex flex-col md:flex-row justify-between items-end gap-8 pb-12 border-b border-outline-variant/10">
+<div class="space-y-4 max-w-2xl">
+<div class="flex items-center gap-3">
+<span class="bg-surface-container-highest px-3 py-1 rounded-full text-[10px] font-bold tracking-widest text-primary flex items-center gap-2">
+<span class="ledger-dot"></span>
+                            VERIFIED RECORD
+                        </span>
+<span class="text-on-surface-variant text-[11px] font-medium uppercase tracking-[0.2em]">Ref: #TC-2023-0841</span>
+</div>
+<h2 class="text-5xl font-bold font-headline tracking-tight text-on-surface">Software Intern</h2>
+<div class="flex flex-wrap gap-x-8 gap-y-2 pt-2">
+<div class="flex flex-col">
+<span class="text-[10px] text-on-surface-variant uppercase tracking-wider mb-1">Organization</span>
+<span class="text-lg font-medium text-tertiary">TechCorp Solutions</span>
+</div>
+<div class="flex flex-col">
+<span class="text-[10px] text-on-surface-variant uppercase tracking-wider mb-1">Duration</span>
+<span class="text-lg font-medium text-tertiary">Jun 2023 - Aug 2023</span>
+</div>
+<div class="flex flex-col">
+<span class="text-[10px] text-on-surface-variant uppercase tracking-wider mb-1">Status</span>
+<div class="flex items-center gap-2 px-3 py-1 bg-primary-container/20 border border-primary/20 rounded-md">
+<span class="material-symbols-outlined text-primary text-sm" style="font-variation-settings: 'FILL' 1;">verified</span>
+<span class="text-xs font-semibold text-primary">Verified</span>
+</div>
+</div>
+</div>
+</div>
+<div class="flex gap-3">
+<button class="px-6 py-2.5 bg-surface-container border border-outline-variant/15 text-on-surface text-sm font-medium hover:bg-surface-container-high transition-all flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">download</span>
+                        Export PDF
+                    </button>
+<button class="px-6 py-2.5 bg-primary-container text-on-primary-container text-sm font-medium hover:bg-primary hover:text-on-primary transition-all flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">share</span>
+                        Share Record
+                    </button>
+</div>
+</section>
+<!-- Bento Grid Content -->
+<div class="grid grid-cols-12 gap-8">
+<!-- Scope of Work: Asymmetric Central Focus -->
+<div class="col-span-12 lg:col-span-8 space-y-12">
+<div class="space-y-6">
+<h3 class="text-xs font-bold uppercase tracking-[0.3em] text-on-surface-variant/60 flex items-center gap-4">
+                            Scope of Work
+                            <span class="h-px flex-1 bg-outline-variant/10"></span>
+</h3>
+<p class="text-lg leading-relaxed text-tertiary font-light first-letter:text-4xl first-letter:font-bold first-letter:mr-2 first-letter:float-left first-letter:text-primary">
+                            In this capacity, I spearheaded the optimization of the core legacy API infrastructure, focusing on reducing latency across high-traffic endpoints. My primary objective involved the implementation of a distributed caching layer and the refactoring of asynchronous microservices. Beyond technical implementation, I collaborated with cross-functional product teams to translate high-level business requirements into technical specifications, ensuring system scalability and maintainability during a period of 40% growth in active user sessions.
+                        </p>
+</div>
+<!-- Key Highlights: Ledger Style -->
+<div class="space-y-6">
+<h3 class="text-xs font-bold uppercase tracking-[0.3em] text-on-surface-variant/60 flex items-center gap-4">
+                            Key Highlights
+                            <span class="h-px flex-1 bg-outline-variant/10"></span>
+</h3>
+<div class="grid grid-cols-1 gap-4">
+<div class="group p-6 bg-surface-container-low hover:bg-surface-container transition-colors rounded-lg flex items-start gap-6 border-l-2 border-transparent hover:border-primary">
+<span class="text-outline-variant font-mono text-sm pt-1">01</span>
+<div class="space-y-1">
+<p class="text-on-surface font-medium leading-tight">Architecture Redesign</p>
+<p class="text-sm text-on-surface-variant">Redesigned three critical backend microservices using Node.js and TypeScript, improving overall system throughput by 22%.</p>
+</div>
+</div>
+<div class="group p-6 bg-surface-container-low hover:bg-surface-container transition-colors rounded-lg flex items-start gap-6 border-l-2 border-transparent hover:border-primary">
+<span class="text-outline-variant font-mono text-sm pt-1">02</span>
+<div class="space-y-1">
+<p class="text-on-surface font-medium leading-tight">Latency Optimization</p>
+<p class="text-sm text-on-surface-variant">Reduced database query execution times by an average of 450ms through strategic indexing and query parameter tuning.</p>
+</div>
+</div>
+<div class="group p-6 bg-surface-container-low hover:bg-surface-container transition-colors rounded-lg flex items-start gap-6 border-l-2 border-transparent hover:border-primary">
+<span class="text-outline-variant font-mono text-sm pt-1">03</span>
+<div class="space-y-1">
+<p class="text-on-surface font-medium leading-tight">Quality Assurance</p>
+<p class="text-sm text-on-surface-variant">Established a new automated testing suite that achieved 85% code coverage for newly developed modules.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Sidebar Modules -->
+<div class="col-span-12 lg:col-span-4 space-y-8">
+<!-- Endorsed Skills: Modern Tags -->
+<div class="bg-surface-container p-8 space-y-6 border border-outline-variant/5">
+<h3 class="text-xs font-bold uppercase tracking-[0.3em] text-on-surface-variant/60">Endorsed Skills</h3>
+<div class="flex flex-wrap gap-2">
+<span class="px-3 py-1.5 bg-surface-container-high text-on-surface-variant text-[11px] font-medium uppercase tracking-wider rounded border border-outline-variant/10">TypeScript</span>
+<span class="px-3 py-1.5 bg-surface-container-high text-on-surface-variant text-[11px] font-medium uppercase tracking-wider rounded border border-outline-variant/10">Node.js</span>
+<span class="px-3 py-1.5 bg-surface-container-high text-on-surface-variant text-[11px] font-medium uppercase tracking-wider rounded border border-outline-variant/10">PostgreSQL</span>
+<span class="px-3 py-1.5 bg-surface-container-high text-on-surface-variant text-[11px] font-medium uppercase tracking-wider rounded border border-outline-variant/10">Redis</span>
+<span class="px-3 py-1.5 bg-surface-container-high text-on-surface-variant text-[11px] font-medium uppercase tracking-wider rounded border border-outline-variant/10">System Design</span>
+<span class="px-3 py-1.5 bg-surface-container-high text-on-surface-variant text-[11px] font-medium uppercase tracking-wider rounded border border-outline-variant/10">Agile</span>
+</div>
+</div>
+<!-- Institutional Verification: The "Signature" Block -->
+<div class="bg-surface-container-lowest border border-primary/20 p-8 space-y-8 relative overflow-hidden group">
+<!-- Decorative background element -->
+<div class="absolute -right-8 -top-8 w-32 h-32 bg-primary/5 rounded-full blur-3xl group-hover:bg-primary/10 transition-colors"></div>
+<div class="space-y-2 relative">
+<h3 class="text-xs font-bold uppercase tracking-[0.3em] text-primary">Institutional Verification</h3>
+<p class="text-[10px] text-on-surface-variant leading-relaxed">This record has been digitally signed and verified by the host institution via Provenancy Ledger protocol.</p>
+</div>
+<div class="space-y-6 relative">
+<div class="flex flex-col gap-1">
+<span class="text-[10px] text-on-surface-variant uppercase tracking-widest">Supervisor</span>
+<p class="text-sm font-semibold text-on-surface">Dr. Sarah Miller</p>
+<p class="text-xs text-on-surface-variant">Senior Engineering Director</p>
+</div>
+<div class="flex flex-col gap-1">
+<span class="text-[10px] text-on-surface-variant uppercase tracking-widest">Organization</span>
+<p class="text-sm font-semibold text-on-surface">TechCorp Solutions</p>
+</div>
+<div class="flex flex-col gap-1">
+<span class="text-[10px] text-on-surface-variant uppercase tracking-widest">Verification Date</span>
+<p class="text-sm font-semibold text-on-surface">Oct 24, 2024</p>
+</div>
+</div>
+<div class="pt-6 border-t border-outline-variant/15 flex justify-between items-center relative">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-sm">qr_code_2</span>
+<span class="text-[10px] font-mono text-on-surface-variant">AUTH_ID: 8821-XPQ</span>
+</div>
+<img alt="Verification Seal" class="w-12 h-12 opacity-30 grayscale contrast-125" data-alt="Abstract geometric digital verification seal or watermark" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCZJhLI5ist7QIMVKwAMpYzIkIVKP1TNn2WgJ28p7Xlo_qzizHsR7-ciHMuIaSppAfNY1YCKZcGixnmu4_OFMSImhTzWR4zegTMSffjKsKRf8OaSWk0AmI0lqZ4oT_zrCHuin6PjBBtvI12hpm2PQJSV4Ck1JRYLXSX1S26pMpJCLR12sVG1fQ4SVtJ4Z6iP4Gg8O3hFseonQplWRHqbwCvHZhkLqlRYaJrZ_7yyEeZGl4NaxsIam_osULfrQlGaxw4ClSfjJ9ncTjs"/>
+</div>
+</div>
+<!-- Supplemental Data Map -->
+<div class="bg-surface-container-low rounded-lg p-6 space-y-4">
+<h3 class="text-xs font-bold uppercase tracking-[0.3em] text-on-surface-variant/60">Location Data</h3>
+<div class="h-40 bg-surface-container rounded-md overflow-hidden relative grayscale opacity-60 hover:opacity-100 transition-opacity">
+<img alt="Map Location" class="w-full h-full object-cover" data-location="San Francisco" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD6S0bneXXYrwMmEH8Q6uKWGRuXJWM7vMd3t7mHt6zklF13APHW8jQhGi4pZAQ5srVFIZdtxPq6RAQh6RpL9lQvH9vFBsbzkQ8LWhqwI8NawiRaGCYyjGSR6TJXl0tdXWlqsRNiQ29XmvR2YUz_nGWacnfOwMfZTfp1vnpuEEBDzmgmb5tuaCWJ6rBZjnCnt0hoO2W-Y90qE32cbuKhJRZ5sk093iJVXYea4tmyioBp5-1d3tIgf23UIwFcdh5N9WuFIbqx9N1Kxfrb"/>
+<div class="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent"></div>
+<div class="absolute bottom-3 left-3 flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-sm">location_on</span>
+<span class="text-[10px] font-medium uppercase tracking-wider">San Francisco HQ</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Footer Meta -->
+<footer class="pt-12 border-t border-outline-variant/10 flex flex-col md:flex-row justify-between items-center gap-6">
+<div class="flex items-center gap-4 text-on-surface-variant/40 text-[10px] uppercase tracking-widest">
+<span>Generated: Oct 28, 2024</span>
+<span class="w-1 h-1 bg-outline-variant/40 rounded-full"></span>
+<span>Immutable Ledger Version 4.2.0</span>
+</div>
+<div class="flex gap-8">
+<a class="text-[10px] uppercase tracking-widest text-on-surface-variant hover:text-primary transition-colors" href="#">Privacy Policy</a>
+<a class="text-[10px] uppercase tracking-widest text-on-surface-variant hover:text-primary transition-colors" href="#">Verification Terms</a>
+<a class="text-[10px] uppercase tracking-widest text-on-surface-variant hover:text-primary transition-colors" href="#">System Status</a>
+</div>
+</footer>
+</div>
+</main>
+</body></html>

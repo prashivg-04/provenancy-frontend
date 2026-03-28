@@ -1,267 +1,142 @@
-import { useState } from 'react'
+import { ShieldCheck, CircleAlert, CheckCircle2, XCircle, RefreshCcw } from 'lucide-react'
 import { Link } from 'react-router-dom'
-import { useAuth } from '../context/AuthContext'
+import SupervisorLayout from '../components/workspace/SupervisorLayout'
 
 export default function SupervisorDashboard() {
-  const { user, logout } = useAuth()
-  const [activeTab, setActiveTab] = useState('dashboard')
-
   const pendingRequests = [
-    {
-      id: 1,
-      name: 'Alex Carter',
-      institution: 'Stanford University',
-      role: 'Graduate Research Assistant',
-      duration: '6 months',
-      icon: '🏫',
-    },
-    {
-      id: 2,
-      name: 'Elena Rodriguez',
-      institution: 'CERN Collaborations',
-      role: 'PhD Candidate',
-      duration: '12 months',
-      icon: '🔬',
-    },
+    { name: "Alex Carter", title: "Stanford University • Graduate Research Assistant", duration: "6 months" },
+    { name: "Elena Rodriguez", title: "CERN Collaborations • PhD Candidate", duration: "12 months" }
   ]
 
-  const activityFeed = [
-    {
-      id: 1,
-      action: 'Verified',
-      subject: 'Alex Carter',
-      detail: 'for Software Intern',
-      hash: '0x82f...91a',
-      time: '4h ago',
-      type: 'success',
-    },
-    {
-      id: 2,
-      action: 'Rejected 1 request for',
-      detail: 'Lab Assistant',
-      hash: 'NON-COMPLIANT ROLE',
-      time: '8h ago',
-      type: 'error',
-    },
-    {
-      id: 3,
-      action: 'Daily ledger',
-      detail: 'reconciliation complete.',
-      hash: 'STATUS: SYNCED',
-      time: '12h ago',
-      type: 'info',
-    },
+  const feedItems = [
+    { title: "Alex Carter for Software Intern", status: "Verified", icon: CheckCircle2, time: "4h ago", extra: "HASH: 0x82f..91a", color: "text-primary" },
+    { title: "1 request for Lab Assistant", status: "Rejected", icon: XCircle, time: "8h ago", extra: "NON-COMPLIANT ROLE", color: "text-destructive" },
+    { title: "Daily ledger reconciliation complete.", status: "System", icon: RefreshCcw, time: "12h ago", extra: "STATUS: SYNCED", color: "text-muted-foreground" }
   ]
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
-      {/* Top Navigation */}
-      <nav className="fixed top-0 left-0 right-0 h-16 border-b border-border/20 bg-background/95 backdrop-blur z-50 flex items-center justify-between px-8">
-        <div className="flex items-center gap-4">
-          <span className="font-semibold tracking-tight text-xl text-primary">Provenancy</span>
-          <div className="h-4 w-px bg-border/30"></div>
-          <span className="text-muted-foreground text-sm font-medium tracking-wide">Supervisor Workspace</span>
-        </div>
-        <div className="flex items-center gap-6">
-          <button className="text-muted-foreground hover:text-foreground transition-colors">
-            🔔
-          </button>
-          <div className="flex items-center gap-3">
-            <div className="text-right text-xs">
-              <div className="font-medium text-foreground">PROV-SUP-8821</div>
-              <div className="text-primary/70 text-[11px]">Verified Admin</div>
+    <SupervisorLayout>
+      <div className="p-10 md:p-12 max-w-7xl mx-auto w-full">
+        {/* Header Section */}
+        <header className="mb-12">
+          <h1 className="text-5xl font-light tracking-tight text-foreground mb-4">Registry Overview</h1>
+          <p className="text-muted-foreground/80 max-w-2xl font-light leading-relaxed">
+            Institutional ledger management for verified student engagements and professional milestones. Validating the integrity of the professional record.
+          </p>
+        </header>
+
+        {/* Statistics Bento Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-16">
+          {/* Highlight Card */}
+          <div className="md:col-span-2 bg-muted/5 p-8 rounded-xl border border-border/10 relative overflow-hidden group hover:border-border/30 transition-all">
+            <div className="absolute -top-4 -right-4 p-8 opacity-5 group-hover:opacity-10 transition-opacity">
+              <ShieldCheck className="w-32 h-32 text-primary" />
             </div>
-            <button
-              onClick={logout}
-              className="w-8 h-8 bg-gradient-to-br from-primary to-accent rounded-md flex items-center justify-center text-xs font-bold text-primary-foreground"
-            >
-              👤
-            </button>
+            <p className="text-muted-foreground text-sm font-medium tracking-wide mb-8 uppercase">Pending Verification Requests</p>
+            <div className="flex items-baseline gap-4">
+              <span className="text-6xl font-bold text-primary tracking-tighter">12</span>
+              <div className="flex items-center gap-1 text-primary/90 bg-primary/20 px-2 py-0.5 rounded text-[10px] font-bold tracking-widest uppercase border border-primary/20">
+                <CircleAlert className="w-3 h-3" />
+                Action Required
+              </div>
+            </div>
+            <div className="mt-8 flex gap-2">
+              <div className="h-1 w-12 bg-primary rounded-full shadow-[0_0_8px_hsl(var(--primary))]"></div>
+              <div className="h-1 w-32 bg-border/40 rounded-full"></div>
+            </div>
+          </div>
+
+          {/* Metric Card 1 */}
+          <div className="bg-background p-8 rounded-xl border border-border/10 hover:border-border/30 transition-colors">
+            <p className="text-muted-foreground text-xs font-bold tracking-widest uppercase mb-12 opacity-80">Approved Engagements</p>
+            <span className="text-4xl font-semibold tracking-tight text-foreground">485</span>
+            <p className="text-[11px] text-muted-foreground/70 mt-2 font-medium tracking-wide">+3 since yesterday</p>
+          </div>
+
+          {/* Metric Card 2 */}
+          <div className="bg-background p-8 rounded-xl border border-border/10 hover:border-border/30 transition-colors">
+            <p className="text-muted-foreground text-xs font-bold tracking-widest uppercase mb-12 opacity-80">Rejected Engagements</p>
+            <span className="text-4xl font-semibold tracking-tight text-muted-foreground">14</span>
+            <p className="text-[11px] text-muted-foreground/50 mt-2 font-medium tracking-wide">2.8% rejection rate</p>
           </div>
         </div>
-      </nav>
 
-      {/* Sidebar */}
-      <aside className="fixed left-0 top-16 bottom-0 w-64 bg-card border-r border-border/20 flex flex-col pt-8 z-40">
-        <div className="px-6 mb-10">
-          <p className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground/50 font-bold">Ledger Controls</p>
-        </div>
-        <nav className="flex-1 px-4 space-y-1">
-          <button
-            onClick={() => setActiveTab('dashboard')}
-            className={`w-full flex items-center gap-3 px-4 py-3 rounded-md transition-all text-sm font-medium ${
-              activeTab === 'dashboard'
-                ? 'bg-primary/10 border-l-2 border-primary text-primary'
-                : 'text-muted-foreground hover:bg-primary/5 hover:text-foreground'
-            }`}
-          >
-            📊 Dashboard
-          </button>
-          <button
-            onClick={() => setActiveTab('requests')}
-            className={`w-full flex items-center gap-3 px-4 py-3 rounded-md transition-all text-sm font-medium ${
-              activeTab === 'requests'
-                ? 'bg-primary/10 border-l-2 border-primary text-primary'
-                : 'text-muted-foreground hover:bg-primary/5 hover:text-foreground'
-            }`}
-          >
-            🤝 Engagement Requests
-          </button>
-          <button
-            onClick={() => setActiveTab('profile')}
-            className={`w-full flex items-center gap-3 px-4 py-3 rounded-md transition-all text-sm font-medium ${
-              activeTab === 'profile'
-                ? 'bg-primary/10 border-l-2 border-primary text-primary'
-                : 'text-muted-foreground hover:bg-primary/5 hover:text-foreground'
-            }`}
-          >
-            👤 Profile
-          </button>
-        </nav>
-        <div className="p-6 mt-auto border-t border-border/20">
-          <div className="bg-secondary/20 p-4 rounded-md">
-            <div className="flex items-center gap-2 mb-2">
-              <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></div>
-              <span className="text-[10px] text-muted-foreground font-medium tracking-wider uppercase">System Integrity</span>
+        {/* Content Row: Ledger & Feed */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
+          
+          {/* Verification Ledger */}
+          <div className="lg:col-span-2">
+            <div className="flex items-center justify-between mb-8">
+              <h2 className="text-xl font-medium tracking-tight text-foreground">Immediate Queue View</h2>
+              <Link to="/supervisor/requests" className="text-xs font-bold text-primary/70 hover:text-primary uppercase tracking-widest transition-colors">
+                View Ledger
+              </Link>
             </div>
-            <p className="text-[11px] text-muted-foreground/70">Last block validated 2m ago. Node status: Stable.</p>
-          </div>
-        </div>
-      </aside>
-
-      {/* Main Content */}
-      <main className="ml-64 pt-16 min-h-screen pb-12">
-        <div className="p-12 max-w-6xl">
-          {/* Header */}
-          <header className="mb-12">
-            <h1 className="text-3xl font-bold mb-2 text-foreground">Registry Overview</h1>
-            <p className="text-muted-foreground max-w-2xl text-sm">
-              Institutional ledger management for verified student engagements and professional milestones. Validating the integrity of the professional record.
-            </p>
-          </header>
-
-          {/* Stats Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-16">
-            {/* Pending - Highlight */}
-            <div className="md:col-span-2 bg-card border border-border/20 rounded-lg p-8 relative overflow-hidden">
-              <div className="absolute top-0 right-0 p-8 opacity-10 text-6xl">🛡️</div>
-              <p className="text-muted-foreground text-sm font-medium tracking-wide mb-8">Pending Verification Requests</p>
-              <div className="flex items-baseline gap-4 mb-8">
-                <span className="text-5xl font-bold text-primary tracking-tight">12</span>
-                <div className="flex items-center gap-1 text-primary/70 bg-primary/10 px-2 py-1 rounded text-[10px] font-bold tracking-widest uppercase">
-                  ⚠️ Action Required
+            
+            <div className="space-y-4">
+              {pendingRequests.map((req, i) => (
+                <div key={i} className="group flex flex-col md:flex-row items-start md:items-center justify-between p-6 bg-muted/5 hover:bg-muted/10 transition-all border border-transparent rounded hover:border-primary/20 cursor-pointer">
+                  <div className="flex gap-6 items-center">
+                    <div className="w-12 h-12 rounded bg-background flex items-center justify-center border border-border/10 shrink-0">
+                      <ShieldCheck className="w-5 h-5 text-muted-foreground group-hover:text-primary transition-colors" />
+                    </div>
+                    <div>
+                      <p className="text-sm font-semibold text-foreground mb-1 group-hover:text-primary transition-colors">{req.name}</p>
+                      <p className="text-xs text-muted-foreground tracking-wide">{req.title}</p>
+                    </div>
+                  </div>
+                  <div className="mt-4 md:mt-0 w-full md:w-auto text-right flex items-center justify-between md:justify-end gap-12">
+                    <div className="hidden md:block text-left">
+                      <p className="text-[10px] text-muted-foreground font-bold uppercase tracking-widest mb-1">Duration</p>
+                      <p className="text-sm font-medium text-foreground/80">{req.duration}</p>
+                    </div>
+                    <Link to="/supervisor/requests" className="px-6 py-2.5 bg-primary/10 text-primary border border-primary/20 text-xs font-bold rounded hover:bg-primary hover:text-primary-foreground transition-all uppercase tracking-widest text-center">
+                      Review File
+                    </Link>
+                  </div>
                 </div>
-              </div>
-              <div className="flex gap-2">
-                <div className="h-1 w-12 bg-primary rounded-full"></div>
-                <div className="h-1 w-24 bg-border/20 rounded-full"></div>
-              </div>
-            </div>
-
-            {/* Approved */}
-            <div className="bg-card border border-border/20 rounded-lg p-8">
-              <p className="text-muted-foreground text-xs font-medium tracking-widest uppercase mb-12 opacity-60">Approved Engagements</p>
-              <span className="text-4xl font-semibold text-foreground">485</span>
-              <p className="text-[11px] text-muted-foreground mt-2">+3 since yesterday</p>
-            </div>
-
-            {/* Rejected */}
-            <div className="bg-card border border-border/20 rounded-lg p-8">
-              <p className="text-muted-foreground text-xs font-medium tracking-widest uppercase mb-12 opacity-60">Rejected Engagements</p>
-              <span className="text-4xl font-semibold text-muted-foreground">14</span>
-              <p className="text-[11px] text-muted-foreground/50 mt-2">2.8% rejection rate</p>
+              ))}
             </div>
           </div>
 
-          {/* Content Grid */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
-            {/* Requests List */}
-            <div className="lg:col-span-2">
-              <div className="flex items-center justify-between mb-8">
-                <h2 className="text-xl font-semibold">Pending Engagement Requests</h2>
-                <button className="text-xs font-semibold text-primary/70 hover:text-primary uppercase tracking-widest">
-                  Export Ledger
-                </button>
-              </div>
-              <div className="space-y-4">
-                {pendingRequests.map((request) => (
-                  <div
-                    key={request.id}
-                    className="group flex items-center justify-between p-6 bg-card border border-border/20 hover:border-primary/30 rounded-lg transition-all"
-                  >
-                    <div className="flex gap-6 items-center">
-                      <div className="w-12 h-12 rounded bg-secondary/20 flex items-center justify-center border border-border/20 text-xl">
-                        {request.icon}
-                      </div>
-                      <div>
-                        <p className="text-sm font-semibold text-foreground">{request.name}</p>
-                        <p className="text-xs text-muted-foreground">
-                          {request.institution} • {request.role}
-                        </p>
-                      </div>
-                    </div>
-                    <div className="text-right flex items-center gap-8">
-                      <div className="hidden md:block">
-                        <p className="text-[10px] text-muted-foreground uppercase tracking-widest mb-1">Duration</p>
-                        <p className="text-sm font-medium">{request.duration}</p>
-                      </div>
-                      <button className="px-6 py-2 bg-primary/10 text-primary text-xs font-bold rounded-md hover:bg-primary hover:text-primary-foreground transition-all">
-                        Review Request
-                      </button>
-                    </div>
+          {/* Activity Feed */}
+          <div className="bg-muted/5 p-8 border-l-2 border-primary/10 rounded-br-2xl">
+            <h3 className="text-xs font-bold uppercase tracking-[0.2em] text-muted-foreground mb-10">Network Feed</h3>
+            <div className="relative space-y-12 before:content-[''] before:absolute before:left-[11px] before:top-2 before:bottom-2 before:w-[2px] before:bg-border/20">
+              
+              {feedItems.map((item, i) => (
+                <div key={i} className="relative pl-10">
+                  <div className={`absolute left-0 top-1 w-6 h-6 rounded-full bg-background border flex items-center justify-center z-10 ${item.status === 'Verified' ? 'border-primary' : item.status === 'Rejected' ? 'border-destructive' : 'border-muted-foreground'}`}>
+                    <item.icon className={`w-3 h-3 ${item.color}`} />
                   </div>
-                ))}
-              </div>
-            </div>
+                  <p className="text-sm font-medium leading-relaxed text-foreground">
+                    <span className="text-muted-foreground font-bold mr-2 uppercase tracking-wide text-[10px] border border-border/20 px-1.5 py-0.5 rounded">{item.status}</span> 
+                    {item.title}
+                  </p>
+                  <p className="text-[10px] text-muted-foreground/60 mt-3 font-mono tracking-widest flex items-center gap-2">
+                    {item.extra} 
+                    <span className="w-1 h-1 bg-muted-foreground rounded-full"></span> 
+                    {item.time}
+                  </p>
+                </div>
+              ))}
 
-            {/* Activity Feed */}
-            <div className="bg-card border border-border/20 rounded-lg p-8">
-              <h3 className="text-xs font-bold uppercase tracking-widest text-muted-foreground/60 mb-8">Activity Feed</h3>
-              <div className="relative space-y-8 before:content-[''] before:absolute before:left-[11px] before:top-2 before:bottom-2 before:w-px before:bg-border/20">
-                {activityFeed.map((item) => (
-                  <div key={item.id} className="relative pl-10">
-                    <div
-                      className={`absolute left-0 top-1 w-6 h-6 rounded-full border flex items-center justify-center z-10 ${
-                        item.type === 'success'
-                          ? 'bg-primary/20 border-primary'
-                          : item.type === 'error'
-                          ? 'bg-red-500/20 border-red-500'
-                          : 'bg-secondary/20 border-border'
-                      }`}
-                    >
-                      {item.type === 'success' ? '✓' : item.type === 'error' ? '✕' : '🔄'}
-                    </div>
-                    <p className="text-sm font-medium leading-relaxed">
-                      <span className="text-muted-foreground">{item.action}</span> {item.subject && <span className="text-foreground">{item.subject}</span>}{' '}
-                      <span className="text-muted-foreground">{item.detail}</span>
-                    </p>
-                    <p className="text-[10px] text-muted-foreground/50 mt-1 font-mono">
-                      {item.hash} • {item.time}
-                    </p>
-                  </div>
-                ))}
-              </div>
             </div>
           </div>
-        </div>
-      </main>
 
-      {/* Footer */}
-      <footer className="border-t border-border/20 bg-card px-12 py-8 ml-64 flex justify-between items-center text-xs text-muted-foreground/50 uppercase tracking-widest">
-        <div>V 2.4.0-STABLE</div>
-        <p className="text-[10px] text-muted-foreground/40">© 2024 Provenancy Systems. Institutional Immutable Ledger Protocol.</p>
-        <div className="flex gap-8">
-          <a href="#" className="hover:text-primary transition-colors">
-            Privacy Policy
-          </a>
-          <a href="#" className="hover:text-primary transition-colors">
-            Audit Logs
-          </a>
-          <a href="#" className="hover:text-primary transition-colors">
-            System Support
-          </a>
         </div>
-      </footer>
-    </div>
+
+        {/* Footer Meta */}
+        <footer className="mt-24 pb-8 pt-8 border-t border-border/10 flex flex-col md:flex-row justify-between items-center gap-4">
+          <div className="flex items-center gap-4">
+            <div className="px-3 py-1 bg-muted/10 rounded text-[10px] font-bold text-muted-foreground tracking-widest border border-border/10">
+              V 2.4.0-STABLE
+            </div>
+            <p className="text-[11px] text-muted-foreground/40 font-light tracking-wide uppercase">© 2024 Provenancy Systems.</p>
+          </div>
+        </footer>
+
+      </div>
+    </SupervisorLayout>
   )
 }
