@@ -87,14 +87,14 @@ export default function Login() {
             <button 
               type="button" 
               onClick={() => setRole('student')}
-              className={`text-[10px] px-2 py-1 rounded ${role === 'student' ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground'} uppercase tracking-widest`}
+              className={`text-[10px] px-2 py-1 rounded transition-colors duration-200 ${role === 'student' ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground'} uppercase tracking-widest`}
             >
               Student
             </button>
             <button 
               type="button" 
               onClick={() => setRole('supervisor')}
-              className={`text-[10px] px-2 py-1 rounded ${role === 'supervisor' ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground'} uppercase tracking-widest`}
+              className={`text-[10px] px-2 py-1 rounded transition-colors duration-200 ${role === 'supervisor' ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground'} uppercase tracking-widest`}
             >
               Supervisor
             </button>
@@ -104,11 +104,9 @@ export default function Login() {
         <div className="pt-2">
           <button
             type="submit"
-            className="w-full group relative flex items-center justify-center gap-3 bg-primary text-primary-foreground font-semibold py-4 rounded-md overflow-hidden hover:bg-primary/90 transition-all duration-300"
+            className="w-full relative flex items-center justify-center gap-3 bg-primary text-primary-foreground font-semibold py-4 rounded-md overflow-hidden hover:bg-primary/90 transition-colors duration-300"
           >
-            <span className="relative z-10 text-sm tracking-wide">Login</span>
-            <ArrowRight className="w-4 h-4 relative z-10 group-hover:translate-x-1 transition-transform" />
-            <div className="absolute inset-0 bg-gradient-to-r from-accent/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+            <span className="relative z-10 text-sm tracking-wide">Enter the Ledger</span>
           </button>
         </div>
 
@@ -116,8 +114,8 @@ export default function Login() {
         <div className="pt-4 text-center">
           <p className="text-sm text-muted-foreground">
             Don't have an account?{' '}
-            <Link to="/signup" className="text-accent font-medium hover:underline underline-offset-4 ml-1">
-              Sign up
+            <Link to="/signup" className="text-primary font-bold hover:underline underline-offset-4 ml-1">
+              Sign up here
             </Link>
           </p>
         </div>

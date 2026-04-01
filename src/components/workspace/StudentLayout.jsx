@@ -53,6 +53,17 @@ export default function StudentLayout({ children, activeTitle = "Provenancy", ac
             </div>
           </div>
         </div>
+
+        {/* System Integrity Indicator */}
+        <div className="px-6 pb-6 hidden md:block">
+          <div className="bg-muted/5 p-4 rounded-md border border-border/5">
+            <div className="flex items-center gap-2 mb-2">
+              <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse shadow-[0_0_8px_hsl(var(--primary))]"></div>
+              <span className="text-[10px] text-muted-foreground font-medium tracking-wider uppercase">System Integrity</span>
+            </div>
+            <p className="text-[11px] text-muted-foreground/70 leading-relaxed">Network synchronized. Node status: <span className="text-primary font-medium tracking-widest text-[10px] uppercase">Stable</span>.</p>
+          </div>
+        </div>
       </aside>
 
       {/* Main Content Area */}

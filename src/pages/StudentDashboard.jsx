@@ -1,11 +1,12 @@
 import { Terminal, Lightbulb } from 'lucide-react'
 import StudentLayout from '../components/workspace/StudentLayout'
 import { StatsBlock } from '../components/workspace/StatsBlock'
+import { PageContainer, StatusBadge } from '../components/workspace/SharedPrimitives'
 
 export default function StudentDashboard() {
   return (
     <StudentLayout>
-      <div className="p-10 space-y-12 max-w-7xl mx-auto w-full">
+      <PageContainer>
         {/* Hero Data Grid */}
         <section className="grid grid-cols-1 md:grid-cols-12 gap-8">
           <div className="col-span-12 md:col-span-8 flex flex-col justify-end">
@@ -50,10 +51,7 @@ export default function StudentDashboard() {
                       <h5 className="text-lg font-medium text-foreground">Software Intern</h5>
                       <p className="text-sm text-muted-foreground">TechCorp Solutions • London, UK</p>
                     </div>
-                    <div className="px-2 py-1 bg-muted/30 rounded flex items-center gap-2 border border-border/5">
-                      <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span>
-                      <span className="text-[10px] font-bold text-primary tracking-wider uppercase">Verified</span>
-                    </div>
+                    <StatusBadge status="Verified" />
                   </div>
                   <p className="mt-3 text-sm text-foreground/80 leading-relaxed max-w-lg">
                     Full-stack development contribution within the Core Platform team. Authored 42 production-level PRs across the microservices architecture.
@@ -80,9 +78,7 @@ export default function StudentDashboard() {
                       <h5 className="text-lg font-medium text-foreground">Research Assistant</h5>
                       <p className="text-sm text-muted-foreground">University Science Lab • Oxford</p>
                     </div>
-                    <div className="px-2 py-1 bg-muted/10 border border-border/20 rounded flex items-center gap-2">
-                      <span className="text-[10px] font-bold text-muted-foreground tracking-wider uppercase">Pending</span>
-                    </div>
+                    <StatusBadge status="Pending" />
                   </div>
                   <p className="mt-3 text-sm text-foreground/80 leading-relaxed max-w-lg">
                     Statistical modeling for environmental impact studies. Coordinating data collection across three regional monitoring stations.
@@ -138,7 +134,7 @@ export default function StudentDashboard() {
             </div>
 
             {/* Credential Integrity Banner */}
-            <div className="p-6 bg-card border border-border/10 rounded-lg shadow-sm">
+            <div className="p-6 border-l-2 border-primary/30 bg-muted/5 rounded-r-lg">
                <div className="space-y-2">
                   <h5 className="text-xs font-bold text-foreground uppercase tracking-wider">Immutable Record</h5>
                   <p className="text-xs text-muted-foreground leading-relaxed italic">
@@ -149,7 +145,7 @@ export default function StudentDashboard() {
 
           </div>
         </section>
-      </div>
+      </PageContainer>
     </StudentLayout>
   )
 }

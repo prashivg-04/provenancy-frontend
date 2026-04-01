@@ -26,7 +26,7 @@ export default function AuthLayout({ children, title, subtitle, isLogin = false 
           </p>
         </div>
         
-        <div className="bg-card rounded-xl border border-border/20 shadow-2xl p-8 md:p-10 bg-gradient-to-b from-primary/5 to-transparent">
+        <div className="bg-card rounded-xl border border-border/20 shadow-2xl p-8 md:p-10">
           {children}
         </div>
         
@@ -39,7 +39,7 @@ export default function AuthLayout({ children, title, subtitle, isLogin = false 
           </div>
         ) : (
           <div className="mt-8 text-center px-4">
-            <p className="text-[10px] text-muted-foreground/60 leading-relaxed uppercase tracking-[0.1em]">
+            <p className="text-[10px] text-muted-foreground/60 leading-relaxed uppercase tracking-widest">
                By continuing, you agree to the Institutional Terms of Verification. Records are immutable once committed to the Provenancy ledger.
             </p>
           </div>

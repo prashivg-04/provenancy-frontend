@@ -4,7 +4,7 @@ export function EngagementHeader({ title, org, duration, status, refId }) {
   const isVerified = status === 'Verified'
 
   return (
-    <section className="flex flex-col md:flex-row justify-between items-end gap-8 pb-12 border-b border-border/10">
+    <section className="flex flex-col md:flex-row justify-between items-start md:items-end gap-8 pb-8 border-b border-border/10">
       <div className="space-y-4 max-w-2xl">
         <div className="flex items-center gap-3">
           <span className="bg-muted/10 px-3 py-1 rounded-full text-[10px] font-bold tracking-widest text-primary flex items-center gap-2 border border-border/10">

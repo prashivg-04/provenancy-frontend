@@ -1,13 +1,27 @@
 import { BadgeCheck, Paperclip, Link2, Trash2, Info } from 'lucide-react'
 import StudentLayout from '../components/workspace/StudentLayout'
 import { FormSection, InputField, TextArea, SkillSelector } from '../components/workspace/FormElements'
+import { PageContainer } from '../components/workspace/SharedPrimitives'
+import { toast } from 'react-hot-toast'
+import { useNavigate } from 'react-router-dom'
 
 export default function EngagementCreate() {
+  const navigate = useNavigate()
+
+  const handleSubmit = (e) => {
+    e.preventDefault()
+    toast.success("Engagement submitted for cryptographic verification")
+    // Simulate network delay then redirect
+    setTimeout(() => {
+      navigate('/dashboard')
+    }, 1500)
+  }
+
   return (
     <StudentLayout>
       <div className="flex flex-1 overflow-hidden h-full">
         <div className="flex-1 overflow-y-auto no-scrollbar">
-          <div className="max-w-4xl mx-auto py-16 px-6 md:px-12">
+          <PageContainer>
             
             {/* Header */}
             <div className="mb-16 border-b border-border/15 pb-8">
@@ -20,7 +34,7 @@ export default function EngagementCreate() {
               </p>
             </div>
 
-            <form className="space-y-16" onSubmit={(e) => e.preventDefault()}>
+            <form className="space-y-16" onSubmit={handleSubmit}>
               
               {/* Form Areas map perfectly using primitives */}
               <FormSection title="Core Details" number="01">
@@ -74,12 +88,8 @@ export default function EngagementCreate() {
               </FormSection>
 
               {/* Supporting Evidence */}
-              <section className="p-8 bg-muted/5 border-l-2 border-primary/30 rounded-r-lg">
-                <div className="flex items-center justify-between mb-6">
-                  <div>
-                    <h2 className="text-lg font-medium text-foreground">Supporting Evidence</h2>
-                    <p className="text-xs text-muted-foreground mt-1">Link external proof or upload documentation.</p>
-                  </div>
+              <FormSection title="Supporting Evidence" description="Link external proof or upload documentation." number="04">
+                <div className="flex justify-end mb-6">
                   <button className="flex items-center gap-2 text-primary hover:text-primary/80 transition-colors" type="button">
                     <Paperclip className="w-5 h-5" />
                     <span className="text-xs font-semibold uppercase tracking-wider">Add Attachment</span>
@@ -94,7 +104,7 @@ export default function EngagementCreate() {
                     <Trash2 className="text-destructive/40 text-sm opacity-0 group-hover:opacity-100 cursor-pointer w-4 h-4 hover:text-destructive transition-colors" />
                   </div>
                 </div>
-              </section>
+              </FormSection>
 
               {/* Actions */}
               <div className="pt-12 flex flex-col items-center border-t border-border/15">
@@ -110,40 +120,28 @@ export default function EngagementCreate() {
                 </p>
               </div>
             </form>
-          </div>
+          </PageContainer>
         </div>
 
         {/* Right Info Overlay Pane */}
         <aside className="w-80 border-l border-border/15 bg-background p-8 hidden xl:flex flex-col gap-12 static right-0 top-0">
           <div>
             <h3 className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground font-bold mb-8">Process Overview</h3>
-            <div className="space-y-8">
-              <div className="flex gap-4">
-                <div className="w-px bg-primary relative">
-                  <div className="absolute -top-1 -left-1 w-2 h-2 rounded-full bg-primary shadow-[0_0_8px_hsl(var(--primary))]"></div>
-                </div>
-                <div>
-                  <p className="text-xs font-semibold text-foreground mb-1">Drafting Engagement</p>
-                  <p className="text-[10px] text-muted-foreground leading-relaxed">Ensure all impact statements are quantified where possible.</p>
-                </div>
+            <div className="relative pl-6 border-l-2 border-border/20 space-y-12 ml-2">
+              <div className="relative">
+                <div className="absolute top-1.5 -left-[31px] w-3 h-3 rounded-full border-background bg-primary ring-2 ring-primary/20 shadow-[0_0_12px_hsl(var(--primary))]"></div>
+                <p className="text-xs font-bold text-foreground mb-1 uppercase tracking-widest">Drafting Engagement</p>
+                <p className="text-[10px] text-muted-foreground leading-relaxed">Ensure all impact statements are quantified where possible.</p>
               </div>
-              <div className="flex gap-4">
-                <div className="w-px bg-border/40 relative">
-                  <div className="absolute -top-1 -left-1 w-2 h-2 rounded-full bg-muted"></div>
-                </div>
-                <div className="opacity-60">
-                  <p className="text-xs font-semibold text-foreground mb-1">Institutional Queue</p>
-                  <p className="text-[10px] text-muted-foreground leading-relaxed">Verification requests typically processed within 48 hours.</p>
-                </div>
+              <div className="relative opacity-60">
+                <div className="absolute top-1.5 -left-[31px] w-3 h-3 rounded-full border-2 border-background bg-border/40"></div>
+                <p className="text-xs font-bold text-foreground mb-1 uppercase tracking-widest">Institutional Queue</p>
+                <p className="text-[10px] text-muted-foreground leading-relaxed">Verification requests typically processed within 48 hours.</p>
               </div>
-              <div className="flex gap-4">
-                <div className="w-px bg-border/40 relative">
-                  <div className="absolute -top-1 -left-1 w-2 h-2 rounded-full bg-muted"></div>
-                </div>
-                <div className="opacity-60">
-                  <p className="text-xs font-semibold text-foreground mb-1">Ledger Finalization</p>
-                  <p className="text-[10px] text-muted-foreground leading-relaxed">Immutable record added to your professional provenance.</p>
-                </div>
+              <div className="relative opacity-60">
+                <div className="absolute top-1.5 -left-[31px] w-3 h-3 rounded-full border-2 border-background bg-border/40"></div>
+                <p className="text-xs font-bold text-foreground mb-1 uppercase tracking-widest">Ledger Finalization</p>
+                <p className="text-[10px] text-muted-foreground leading-relaxed">Immutable record added to your professional provenance.</p>
               </div>
             </div>
           </div>

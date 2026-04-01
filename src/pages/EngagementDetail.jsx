@@ -1,18 +1,30 @@
-import { MapPin, CheckCircle2, XCircle, AlertCircle } from 'lucide-react'
-import { useSearchParams } from 'react-router-dom'
+import { useState } from 'react'
+import { MapPin, CheckCircle2, XCircle, AlertCircle, ShieldAlert } from 'lucide-react'
+import { useSearchParams, useNavigate } from 'react-router-dom'
+import { toast } from 'react-hot-toast'
 import StudentLayout from '../components/workspace/StudentLayout'
 import SupervisorLayout from '../components/workspace/SupervisorLayout'
 import { EngagementHeader, SupervisorBlock } from '../components/workspace/DetailElements'
+import { PageContainer } from '../components/workspace/SharedPrimitives'
 
 export default function EngagementDetail() {
   const [searchParams] = useSearchParams()
   const isSupervisor = searchParams.get('role') === 'supervisor'
+  const navigate = useNavigate()
+  const [confirmAction, setConfirmAction] = useState(null) // 'approve' | 'reject' | null
+
+  const handleAction = (type) => {
+    toast.success(`Ledger ${type === 'approve' ? 'signature verified' : 'record rejected'} successfully`)
+    setTimeout(() => {
+      navigate('/supervisor/requests')
+    }, 1200)
+  }
 
   const dummyData = {
     title: "Software Intern",
     organization: "TechCorp Solutions",
     duration: "Jun 2023 - Aug 2023",
-    status: "Verified",
+    status: isSupervisor ? "Pending" : "Verified",
     refId: "TC-2023-0841",
     scope: "In this capacity, I spearheaded the optimization of the core legacy API infrastructure, focusing on reducing latency across high-traffic endpoints. My primary objective involved the implementation of a distributed caching layer and the refactoring of asynchronous microservices. Beyond technical implementation, I collaborated with cross-functional product teams to translate high-level business requirements into technical specifications, ensuring system scalability and maintainability during a period of 40% growth in active user sessions.",
     highlights: [
@@ -42,8 +54,8 @@ export default function EngagementDetail() {
 
   return (
     <LayoutWrapper>
-      <div className="flex-1 overflow-y-auto p-12 space-y-16 max-w-6xl mx-auto w-full">
-        
+      <div className="flex-1 overflow-y-auto h-full w-full">
+        <PageContainer>
         {/* Uses Extracted Header Block Element */}
         <EngagementHeader 
           title={dummyData.title}
@@ -132,31 +144,59 @@ export default function EngagementDetail() {
           </div>
         </div>
 
-        {/* Supervisor Actions block conditionally rendered */}
+        {/* Supervisor Actions Block */}
         {isSupervisor && (
-          <div className="bg-background border border-primary/20 p-8 rounded-xl flex flex-col md:flex-row items-center justify-between gap-6 relative overflow-hidden group">
-            <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-3xl group-hover:bg-primary/10 transition-colors"></div>
-            <div>
-              <h3 className="text-xl font-bold tracking-tight mb-2 text-foreground">Official Verification Queue</h3>
-              <p className="text-muted-foreground text-sm max-w-lg leading-relaxed">
-                As an authorized Institutional Administrator, your signature dictates the immutable provenance of this learning record.
-              </p>
-            </div>
+          <div className="mt-8 border-t-2 border-b-2 border-border/20 py-8 bg-muted/5 relative">
+            <div className="absolute top-0 left-0 w-1 h-full bg-primary/20"></div>
             
-            <div className="flex flex-col sm:flex-row gap-4 w-full md:w-auto z-10">
-              <button className="flex items-center justify-center gap-2 px-6 py-3 bg-muted/20 border border-border/20 text-foreground font-bold text-xs uppercase tracking-widest rounded hover:bg-muted/40 transition-colors">
-                <AlertCircle className="w-4 h-4" />
-                Req. Edit
-              </button>
-              <button className="flex items-center justify-center gap-2 px-6 py-3 bg-destructive/10 border border-destructive/20 text-destructive font-bold text-xs uppercase tracking-widest rounded hover:bg-destructive hover:text-destructive-foreground transition-colors">
-                <XCircle className="w-4 h-4" />
-                Reject
-              </button>
-              <button className="flex items-center justify-center gap-2 px-8 py-3 bg-primary/20 border border-primary/40 text-primary font-bold text-xs uppercase tracking-widest rounded hover:bg-primary hover:text-primary-foreground shadow-[0_0_15px_hsl(var(--primary)/0.2)] transition-all">
-                <CheckCircle2 className="w-4 h-4" />
-                Verify
-              </button>
-            </div>
+            {!confirmAction ? (
+              <div className="flex flex-col md:flex-row items-center justify-between gap-6 px-8">
+                <div>
+                  <h3 className="text-xs font-mono uppercase tracking-[0.3em] font-bold text-primary mb-2 flex items-center gap-2">
+                    <ShieldAlert className="w-4 h-4" /> Signature Required
+                  </h3>
+                  <p className="text-muted-foreground text-sm max-w-lg leading-relaxed">
+                    Provide cryptographic authorization to append this engagement to the student's institutional ledger.
+                  </p>
+                </div>
+                
+                <div className="flex flex-col sm:flex-row gap-4 w-full md:w-auto z-10">
+                  <button className="flex items-center justify-center gap-2 px-6 py-3 bg-muted/20 border border-border/40 text-muted-foreground font-bold text-[10px] uppercase tracking-widest hover:bg-muted/40 transition-colors">
+                    <AlertCircle className="w-4 h-4" />
+                    Req. Edit
+                  </button>
+                  <button onClick={() => setConfirmAction('reject')} className="flex items-center justify-center gap-2 px-6 py-3 bg-destructive/10 border border-destructive/20 text-destructive font-bold text-[10px] uppercase tracking-widest hover:bg-destructive hover:text-destructive-foreground transition-colors">
+                    <XCircle className="w-4 h-4" />
+                    Reject Node
+                  </button>
+                  <button onClick={() => setConfirmAction('approve')} className="flex items-center justify-center gap-2 px-8 py-3 bg-primary/20 border border-primary/40 text-primary font-bold text-[10px] uppercase tracking-widest hover:bg-primary hover:text-primary-foreground transition-all">
+                    <CheckCircle2 className="w-4 h-4" />
+                    Sign & Verify
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <div className="flex flex-col md:flex-row items-center justify-between gap-6 px-8 animate-fade-in">
+                <div>
+                  <h3 className={`text-xs font-mono uppercase tracking-[0.3em] font-bold mb-2 flex items-center gap-2 ${confirmAction === 'approve' ? 'text-primary' : 'text-destructive'}`}>
+                    {confirmAction === 'approve' ? <ShieldAlert className="w-4 h-4" /> : <XCircle className="w-4 h-4" />} 
+                    Confirm {confirmAction === 'approve' ? 'Signature' : 'Rejection'}
+                  </h3>
+                  <p className="text-muted-foreground text-xs font-mono uppercase tracking-widest">
+                    WARNING: Action is cryptographically irreversible on the ledger.
+                  </p>
+                </div>
+                
+                <div className="flex gap-4">
+                  <button onClick={() => setConfirmAction(null)} className="px-6 py-3 border border-border/30 text-muted-foreground text-[10px] uppercase font-bold tracking-widest hover:bg-muted/30 transition-colors">
+                    Abort
+                  </button>
+                  <button onClick={() => handleAction(confirmAction)} className={`px-8 py-3 font-bold text-[10px] uppercase tracking-widest transition-all shadow-[0_0_15px_hsl(var(--${confirmAction === 'approve' ? 'primary' : 'destructive'})/0.2)] ${confirmAction === 'approve' ? 'bg-primary text-primary-foreground hover:bg-primary/90' : 'bg-destructive text-destructive-foreground hover:bg-destructive/90'}`}>
+                     Execute Payload
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         )}
 
@@ -169,6 +209,7 @@ export default function EngagementDetail() {
           </div>
         </footer>
 
+        </PageContainer>
       </div>
     </LayoutWrapper>
   )

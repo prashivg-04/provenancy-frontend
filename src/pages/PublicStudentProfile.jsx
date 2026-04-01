@@ -1,9 +1,11 @@
-import { useParams } from 'react-router-dom'
+import { useParams, Link } from 'react-router-dom'
+import { useAuth } from '../context/AuthContext'
 import Layout from '../components/Layout'
 import Footer from '../components/Footer'
 import HeaderBlock from '../components/profile/HeaderBlock'
 import Section from '../components/profile/Section'
 import ListItem from '../components/profile/ListItem'
+import { ArrowLeft } from 'lucide-react'
 
 export default function PublicStudentProfile() {
   const { id } = useParams()
@@ -42,8 +44,24 @@ export default function PublicStudentProfile() {
     { name: "SQL & NoSQL", verifications: 4 }
   ]
 
+  const { user } = useAuth()
+
   return (
     <Layout>
+      {user && (
+        <div className="w-full bg-primary/5 border-b border-primary/20 z-40">
+          <div className="max-w-7xl mx-auto px-6 lg:px-12 py-3 flex items-center justify-between">
+            <span className="text-xs font-bold uppercase tracking-[0.2em] text-primary">Previewing Public Profile</span>
+            <Link 
+              to={user.role === 'supervisor' ? '/supervisor' : '/dashboard'} 
+              className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-foreground bg-muted/50 hover:bg-muted py-2 px-4 rounded border border-border/20 transition-colors"
+            >
+              <ArrowLeft className="w-3 h-3" />
+              Return to Workspace
+            </Link>
+          </div>
+        </div>
+      )}
       <main className="max-w-7xl mx-auto px-6 lg:px-12 py-16 w-full">
         {/* Header Block */}
         <HeaderBlock 

@@ -59,7 +59,7 @@ export default function ListItem({ variant = 'student', data }) {
           </div>
         </div>
       </div>
-      <div className="h-[1px] bg-gradient-to-r from-border/20 via-border/10 to-transparent"></div>
+      <div className="h-px bg-linear-to-r from-border/20 via-border/10 to-transparent"></div>
     </>
   )
 }

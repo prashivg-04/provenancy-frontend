@@ -1,6 +1,8 @@
 import { ShieldCheck, CircleAlert, CheckCircle2, XCircle, RefreshCcw } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import SupervisorLayout from '../components/workspace/SupervisorLayout'
+import { StatsBlock } from '../components/workspace/StatsBlock'
+import { PageContainer, StatusBadge } from '../components/workspace/SharedPrimitives'
 
 export default function SupervisorDashboard() {
   const pendingRequests = [
@@ -16,7 +18,7 @@ export default function SupervisorDashboard() {
 
   return (
     <SupervisorLayout>
-      <div className="p-10 md:p-12 max-w-7xl mx-auto w-full">
+      <PageContainer>
         {/* Header Section */}
         <header className="mb-12">
           <h1 className="text-5xl font-light tracking-tight text-foreground mb-4">Registry Overview</h1>
@@ -47,18 +49,10 @@ export default function SupervisorDashboard() {
           </div>
 
           {/* Metric Card 1 */}
-          <div className="bg-background p-8 rounded-xl border border-border/10 hover:border-border/30 transition-colors">
-            <p className="text-muted-foreground text-xs font-bold tracking-widest uppercase mb-12 opacity-80">Approved Engagements</p>
-            <span className="text-4xl font-semibold tracking-tight text-foreground">485</span>
-            <p className="text-[11px] text-muted-foreground/70 mt-2 font-medium tracking-wide">+3 since yesterday</p>
-          </div>
+          <StatsBlock title="Approved Engagements" activeStat="485" subStat="+3" />
 
           {/* Metric Card 2 */}
-          <div className="bg-background p-8 rounded-xl border border-border/10 hover:border-border/30 transition-colors">
-            <p className="text-muted-foreground text-xs font-bold tracking-widest uppercase mb-12 opacity-80">Rejected Engagements</p>
-            <span className="text-4xl font-semibold tracking-tight text-muted-foreground">14</span>
-            <p className="text-[11px] text-muted-foreground/50 mt-2 font-medium tracking-wide">2.8% rejection rate</p>
-          </div>
+          <StatsBlock title="Rejected Engagements" activeStat="14" subStat="2.8%" />
         </div>
 
         {/* Content Row: Ledger & Feed */}
@@ -109,8 +103,10 @@ export default function SupervisorDashboard() {
                   <div className={`absolute left-0 top-1 w-6 h-6 rounded-full bg-background border flex items-center justify-center z-10 ${item.status === 'Verified' ? 'border-primary' : item.status === 'Rejected' ? 'border-destructive' : 'border-muted-foreground'}`}>
                     <item.icon className={`w-3 h-3 ${item.color}`} />
                   </div>
+                  <div className="mb-2">
+                    <StatusBadge status={item.status} />
+                  </div>
                   <p className="text-sm font-medium leading-relaxed text-foreground">
-                    <span className="text-muted-foreground font-bold mr-2 uppercase tracking-wide text-[10px] border border-border/20 px-1.5 py-0.5 rounded">{item.status}</span> 
                     {item.title}
                   </p>
                   <p className="text-[10px] text-muted-foreground/60 mt-3 font-mono tracking-widest flex items-center gap-2">
@@ -136,7 +132,7 @@ export default function SupervisorDashboard() {
           </div>
         </footer>
 
-      </div>
+      </PageContainer>
     </SupervisorLayout>
   )
 }

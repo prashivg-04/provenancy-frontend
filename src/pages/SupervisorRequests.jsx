@@ -1,7 +1,8 @@
-import { CheckCircle2, ChevronLeft, ChevronRight } from 'lucide-react'
+import { CheckCircle2, ChevronLeft, ChevronRight, Code } from 'lucide-react'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import SupervisorLayout from '../components/workspace/SupervisorLayout'
+import { PageContainer, StatusBadge, EmptyState } from '../components/workspace/SharedPrimitives'
 
 export default function SupervisorRequests() {
   const navigate = useNavigate()
@@ -44,7 +45,7 @@ export default function SupervisorRequests() {
 
   return (
     <SupervisorLayout>
-      <div className="p-12 max-w-7xl mx-auto w-full">
+      <PageContainer>
         {/* Header */}
         <header className="mb-12">
           <h2 className="text-4xl font-light tracking-tight mb-4 text-foreground">Engagement Requests</h2>
@@ -87,9 +88,8 @@ export default function SupervisorRequests() {
                     <h3 className="text-2xl font-light text-foreground mb-2 group-hover:text-primary transition-colors">{req.studentName}</h3>
                     <p className="text-muted-foreground text-xs uppercase tracking-[0.2em] font-bold">Student ID: {req.studentId}</p>
                   </div>
-                  <div className="bg-primary/10 px-3 py-1.5 rounded text-[10px] font-bold text-primary tracking-wider uppercase border border-primary/20 flex items-center gap-2">
-                    <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></div>
-                    {req.status} Verification
+                  <div className="flex items-center gap-2">
+                    <StatusBadge status={req.status} />
                   </div>
                 </div>
                 
@@ -113,10 +113,13 @@ export default function SupervisorRequests() {
                 </div>
               </div>
             )) : (
-              <div className="text-center py-24 text-muted-foreground bg-muted/5 border border-dashed border-border/20 rounded-lg">
-                <CheckCircle2 className="w-12 h-12 mx-auto mb-4 opacity-50" />
-                <p className="text-sm uppercase tracking-widest">No {activeTab.toLowerCase()} requests.</p>
-              </div>
+              <EmptyState 
+                icon={Code} 
+                title={`No ${activeTab} Requests`} 
+                description="The institutional verification queue is currently clear for this category." 
+                actionText="View All Ledgers" 
+                onAction={() => setActiveTab('Pending')} 
+              />
             )}
             
             {/* Footer Pagination/Bulk Actions */}
@@ -174,7 +177,7 @@ export default function SupervisorRequests() {
           </div>
 
         </div>
-      </div>
+      </PageContainer>
     </SupervisorLayout>
   )
 }

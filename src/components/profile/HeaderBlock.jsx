@@ -12,7 +12,7 @@ export default function HeaderBlock({
 }) {
   if (variant === 'student') {
     return (
-      <header className="mb-24 flex flex-col md:flex-row md:items-end justify-between gap-8 bg-gradient-to-b from-primary/5 to-transparent p-8 rounded-xl border border-border/10">
+      <header className="mb-24 flex flex-col md:flex-row md:items-end justify-between gap-8 bg-linear-to-b from-primary/5 to-transparent p-8 rounded-xl border border-border/10">
         <div className="space-y-4">
           <div className="inline-flex items-center gap-2 px-3 py-1 bg-muted/50 text-primary text-[10px] font-bold uppercase tracking-[0.2em] rounded-full border border-border/10">
             <span className="w-1.5 h-1.5 bg-primary rounded-full animate-pulse shadow-[0_0_8px_hsl(var(--primary))]"></span>

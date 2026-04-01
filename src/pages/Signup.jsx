@@ -105,9 +105,9 @@ export default function Signup() {
                 name="role" 
                 type="radio"
               />
-              <div className="flex items-center justify-center gap-2 p-3 rounded-md border border-border/30 bg-muted peer-checked:bg-primary peer-checked:border-primary group-hover:bg-card transition-all">
-                <User className="w-4 h-4 text-muted-foreground peer-checked:text-primary-foreground" />
-                <span className="text-xs font-medium text-muted-foreground peer-checked:text-primary-foreground">Student</span>
+              <div className="flex items-center justify-center gap-2 p-3 rounded-md border border-border/30 bg-muted peer-checked:bg-primary peer-checked:border-primary group-hover:bg-card transition-all duration-200">
+                <User className="w-4 h-4 text-muted-foreground peer-checked:text-primary-foreground transition-colors duration-200" />
+                <span className="text-xs font-medium text-muted-foreground peer-checked:text-primary-foreground transition-colors duration-200">Student</span>
               </div>
             </label>
 
@@ -119,9 +119,9 @@ export default function Signup() {
                 name="role" 
                 type="radio"
               />
-              <div className="flex items-center justify-center gap-2 p-3 rounded-md border border-border/30 bg-muted peer-checked:bg-primary peer-checked:border-primary group-hover:bg-card transition-all">
-                <ShieldAlert className="w-4 h-4 text-muted-foreground peer-checked:text-primary-foreground" />
-                <span className="text-xs font-medium text-muted-foreground peer-checked:text-primary-foreground">Supervisor</span>
+              <div className="flex items-center justify-center gap-2 p-3 rounded-md border border-border/30 bg-muted peer-checked:bg-primary peer-checked:border-primary group-hover:bg-card transition-all duration-200">
+                <ShieldAlert className="w-4 h-4 text-muted-foreground peer-checked:text-primary-foreground transition-colors duration-200" />
+                <span className="text-xs font-medium text-muted-foreground peer-checked:text-primary-foreground transition-colors duration-200">Supervisor</span>
               </div>
             </label>
           </div>
@@ -160,7 +160,7 @@ export default function Signup() {
         <div className="pt-6">
           <button
             type="submit"
-            className="w-full bg-primary text-primary-foreground font-semibold py-4 rounded-md hover:bg-primary/90 transition-all shadow-lg active:scale-[0.98]"
+            className="w-full bg-primary text-primary-foreground font-semibold py-4 rounded-md hover:bg-primary/90 transition-colors duration-300"
           >
             Create Account
           </button>
@@ -169,10 +169,10 @@ export default function Signup() {
 
       {/* Footer Link */}
       <div className="mt-8 text-center">
-        <p className="text-xs text-muted-foreground font-semibold">
+        <p className="text-sm text-muted-foreground">
           Already have an account?{' '}
-          <Link to="/login" className="text-accent hover:underline decoration-1 underline-offset-4 ml-1">
-            Log in
+          <Link to="/login" className="text-primary font-bold hover:underline underline-offset-4 ml-1">
+            Log in here
           </Link>
         </p>
       </div>
