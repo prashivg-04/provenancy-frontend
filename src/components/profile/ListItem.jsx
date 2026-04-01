@@ -4,29 +4,33 @@ export default function ListItem({ variant = 'student', data }) {
   if (variant === 'student') {
     const { title, organization, duration, dateRange, supervisorName, verificationDate } = data
     return (
-      <article className="group relative py-8 space-y-6 transition-all border-b border-border/10 hover:border-primary/30">
-        <div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
-          <div className="space-y-1">
-            <h3 className="text-xl font-semibold text-primary">{title}</h3>
-            <p className="text-lg text-foreground">{organization}</p>
+      <article className="group relative p-8 mb-6 bg-card/10 backdrop-blur-sm transition-all border border-border/20 rounded-2xl hover:bg-card/30 hover:shadow-[0_0_25px_rgba(26,35,126,0.05)] overflow-hidden">
+        <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full blur-[40px] opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
+        <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-0 bg-primary/50 group-hover:h-3/4 transition-all duration-300 rounded-r-md"></div>
+        
+        <div className="relative z-10 flex flex-col md:flex-row md:items-start justify-between gap-6">
+          <div className="space-y-2 max-w-xl">
+            <h3 className="text-2xl font-light text-foreground group-hover:text-primary transition-colors">{title}</h3>
+            <p className="text-lg font-medium text-muted-foreground">{organization}</p>
           </div>
           <div className="text-left md:text-right pt-2 md:pt-0">
-            <p className="text-sm font-medium text-muted-foreground">{duration}</p>
-            <p className="text-[11px] text-muted-foreground/60 uppercase tracking-widest mt-1">{dateRange}</p>
+            <p className="text-sm font-semibold text-foreground/80">{duration}</p>
+            <p className="text-[10px] text-muted-foreground uppercase tracking-[0.2em] mt-1">{dateRange}</p>
           </div>
         </div>
-        <div className="flex flex-wrap items-center gap-x-12 gap-y-4 pt-4 px-6 py-4 bg-muted/30 rounded-md border border-border/5">
-          <div className="space-y-1">
-            <span className="text-[10px] text-muted-foreground/60 uppercase tracking-widest block">Supervisor</span>
+        
+        <div className="relative z-10 flex flex-wrap items-center gap-x-12 gap-y-4 pt-6 mt-6 border-t border-border/15">
+          <div className="space-y-1.5 flex-1 min-w-[150px]">
+            <span className="text-[9px] text-muted-foreground uppercase tracking-[0.2em] font-bold block">Verifying Authority</span>
             <span className="text-sm font-medium text-foreground">{supervisorName}</span>
           </div>
-          <div className="space-y-1">
-            <span className="text-[10px] text-muted-foreground/60 uppercase tracking-widest block">Verification Date</span>
-            <span className="text-sm font-medium text-foreground">{verificationDate}</span>
+          <div className="space-y-1.5 flex-1 min-w-[150px]">
+            <span className="text-[9px] text-muted-foreground uppercase tracking-[0.2em] font-bold block">Verification Timestamp</span>
+            <span className="text-sm font-medium text-foreground font-mono">{verificationDate}</span>
           </div>
-          <div className="md:ml-auto flex items-center gap-2">
-            <ShieldCheck className="text-primary w-4 h-4" />
-            <span className="text-[10px] font-bold text-primary uppercase tracking-tighter">Verified</span>
+          <div className="md:ml-auto flex items-center gap-2 px-3 py-1.5 bg-primary/10 rounded-md border border-primary/20">
+            <ShieldCheck className="text-primary w-4 h-4" strokeWidth={2.5} />
+            <span className="text-[10px] font-bold text-primary uppercase tracking-[0.15em]">Verified Node</span>
           </div>
         </div>
       </article>

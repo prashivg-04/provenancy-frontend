@@ -1,113 +1,142 @@
-import { LayoutDashboard, FileText, User, Bell, LogOut, ShieldCheck } from 'lucide-react'
+import { LayoutDashboard, FileText, User, Bell, LogOut, ShieldCheck, ChevronRight, Activity } from 'lucide-react'
 import { Link, useLocation } from 'react-router-dom'
+import { useAuth } from '../../context/AuthContext'
 
 export default function SupervisorLayout({ children }) {
   const location = useLocation()
+  const { logout } = useAuth()
+
+  const navLinks = [
+    { name: "Dashboard", path: "/supervisor/dashboard", icon: LayoutDashboard },
+    { name: "Engagement Requests", path: "/supervisor/requests", icon: FileText },
+    { name: "Profile", path: "/supervisor/profile", icon: User }
+  ]
 
   return (
-    <div className="flex h-screen bg-background text-foreground overflow-hidden">
+    <div className="flex h-screen w-full bg-background text-foreground overflow-hidden font-sans relative selection:bg-primary/30">
       
-      {/* Side Navigation */}
-      <aside className="w-64 bg-muted/5 border-r border-border/10 flex flex-col shrink-0">
-        <div className="p-8">
-          <div className="flex items-center gap-3 mb-1">
-            <div className="w-8 h-8 rounded-sm bg-primary/20 flex items-center justify-center">
-              <ShieldCheck className="text-primary w-5 h-5" />
-            </div>
-            <h1 className="font-bold text-lg tracking-tight text-foreground">Provenancy</h1>
+      {/* Global Accent Glows */}
+      <div className="absolute top-[-20%] left-[-10%] w-[40%] h-[40%] bg-primary/5 rounded-full blur-[120px] pointer-events-none"></div>
+
+      {/* 
+        =============================================
+        SIDEBAR NAVIGATION
+        =============================================
+      */}
+      <aside className="w-72 border-r border-border/20 flex-col hidden md:flex shrink-0 bg-background/50 backdrop-blur-xl z-20 relative">
+        <div className="absolute inset-0 bg-linear-to-b from-primary/5 to-transparent pointer-events-none opacity-50"></div>
+        
+        <div className="p-8 pb-4 relative z-10 flex items-center gap-4">
+          <div className="w-10 h-10 rounded-xl bg-primary/10 border border-primary/30 flex items-center justify-center shadow-[0_0_15px_rgba(26,35,126,0.2)]">
+            <ShieldCheck className="w-5 h-5 text-primary" />
           </div>
-          <p className="text-xs text-muted-foreground px-1 uppercase tracking-widest mt-2 font-bold">Supervisor Workspace</p>
+          <div>
+            <h1 className="text-foreground font-light text-2xl tracking-tight leading-none">Provenancy</h1>
+            <p className="text-[9px] text-primary uppercase tracking-[0.2em] mt-1.5 font-bold">Verification Oracle</p>
+          </div>
         </div>
+        
+        <nav className="mt-8 px-5 grow relative z-10 max-h-[calc(100vh-250px)] overflow-y-auto no-scrollbar">
+          <div className="space-y-2">
+            {navLinks.map((link) => {
+              // Exact match for dashboard, prefix match for others
+              const isActive = link.path === '/supervisor/dashboard' 
+                ? location.pathname === link.path 
+                : location.pathname.startsWith(link.path);
 
-        <div className="px-6 mb-8">
-          <p className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground/50 font-bold">Ledger Controls</p>
-        </div>
-
-        <nav className="flex-1 px-4 space-y-1 overflow-y-auto">
-          <Link
-            to="/supervisor"
-            className={`flex items-center gap-4 px-4 py-3 rounded-md transition-all group ${
-              location.pathname === '/supervisor' 
-                ? 'bg-primary/10 border-l-2 border-primary text-primary' 
-                : 'text-muted-foreground hover:bg-muted/10 hover:text-foreground border-l-2 border-transparent'
-            }`}
-          >
-            <LayoutDashboard className="w-[20px] h-[20px]" />
-            <span className="font-medium text-sm">Dashboard</span>
-          </Link>
-          
-          <Link
-            to="/supervisor/requests"
-            className={`flex items-center gap-4 px-4 py-3 rounded-md transition-all group ${
-              location.pathname === '/supervisor/requests' 
-                ? 'bg-primary/10 border-l-2 border-primary text-primary' 
-                : 'text-muted-foreground hover:bg-muted/10 hover:text-foreground border-l-2 border-transparent'
-            }`}
-          >
-            <FileText className="w-[20px] h-[20px]" />
-            <span className="font-medium text-sm">Engagement Requests</span>
-          </Link>
-
-          <Link
-            to={`/supervisor/prv-vance`} // Generic routing to previous supervisor profile
-            className="flex items-center gap-4 px-4 py-3 rounded-md text-muted-foreground hover:bg-muted/10 hover:text-foreground transition-all group border-l-2 border-transparent"
-          >
-            <User className="w-[20px] h-[20px]" />
-            <span className="font-medium text-sm">Profile</span>
-          </Link>
+              return (
+                <Link 
+                  key={link.name}
+                  to={link.path}
+                  className={`flex items-center justify-between px-4 py-3.5 rounded-xl transition-all group ${
+                    isActive 
+                    ? "bg-primary/15 border border-primary/30 text-primary shadow-[0_0_20px_rgba(26,35,126,0.15)]" 
+                    : "border border-transparent text-muted-foreground hover:bg-muted/10 hover:border-border/30 hover:text-foreground"
+                  }`}
+                >
+                  <div className="flex items-center gap-3.5">
+                    <link.icon className="w-4 h-4 shrink-0 transition-transform group-hover:scale-110" strokeWidth={2} />
+                    <span className="text-[13px] font-semibold tracking-wide uppercase">{link.name}</span>
+                  </div>
+                  <ChevronRight className={`w-3.5 h-3.5 transition-transform ${isActive ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-2 group-hover:opacity-50 group-hover:translate-x-0'}`} />
+                </Link>
+              )
+            })}
+          </div>
         </nav>
 
-        <div className="p-6 mt-auto border-t border-border/10">
-          <div className="bg-muted/5 p-4 rounded-md">
-            <div className="flex items-center gap-2 mb-2">
-              <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse shadow-[0_0_8px_hsl(var(--primary))]"></div>
-              <span className="text-[10px] text-muted-foreground font-medium tracking-wider uppercase">System Integrity</span>
+        {/* System Integrity Indicator */}
+        <div className="px-5 pb-6 mt-auto relative z-10">
+          <div className="bg-background/80 p-5 rounded-xl border border-border/30 shadow-sm group hover:border-primary/40 transition-all cursor-default relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-24 h-24 bg-primary/5 rounded-full blur-[20px] group-hover:bg-primary/10 transition-colors"></div>
+            <div className="flex items-center gap-3 mb-3 relative z-10">
+              <div className="relative flex items-center justify-center w-2 h-2">
+                <div className="absolute inset-0 rounded-full bg-primary/40 animate-ping"></div>
+                <div className="w-1.5 h-1.5 rounded-full bg-primary relative z-10 shadow-[0_0_8px_hsl(var(--primary))]"></div>
+              </div>
+              <span className="text-[10px] text-foreground font-bold tracking-[0.15em] uppercase">Oracle Node Sync</span>
             </div>
-            <p className="text-[11px] text-muted-foreground/70">Last block validated 2m ago. Node status: Stable.</p>
+            <p className="text-[10px] text-muted-foreground leading-relaxed relative z-10 flex items-center gap-1.5">
+              <Activity className="w-3 h-3 text-primary" /> Authority level access verified.
+            </p>
           </div>
         </div>
       </aside>
 
-      {/* Main Column */}
-      <div className="flex-1 flex flex-col min-w-0 h-full">
-        {/* Topbar */}
-        <header className="h-16 border-b border-border/15 flex items-center justify-between px-12 bg-background/50 backdrop-blur-md shrink-0">
-          <div className="flex items-center gap-2">
-            <span className="text-muted-foreground text-sm uppercase tracking-widest font-bold">Path:</span>
-            <span className="text-foreground text-sm font-medium">
-              {location.pathname === '/supervisor' ? 'Dashboard' : 'Engagement Requests'}
-            </span>
+      {/* 
+        =============================================
+        MAIN CONTENT FLOW
+        =============================================
+      */}
+      <div className="flex-1 flex flex-col min-w-0 overflow-hidden bg-background relative z-10">
+        
+        {/* Top Navbar */}
+        <header className="h-20 shrink-0 border-b border-border/15 flex items-center justify-between px-10 bg-background/80 backdrop-blur-xl z-30">
+          
+          <div className="flex items-center gap-4">
+            <div className="hidden sm:block">
+              <span className="text-[11px] font-bold text-muted-foreground uppercase tracking-[0.2em] flex items-center gap-2">
+                 Active Root: <span className="text-foreground">Oracle Verification</span>
+              </span>
+            </div>
           </div>
 
-          <div className="flex items-center gap-6">
-            <button className="text-muted-foreground hover:text-foreground transition-colors relative">
-              <Bell className="w-5 h-5" />
-              <span className="absolute -top-1 -right-1 w-2 h-2 bg-primary rounded-full border border-background"></span>
+          <div className="flex items-center gap-6 bg-card/50 backdrop-blur-md px-2 py-1.5 rounded-full border border-border/30 shadow-sm">
+            <button className="w-9 h-9 rounded-full flex items-center justify-center text-muted-foreground hover:text-primary hover:bg-primary/10 transition-all relative group">
+              <Bell className="w-4 h-4" strokeWidth={2} />
+              <span className="absolute top-2 right-2.5 w-1.5 h-1.5 bg-primary rounded-full shadow-[0_0_8px_hsl(var(--primary))]"></span>
             </button>
             
-            <div className="flex items-center gap-4 pl-6 border-l border-border/15">
-              <div className="hidden md:flex flex-col text-right">
-                <span className="text-xs font-semibold text-foreground">Dr. Julian Vance</span>
-                <span className="text-[10px] text-primary/80 uppercase tracking-widest font-bold">Verified Admin</span>
+            <div className="h-5 w-px bg-border/40"></div>
+            
+            <div className="flex items-center gap-3 pl-2 pr-4 cursor-pointer group">
+              <div className="relative">
+                <div className="w-8 h-8 rounded-full border border-border/50 bg-card flex items-center justify-center shrink-0 group-hover:border-primary/50 transition-colors">
+                  <span className="text-[10px] font-bold text-foreground">JV</span>
+                </div>
+                <div className="absolute inset-0 rounded-full ring-2 ring-primary/20 scale-110 opacity-0 group-hover:opacity-100 transition-all"></div>
               </div>
-              <img 
-                className="w-8 h-8 rounded-md object-cover ring-1 ring-border/30" 
-                src="https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&q=80&w=150" 
-                alt="Supervisor Profile" 
-              />
-              <Link to="/login" className="text-muted-foreground hover:text-destructive transition-colors ml-2">
-                <LogOut className="w-4 h-4" />
-              </Link>
+              <div className="hidden md:block text-left">
+                <p className="text-[11px] font-bold text-foreground leading-none tracking-wide group-hover:text-primary transition-colors">Dr. Julian Vance</p>
+                <p className="text-[9px] text-primary/80 tracking-[0.1em] uppercase mt-1 font-bold">Verified Admin</p>
+              </div>
             </div>
+
+            <div className="h-5 w-px bg-border/40"></div>
+
+            <button onClick={logout} className="w-9 h-9 flex items-center justify-center rounded-full text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-all ml-1" title="Disconnect Session">
+              <LogOut className="w-4 h-4" strokeWidth={2} />
+            </button>
           </div>
         </header>
 
-        {/* Scrollable Main Window */}
-        <main className="flex-1 overflow-y-auto w-full flex flex-col">
+        {/* Active Page Payload */}
+        <main className="flex-1 overflow-y-auto w-full flex flex-col relative">
+          {/* Subtle grid pattern background for the content area */}
+          <div className="absolute inset-0 bg-[#ffffff03] bg-[length:24px_24px] pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle, var(--tw-colors-border) 1px, transparent 1px)' }}></div>
           {children}
         </main>
       </div>
-
     </div>
   )
 }

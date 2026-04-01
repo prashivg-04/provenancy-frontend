@@ -1,150 +1,200 @@
-import { Terminal, Lightbulb } from 'lucide-react'
+import { Terminal, Lightbulb, Activity, CheckCircle2, Clock, ShieldCheck, Network, Award } from 'lucide-react'
 import StudentLayout from '../components/workspace/StudentLayout'
-import { StatsBlock } from '../components/workspace/StatsBlock'
 import { PageContainer, StatusBadge } from '../components/workspace/SharedPrimitives'
 
 export default function StudentDashboard() {
   return (
     <StudentLayout>
       <PageContainer>
-        {/* Hero Data Grid */}
-        <section className="grid grid-cols-1 md:grid-cols-12 gap-8">
-          <div className="col-span-12 md:col-span-8 flex flex-col justify-end">
-            <h2 className="text-muted-foreground text-xs uppercase tracking-[0.2em] mb-2 font-bold">Institutional Overview</h2>
-            <h3 className="text-4xl md:text-5xl font-light tracking-tight text-foreground">Verified Professional Ledger</h3>
-          </div>
+        
+        {/*
+          =============================================
+          HERO: Security & Metrics Banner
+          =============================================
+        */}
+        <div className="mb-12 relative">
+          <div className="absolute inset-0 bg-primary/5 blur-[100px] rounded-full pointer-events-none"></div>
           
-          <div className="col-span-12 md:col-span-4 flex gap-8 md:justify-end border-l border-border/20 pl-6">
-            <div className="flex flex-col">
-              <span className="text-5xl font-bold text-primary tracking-tighter">12</span>
-              <span className="text-xs text-muted-foreground mt-2 uppercase tracking-widest font-semibold">Verified<br/>Engagements</span>
-            </div>
-            <div className="flex flex-col opacity-50">
-              <span className="text-5xl font-bold text-muted-foreground tracking-tighter">02</span>
-              <span className="text-xs text-muted-foreground mt-2 uppercase tracking-widest font-semibold">Pending<br/>Verification</span>
-            </div>
-          </div>
-        </section>
-
-        {/* Main Dashboard Layout */}
-        <section className="grid grid-cols-1 lg:grid-cols-12 gap-12">
-          
-          {/* Recent Engagements Timeline */}
-          <div className="col-span-1 lg:col-span-7 space-y-8">
-            <div className="flex items-center justify-between border-b border-border/20 pb-4">
-              <h4 className="text-sm font-semibold text-foreground uppercase tracking-wider">Record Chronology</h4>
-              <button className="text-[10px] text-primary uppercase font-bold tracking-widest hover:underline underline-offset-4 pointer">Expand Registry</button>
+          <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-8 relative z-10 border-b border-border/10 pb-8">
+            <div>
+              <div className="flex items-center gap-3 mb-4">
+                <div className="flex items-center gap-2 px-3 py-1 bg-accent/10 border border-accent/20 rounded-full">
+                   <div className="w-1.5 h-1.5 bg-accent rounded-full animate-pulse"></div>
+                   <span className="text-[9px] font-bold uppercase tracking-widest text-accent">Active Ledger Profile</span>
+                </div>
+              </div>
+              <h1 className="text-4xl md:text-5xl font-light tracking-tight text-foreground mb-2">Institutional Dashboard</h1>
+              <p className="text-muted-foreground text-sm max-w-xl leading-relaxed">
+                Your cryptographic record of professional engagement. All verified nodes represent immutable, supervisor-signed entries in the global competency network.
+              </p>
             </div>
             
-            <div className="space-y-10 pl-2">
-              {/* Timeline Item 1 */}
-              <div className="group relative flex items-start gap-6">
-                <div className="w-1 bg-primary/20 h-full absolute -left-6 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                <div className="shrink-0 pt-1">
-                  <div className="w-10 h-10 flex items-center justify-center bg-muted/50 rounded-md border border-border/5">
-                    <Terminal className="text-primary w-5 h-5" />
-                  </div>
+            {/* Quick Stats Bento */}
+            <div className="flex gap-4">
+              <div className="bg-card/50 backdrop-blur-md border border-border/50 rounded-xl p-4 min-w-[140px] shadow-sm">
+                <div className="flex justify-between items-start mb-4">
+                  <CheckCircle2 className="w-4 h-4 text-primary" />
+                  <span className="text-2xl font-light text-foreground tracking-tighter">12</span>
                 </div>
-                <div className="flex-1">
-                  <div className="flex justify-between items-start">
-                    <div>
-                      <h5 className="text-lg font-medium text-foreground">Software Intern</h5>
-                      <p className="text-sm text-muted-foreground">TechCorp Solutions • London, UK</p>
-                    </div>
-                    <StatusBadge status="Verified" />
-                  </div>
-                  <p className="mt-3 text-sm text-foreground/80 leading-relaxed max-w-lg">
-                    Full-stack development contribution within the Core Platform team. Authored 42 production-level PRs across the microservices architecture.
-                  </p>
-                  <div className="mt-4 flex items-center gap-4 text-[10px] text-muted-foreground uppercase tracking-widest font-mono">
-                    <span>Issued Jun 2023</span>
-                    <span>•</span>
-                    <span>Ref ID: TC-884-X</span>
-                  </div>
+                <div className="text-[10px] font-bold uppercase tracking-[0.15em] text-muted-foreground">
+                  Verified<br/>Engagements
                 </div>
               </div>
-
-              {/* Timeline Item 2 (Pending) */}
-              <div className="group relative flex items-start gap-6 opacity-70 grayscale hover:grayscale-0 hover:opacity-100 transition-all">
-                <div className="w-1 bg-border/20 h-full absolute -left-6 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                <div className="shrink-0 pt-1">
-                  <div className="w-10 h-10 flex items-center justify-center bg-muted/30 border border-border/10 rounded-md">
-                    <Lightbulb className="text-muted-foreground w-5 h-5" />
-                  </div>
+              <div className="bg-card/50 backdrop-blur-md border border-border/50 rounded-xl p-4 min-w-[140px] shadow-sm">
+                <div className="flex justify-between items-start mb-4">
+                  <Clock className="w-4 h-4 text-muted-foreground" />
+                  <span className="text-2xl font-light text-foreground tracking-tighter">02</span>
                 </div>
-                <div className="flex-1">
-                  <div className="flex justify-between items-start">
-                    <div>
-                      <h5 className="text-lg font-medium text-foreground">Research Assistant</h5>
-                      <p className="text-sm text-muted-foreground">University Science Lab • Oxford</p>
-                    </div>
-                    <StatusBadge status="Pending" />
-                  </div>
-                  <p className="mt-3 text-sm text-foreground/80 leading-relaxed max-w-lg">
-                    Statistical modeling for environmental impact studies. Coordinating data collection across three regional monitoring stations.
-                  </p>
-                  <div className="mt-4 flex items-center gap-4 text-[10px] text-muted-foreground uppercase tracking-widest font-mono">
-                    <span>Submitted Aug 2023</span>
-                    <span>•</span>
-                    <span>Awaiting Signature</span>
-                  </div>
+                <div className="text-[10px] font-bold uppercase tracking-[0.15em] text-muted-foreground">
+                  Pending<br/>Verification
                 </div>
               </div>
             </div>
           </div>
+        </div>
 
-          {/* Right Column: Skills */}
-          <div className="col-span-1 lg:col-span-5 space-y-12">
-            <div className="bg-muted/10 p-8 rounded-xl border border-border/5">
-              <h4 className="text-xs font-semibold text-foreground uppercase tracking-widest mb-8 flex items-center gap-2">
-                Endorsed Proficiencies
-              </h4>
+        {/* 
+          =============================================
+          MAIN CONTENT GRID
+          =============================================
+        */}
+        <div className="grid grid-cols-1 xl:grid-cols-12 gap-8 lg:gap-12">
+          
+          {/* LEFT: Record Chronology (Timeline) */}
+          <div className="xl:col-span-8 space-y-8">
+            <div className="flex items-center justify-between">
+              <h2 className="text-xs font-bold text-foreground uppercase tracking-[0.2em] flex items-center gap-2">
+                <Activity className="w-4 h-4 text-muted-foreground" /> Record Chronology
+              </h2>
+              <button className="text-[10px] font-bold tracking-[0.15em] text-primary uppercase hover:bg-primary/10 px-3 py-1.5 rounded-md transition-colors border border-transparent hover:border-primary/20">
+                View Full Registry
+              </button>
+            </div>
+
+            <div className="relative space-y-6 before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-px before:bg-linear-to-b before:from-transparent before:via-border/50 before:to-transparent">
               
-              <div className="space-y-6">
+              {/* Timeline Item 1: Verified */}
+              <div className="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">
+                <div className="flex items-center justify-center w-10 h-10 rounded-full border border-primary/30 bg-background shadow-[0_0_15px_rgba(26,35,126,0.2)] text-primary shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 relative z-10 group-hover:scale-110 transition-transform">
+                  <Terminal className="w-4 h-4" />
+                </div>
+                <div className="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] p-5 rounded-2xl border border-border/50 bg-card/40 backdrop-blur-sm shadow-sm group-hover:border-primary/40 group-hover:bg-card/80 transition-all hover:-translate-y-1">
+                  <div className="flex items-center justify-between mb-3">
+                    <span className="text-[10px] font-mono text-muted-foreground bg-background/80 px-2 py-0.5 rounded border border-border/50">Jun 2023 - Present</span>
+                    <StatusBadge status="Verified" />
+                  </div>
+                  <h3 className="text-lg font-medium text-foreground mb-1">Software Intern</h3>
+                  <p className="text-xs text-muted-foreground uppercase tracking-wider font-semibold mb-4">TechCorp Solutions • London, UK</p>
+                  <p className="text-sm text-muted-foreground leading-relaxed mb-4">
+                    Architected robust microservices within the Core Platform team. Authored 42 production-level PRs resulting in significant latency reduction.
+                  </p>
+                  <div className="flex flex-wrap gap-2 pt-4 border-t border-border/10">
+                    <span className="text-[9px] px-2 py-1 bg-primary/10 text-primary border border-primary/20 rounded font-mono uppercase">Ref: TC-884-X</span>
+                    <span className="text-[9px] px-2 py-1 bg-background border border-border/50 text-muted-foreground rounded font-bold tracking-widest uppercase">Node_Verified</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Timeline Item 2: Pending */}
+              <div className="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group">
+                <div className="flex items-center justify-center w-10 h-10 rounded-full border border-border bg-background text-muted-foreground shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 relative z-10 opacity-70 group-hover:opacity-100 group-hover:scale-110 transition-all">
+                  <Lightbulb className="w-4 h-4" />
+                </div>
+                <div className="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] p-5 rounded-2xl border border-border/30 bg-background/30 backdrop-blur-sm shadow-sm opacity-60 grayscale group-hover:grayscale-0 group-hover:opacity-100 group-hover:border-border/60 transition-all hover:-translate-y-1">
+                  <div className="flex items-center justify-between mb-3">
+                    <span className="text-[10px] font-mono text-muted-foreground bg-card/80 px-2 py-0.5 rounded border border-border/50">Aug 2023 - Dec 2023</span>
+                    <StatusBadge status="Pending" />
+                  </div>
+                  <h3 className="text-lg font-medium text-foreground mb-1">Research Assistant</h3>
+                  <p className="text-xs text-muted-foreground uppercase tracking-wider font-semibold mb-4">University Science Lab • Oxford</p>
+                  <p className="text-sm text-muted-foreground leading-relaxed mb-4">
+                    Statistical modeling for environmental impact studies. Coordinating data collection across three regional monitoring stations.
+                  </p>
+                  <div className="flex flex-wrap gap-2 pt-4 border-t border-border/10">
+                    <span className="text-[9px] px-2 py-1 bg-background border border-border text-muted-foreground rounded font-mono uppercase">Awaiting Signature</span>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          {/* 
+            =============================================
+            RIGHT: Skills & Protocol Integrity
+            =============================================
+          */}
+          <div className="xl:col-span-4 space-y-6">
+            
+            {/* Endorsed Proficiencies Bento */}
+            <div className="bg-card/30 backdrop-blur-md rounded-2xl border border-border/50 p-6 shadow-sm overflow-hidden relative group">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full blur-3xl group-hover:bg-primary/10 transition-colors"></div>
+              <h2 className="text-[11px] font-bold text-foreground uppercase tracking-[0.2em] mb-6 flex items-center gap-2 relative z-10">
+                <Award className="w-4 h-4 text-primary" /> Endorsed Proficiencies
+              </h2>
+              
+              <div className="space-y-6 relative z-10">
                 {/* Skill 1 */}
                 <div>
                   <div className="flex justify-between items-end mb-2">
                     <span className="text-sm font-medium text-foreground">Python Architecture</span>
-                    <span className="text-[10px] text-primary uppercase font-bold tracking-tighter">Gold Standard</span>
+                    <span className="text-[9px] text-primary uppercase font-bold tracking-[0.1em] px-2 py-0.5 bg-primary/10 rounded border border-primary/20">Gold Standard</span>
                   </div>
-                  <div className="h-1 w-full bg-muted overflow-hidden rounded-full">
-                    <div className="h-full bg-primary w-4/5"></div>
+                  <div className="h-1.5 w-full bg-background border border-border/50 overflow-hidden rounded-full mb-3">
+                    <div className="h-full bg-linear-to-r from-primary to-accent w-[85%] relative">
+                       <div className="absolute top-0 right-0 bottom-0 w-10 bg-linear-to-r from-transparent to-white/30 animate-[shimmer_2s_infinite]"></div>
+                    </div>
                   </div>
-                  <div className="mt-3 flex gap-2">
-                    <span className="text-[9px] px-2 py-1 border border-border/20 text-muted-foreground font-semibold rounded uppercase tracking-widest">Django</span>
-                    <span className="text-[9px] px-2 py-1 border border-border/20 text-muted-foreground font-semibold rounded uppercase tracking-widest">NumPy</span>
+                  <div className="flex flex-wrap gap-2">
+                    <span className="text-[9px] px-2 py-1 bg-card border border-border text-muted-foreground font-bold rounded uppercase tracking-widest hover:border-primary/50 transition-colors cursor-default">Django</span>
+                    <span className="text-[9px] px-2 py-1 bg-card border border-border text-muted-foreground font-bold rounded uppercase tracking-widest hover:border-primary/50 transition-colors cursor-default">FastAPI</span>
+                    <span className="text-[9px] px-2 py-1 bg-card border border-border text-muted-foreground font-bold rounded uppercase tracking-widest hover:border-primary/50 transition-colors cursor-default">PyTest</span>
                   </div>
                 </div>
 
                 {/* Skill 2 */}
                 <div>
                   <div className="flex justify-between items-end mb-2">
-                    <span className="text-sm font-medium text-foreground">Project Management</span>
-                    <span className="text-[10px] text-muted-foreground uppercase font-bold tracking-tighter">Verified Level II</span>
+                    <span className="text-sm font-medium text-foreground">Cloud Infrastructure</span>
+                    <span className="text-[9px] text-muted-foreground uppercase font-bold tracking-[0.1em]">Verified Level II</span>
                   </div>
-                  <div className="h-1 w-full bg-muted overflow-hidden rounded-full">
-                    <div className="h-full bg-primary/60 w-3/5"></div>
+                  <div className="h-1.5 w-full bg-background border border-border/50 overflow-hidden rounded-full mb-3">
+                    <div className="h-full bg-muted-foreground/40 w-[60%]"></div>
                   </div>
-                  <div className="mt-3 flex gap-2">
-                    <span className="text-[9px] px-2 py-1 border border-border/20 text-muted-foreground font-semibold rounded uppercase tracking-widest">Agile</span>
-                    <span className="text-[9px] px-2 py-1 border border-border/20 text-muted-foreground font-semibold rounded uppercase tracking-widest">Scrum</span>
+                  <div className="flex flex-wrap gap-2">
+                    <span className="text-[9px] px-2 py-1 bg-card border border-border text-muted-foreground font-bold rounded uppercase tracking-widest hover:border-primary/50 transition-colors cursor-default">Docker</span>
+                    <span className="text-[9px] px-2 py-1 bg-card border border-border text-muted-foreground font-bold rounded uppercase tracking-widest hover:border-primary/50 transition-colors cursor-default">AWS EC2</span>
                   </div>
                 </div>
               </div>
             </div>
 
-            {/* Credential Integrity Banner */}
-            <div className="p-6 border-l-2 border-primary/30 bg-muted/5 rounded-r-lg">
-               <div className="space-y-2">
-                  <h5 className="text-xs font-bold text-foreground uppercase tracking-wider">Immutable Record</h5>
-                  <p className="text-xs text-muted-foreground leading-relaxed italic">
-                      Your institutional work record is cryptographically secured. Every verified engagement contains a digital signature bound to the specific institutional supervisor.
+            {/* Protocol Integrity Card */}
+            <div className="bg-background/40 backdrop-blur-sm rounded-2xl border border-border/50 p-6 flex items-start gap-4">
+               <div className="w-10 h-10 rounded-full bg-muted/50 border border-border/50 flex flex-shrink-0 items-center justify-center">
+                  <ShieldCheck className="w-5 h-5 text-muted-foreground" />
+               </div>
+               <div>
+                  <h3 className="text-[11px] font-bold text-foreground uppercase tracking-widest mb-1">Cryptographic Security</h3>
+                  <p className="text-[11px] text-muted-foreground leading-relaxed">
+                     All records are permanently bound to institutional cryptographic signatures. Manipulation post-verification requires network consensus override.
                   </p>
                </div>
             </div>
+            
+            <div className="bg-primary/5 rounded-2xl border border-primary/20 p-4 flex items-center justify-between">
+                <div className="flex gap-3 items-center">
+                  <Network className="w-4 h-4 text-primary" />
+                  <span className="text-[10px] uppercase font-bold tracking-widest text-primary">Network Sync</span>
+                </div>
+                <div className="flex gap-2 items-center">
+                   <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></div>
+                   <span className="text-[10px] font-mono text-primary">Connected</span>
+                </div>
+            </div>
 
           </div>
-        </section>
+        </div>
       </PageContainer>
     </StudentLayout>
   )

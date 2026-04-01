@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import AuthLayout from '../components/AuthLayout'
-import { ArrowRight } from 'lucide-react'
+import { ArrowRight, Eye, EyeOff } from 'lucide-react'
 
 export default function Login() {
   const [email, setEmail] = useState('')
@@ -16,9 +16,9 @@ export default function Login() {
     e.preventDefault()
     login(email, password, role)
     if (role === 'supervisor') {
-      navigate('/supervisor')
+      navigate('/supervisor/dashboard')
     } else {
-      navigate('/dashboard')
+      navigate('/student/dashboard')
     }
   }
 
@@ -28,37 +28,39 @@ export default function Login() {
       subtitle="Access the permanent, immutable repository of verified work records and institutional provenance."
       isLogin={true}
     >
-      <form onSubmit={handleSubmit} className="space-y-8">
+      <form onSubmit={handleSubmit} className="space-y-6">
         {/* Input: Email */}
-        <div className="space-y-2 group">
+        <div className="space-y-1.5 group">
           <label 
             htmlFor="email" 
-            className="block text-[11px] font-semibold uppercase tracking-widest text-muted-foreground group-focus-within:text-accent transition-colors"
+            className="block text-[10px] font-bold uppercase tracking-[0.15em] text-muted-foreground ml-1 transition-colors group-focus-within:text-foreground"
           >
-            Email
+            Institutional Email
           </label>
-          <input
-            type="email"
-            id="email"
-            placeholder="institutional.identity@provenancy.io"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="w-full bg-transparent border-0 border-b border-border py-3 px-0 text-foreground placeholder:text-muted-foreground/40 focus:ring-0 focus:border-accent focus:border-b-2 transition-all outline-none text-sm"
-            required
-          />
+          <div className="relative">
+            <input
+              type="email"
+              id="email"
+              placeholder="name@institution.edu"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="w-full bg-background/50 border border-border/50 rounded-lg py-3.5 px-4 text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:ring-1 focus:ring-primary/50 focus:border-primary/50 transition-all font-medium shadow-sm hover:border-border"
+              required
+            />
+          </div>
         </div>
 
         {/* Input: Password */}
-        <div className="space-y-2 group">
-          <div className="flex justify-between items-end">
+        <div className="space-y-1.5 group">
+          <div className="flex justify-between items-end mb-1.5">
             <label 
               htmlFor="password" 
-              className="block text-[11px] font-semibold uppercase tracking-widest text-muted-foreground group-focus-within:text-accent transition-colors"
+              className="block text-[10px] font-bold uppercase tracking-[0.15em] text-muted-foreground ml-1 transition-colors group-focus-within:text-foreground"
             >
-              Password
+              Secure Passkey
             </label>
-            <Link to="#" className="text-[10px] font-semibold text-muted-foreground hover:text-accent transition-colors uppercase tracking-widest">
-              Forgot Key?
+            <Link to="#" className="text-[9px] font-bold text-muted-foreground hover:text-foreground transition-colors uppercase tracking-[0.1em]">
+              Recovery Protocol
             </Link>
           </div>
           <div className="relative">
@@ -68,58 +70,61 @@ export default function Login() {
               placeholder="••••••••••••"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full bg-transparent border-0 border-b border-border py-3 px-0 text-foreground placeholder:text-muted-foreground/40 focus:ring-0 focus:border-accent focus:border-b-2 transition-all outline-none text-sm"
+              className="w-full bg-background/50 border border-border/50 rounded-lg py-3.5 px-4 pr-12 text-foreground font-mono placeholder:text-muted-foreground/40 focus:outline-none focus:ring-1 focus:ring-primary/50 focus:border-primary/50 transition-all shadow-sm hover:border-border tracking-wider"
               required
             />
-            {/* Keeping it simple with text/emoji since Stitch had visibility icon */}
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-0 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors text-xs font-medium"
+              className="absolute right-3 top-1/2 -translate-y-1/2 p-1.5 rounded-md hover:bg-border/50 text-muted-foreground hover:text-foreground transition-colors"
             >
-              {showPassword ? 'HIDE' : 'SHOW'}
+              {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
             </button>
           </div>
         </div>
 
         {/* Dev Role toggle helper (not in design but needed for auth engine testing) */}
-        <div className="flex justify-end gap-2 pt-2">
-            <button 
-              type="button" 
-              onClick={() => setRole('student')}
-              className={`text-[10px] px-2 py-1 rounded transition-colors duration-200 ${role === 'student' ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground'} uppercase tracking-widest`}
-            >
-              Student
-            </button>
-            <button 
-              type="button" 
-              onClick={() => setRole('supervisor')}
-              className={`text-[10px] px-2 py-1 rounded transition-colors duration-200 ${role === 'supervisor' ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground'} uppercase tracking-widest`}
-            >
-              Supervisor
-            </button>
+        <div className="flex items-center justify-between pt-2 border-t border-border/10 mt-6 pb-2">
+            <span className="text-[9px] font-mono text-muted-foreground uppercase tracking-widest">Dev Environment Role:</span>
+            <div className="flex gap-1 bg-background/50 p-1 rounded-md border border-border/50">
+              <button 
+                type="button" 
+                onClick={() => setRole('student')}
+                className={`text-[9px] px-3 py-1.5 rounded-sm transition-all duration-200 font-bold ${role === 'student' ? 'bg-primary text-primary-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'} uppercase tracking-widest`}
+              >
+                Candidate
+              </button>
+              <button 
+                type="button" 
+                onClick={() => setRole('supervisor')}
+                className={`text-[9px] px-3 py-1.5 rounded-sm transition-all duration-200 font-bold ${role === 'supervisor' ? 'bg-primary text-primary-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'} uppercase tracking-widest`}
+              >
+                Supervisor
+              </button>
+            </div>
         </div>
 
         {/* Primary Action */}
         <div className="pt-2">
           <button
             type="submit"
-            className="w-full relative flex items-center justify-center gap-3 bg-primary text-primary-foreground font-semibold py-4 rounded-md overflow-hidden hover:bg-primary/90 transition-colors duration-300"
+            className="w-full bg-foreground text-background font-bold tracking-widest uppercase text-xs py-4 rounded-lg hover:bg-foreground/90 transition-all duration-300 shadow-[0_0_20px_rgba(255,255,255,0.05)] hover:shadow-[0_0_25px_rgba(255,255,255,0.1)] active:scale-[0.98]"
           >
-            <span className="relative z-10 text-sm tracking-wide">Enter the Ledger</span>
+            Authenticate Identity
           </button>
         </div>
-
-        {/* Footnote / Redirect */}
-        <div className="pt-4 text-center">
-          <p className="text-sm text-muted-foreground">
-            Don't have an account?{' '}
-            <Link to="/signup" className="text-primary font-bold hover:underline underline-offset-4 ml-1">
-              Sign up here
-            </Link>
-          </p>
-        </div>
       </form>
+      
+      {/* Footnote / Redirect */}
+      <div className="mt-8 text-center border-t border-border/10 pt-6">
+        <p className="text-xs font-medium text-muted-foreground">
+          Unverified entity?{' '}
+          <Link to="/signup" className="text-foreground font-bold hover:text-primary transition-colors underline-offset-4 hover:underline ml-1">
+            Initialize here
+          </Link>
+        </p>
+      </div>
+
     </AuthLayout>
   )
 }

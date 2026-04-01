@@ -87,11 +87,9 @@ export function SupervisorBlock({ supervisor, organization, verificationDate, au
           <QrCode className="text-primary w-4 h-4" />
           <span className="text-[10px] font-mono text-muted-foreground font-semibold tracking-wider">AUTH_ID: {authId || 'PENDING'}</span>
         </div>
-        <img 
-          alt="Verification Seal" 
-          src="https://images.unsplash.com/photo-1614064641913-6b7140414c71?auto=format&fit=crop&q=80&w=200"
-          className="w-12 h-12 rounded-full opacity-40 grayscale contrast-125 object-cover" 
-        />
+        <div className="w-12 h-12 rounded-full border-2 border-primary/20 bg-primary/5 flex items-center justify-center grayscale contrast-125 opacity-40">
+          <span className="text-[8px] font-bold tracking-widest text-primary">SEAL</span>
+        </div>
       </div>
     </div>
   )

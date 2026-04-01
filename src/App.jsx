@@ -36,8 +36,8 @@ function ProtectedRoute({ children, allowedRole = null }) {
 function RoleBasedRedirect() {
   const { user } = useAuth()
   if (!user) return <Navigate to="/login" />
-  if (user.role === 'supervisor') return <Navigate to="/supervisor" />
-  return <Navigate to="/dashboard" />
+  if (user.role === 'supervisor') return <Navigate to="/supervisor/dashboard" />
+  return <Navigate to="/student/dashboard" />
 }
 
 function AppRoutes() {
@@ -79,7 +79,7 @@ function AppRoutes() {
 
         {/* Student Workspace Paths */}
         <Route
-          path="/dashboard"
+          path="/student/dashboard"
           element={
             <ProtectedRoute allowedRole="student">
               <StudentDashboard />
@@ -87,7 +87,7 @@ function AppRoutes() {
           }
         />
         <Route
-          path="/engagements"
+          path="/student/engagements"
           element={
             <ProtectedRoute allowedRole="student">
               <StudentEngagements />
@@ -95,7 +95,7 @@ function AppRoutes() {
           }
         />
         <Route
-          path="/engagements/create"
+          path="/student/engagements/create"
           element={
             <ProtectedRoute allowedRole="student">
               <EngagementCreate />
@@ -103,7 +103,7 @@ function AppRoutes() {
           }
         />
         <Route
-          path="/engagements/:id"
+          path="/student/engagements/:id"
           element={
             <ProtectedRoute allowedRole={["student", "supervisor"]}>
               <EngagementDetail />
@@ -111,7 +111,7 @@ function AppRoutes() {
           }
         />
         <Route
-          path="/skills"
+          path="/student/skills"
           element={
             <ProtectedRoute allowedRole="student">
               <StudentSkills />
@@ -119,7 +119,7 @@ function AppRoutes() {
           }
         />
         <Route
-          path="/profile"
+          path="/student/profile"
           element={
             <ProtectedRoute allowedRole="student">
               <Profile />
@@ -129,7 +129,7 @@ function AppRoutes() {
 
         {/* Supervisor Workspace Paths */}
         <Route
-          path="/supervisor"
+          path="/supervisor/dashboard"
           element={
             <ProtectedRoute allowedRole="supervisor">
               <SupervisorDashboard />

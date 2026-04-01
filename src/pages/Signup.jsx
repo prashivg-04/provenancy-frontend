@@ -34,9 +34,9 @@ export default function Signup() {
     e.preventDefault()
     signup(formData.fullName, formData.email, formData.role, formData.password)
     if (formData.role === 'supervisor') {
-      navigate('/supervisor')
+      navigate('/supervisor/dashboard')
     } else {
-      navigate('/dashboard')
+      navigate('/student/dashboard')
     }
   }
 
@@ -51,19 +51,19 @@ export default function Signup() {
         <div className="space-y-1.5 group">
           <label 
             htmlFor="fullName" 
-            className="text-[11px] font-semibold uppercase tracking-widest text-muted-foreground/80 ml-0.5 group-focus-within:text-accent transition-colors block"
+            className="text-[10px] font-bold uppercase tracking-[0.15em] text-muted-foreground ml-1 transition-colors block group-focus-within:text-foreground"
           >
-            Full Name
+            Full Legal Name
           </label>
           <div className="relative">
             <input
               type="text"
               id="fullName"
               name="fullName"
-              placeholder="Enter your full legal name"
+              placeholder="e.g. John Doe"
               value={formData.fullName}
               onChange={handleChange}
-              className="w-full bg-transparent border-0 border-b border-border py-3 px-1 text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:ring-0 focus:border-accent focus:border-b-2 transition-all text-sm"
+              className="w-full bg-background/50 border border-border/50 rounded-lg py-3.5 px-4 text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:ring-1 focus:ring-primary/50 focus:border-primary/50 transition-all font-medium shadow-sm hover:border-border"
               required
             />
           </div>
@@ -73,7 +73,7 @@ export default function Signup() {
         <div className="space-y-1.5 group">
           <label 
             htmlFor="email" 
-            className="text-[11px] font-semibold uppercase tracking-widest text-muted-foreground/80 ml-0.5 group-focus-within:text-accent transition-colors block"
+            className="text-[10px] font-bold uppercase tracking-[0.15em] text-muted-foreground ml-1 transition-colors block group-focus-within:text-foreground"
           >
             Institutional Email
           </label>
@@ -85,19 +85,19 @@ export default function Signup() {
               placeholder="name@institution.edu"
               value={formData.email}
               onChange={handleChange}
-              className="w-full bg-transparent border-0 border-b border-border py-3 px-1 text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:ring-0 focus:border-accent focus:border-b-2 transition-all text-sm"
+              className="w-full bg-background/50 border border-border/50 rounded-lg py-3.5 px-4 text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:ring-1 focus:ring-primary/50 focus:border-primary/50 transition-all font-medium shadow-sm hover:border-border"
               required
             />
           </div>
         </div>
 
         {/* Account Role Selection */}
-        <div className="space-y-3">
-          <label className="text-[11px] font-semibold uppercase tracking-widest text-muted-foreground/80 ml-0.5 block">
+        <div className="space-y-2">
+          <label className="text-[10px] font-bold uppercase tracking-[0.15em] text-muted-foreground ml-1 block">
             Account Role
           </label>
           <div className="grid grid-cols-2 gap-3">
-            <label className="cursor-pointer group">
+            <label className="cursor-pointer group relative">
               <input 
                 checked={formData.role === 'student'}
                 onChange={() => handleRoleChange('student')}
@@ -105,13 +105,14 @@ export default function Signup() {
                 name="role" 
                 type="radio"
               />
-              <div className="flex items-center justify-center gap-2 p-3 rounded-md border border-border/30 bg-muted peer-checked:bg-primary peer-checked:border-primary group-hover:bg-card transition-all duration-200">
-                <User className="w-4 h-4 text-muted-foreground peer-checked:text-primary-foreground transition-colors duration-200" />
-                <span className="text-xs font-medium text-muted-foreground peer-checked:text-primary-foreground transition-colors duration-200">Student</span>
+              <div className="flex flex-col items-center justify-center gap-2 p-4 rounded-xl border border-border/50 bg-background/30 peer-checked:bg-primary/10 peer-checked:border-primary/50 hover:bg-card hover:border-border shadow-sm transition-all duration-200">
+                <User className="w-6 h-6 text-muted-foreground peer-checked:text-primary transition-colors duration-200" />
+                <span className="text-xs font-bold uppercase tracking-widest text-muted-foreground peer-checked:text-foreground transition-colors duration-200">Candidate</span>
               </div>
+              <div className="absolute top-2 right-2 w-2 h-2 rounded-full bg-primary opacity-0 peer-checked:opacity-100 transition-opacity"></div>
             </label>
 
-            <label className="cursor-pointer group">
+            <label className="cursor-pointer group relative">
               <input 
                 checked={formData.role === 'supervisor'}
                 onChange={() => handleRoleChange('supervisor')}
@@ -119,10 +120,11 @@ export default function Signup() {
                 name="role" 
                 type="radio"
               />
-              <div className="flex items-center justify-center gap-2 p-3 rounded-md border border-border/30 bg-muted peer-checked:bg-primary peer-checked:border-primary group-hover:bg-card transition-all duration-200">
-                <ShieldAlert className="w-4 h-4 text-muted-foreground peer-checked:text-primary-foreground transition-colors duration-200" />
-                <span className="text-xs font-medium text-muted-foreground peer-checked:text-primary-foreground transition-colors duration-200">Supervisor</span>
+              <div className="flex flex-col items-center justify-center gap-2 p-4 rounded-xl border border-border/50 bg-background/30 peer-checked:bg-primary/10 peer-checked:border-primary/50 hover:bg-card hover:border-border shadow-sm transition-all duration-200">
+                <ShieldAlert className="w-6 h-6 text-muted-foreground peer-checked:text-primary transition-colors duration-200" />
+                <span className="text-xs font-bold uppercase tracking-widest text-muted-foreground peer-checked:text-foreground transition-colors duration-200">Supervisor</span>
               </div>
+              <div className="absolute top-2 right-2 w-2 h-2 rounded-full bg-primary opacity-0 peer-checked:opacity-100 transition-opacity"></div>
             </label>
           </div>
         </div>
@@ -131,9 +133,9 @@ export default function Signup() {
         <div className="space-y-1.5 group">
           <label 
             htmlFor="password" 
-            className="text-[11px] font-semibold uppercase tracking-widest text-muted-foreground/80 ml-0.5 group-focus-within:text-accent transition-colors block"
+            className="text-[10px] font-bold uppercase tracking-[0.15em] text-muted-foreground ml-1 transition-colors block group-focus-within:text-foreground"
           >
-            Password
+            Secure Passkey
           </label>
           <div className="relative">
             <input
@@ -143,36 +145,36 @@ export default function Signup() {
               placeholder="••••••••"
               value={formData.password}
               onChange={handleChange}
-              className="w-full bg-transparent border-0 border-b border-border py-3 px-1 text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:ring-0 focus:border-accent focus:border-b-2 transition-all text-sm"
+              className="w-full bg-background/50 border border-border/50 rounded-lg py-3.5 px-4 pr-12 text-foreground font-mono placeholder:text-muted-foreground/40 focus:outline-none focus:ring-1 focus:ring-primary/50 focus:border-primary/50 transition-all shadow-sm hover:border-border tracking-wider"
               required
             />
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground/60 hover:text-foreground"
+              className="absolute right-3 top-1/2 -translate-y-1/2 p-1.5 rounded-md hover:bg-border/50 text-muted-foreground hover:text-foreground transition-colors"
             >
-              {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+              {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
             </button>
           </div>
         </div>
 
         {/* Submit */}
-        <div className="pt-6">
+        <div className="pt-4">
           <button
             type="submit"
-            className="w-full bg-primary text-primary-foreground font-semibold py-4 rounded-md hover:bg-primary/90 transition-colors duration-300"
+            className="w-full bg-foreground text-background font-bold tracking-widest uppercase text-xs py-4 rounded-lg hover:bg-foreground/90 transition-all duration-300 shadow-[0_0_20px_rgba(255,255,255,0.05)] hover:shadow-[0_0_25px_rgba(255,255,255,0.1)] active:scale-[0.98]"
           >
-            Create Account
+            Initialize Account
           </button>
         </div>
       </form>
 
       {/* Footer Link */}
-      <div className="mt-8 text-center">
-        <p className="text-sm text-muted-foreground">
-          Already have an account?{' '}
-          <Link to="/login" className="text-primary font-bold hover:underline underline-offset-4 ml-1">
-            Log in here
+      <div className="mt-8 text-center border-t border-border/10 pt-6">
+        <p className="text-xs font-medium text-muted-foreground">
+          Already part of the network?{' '}
+          <Link to="/login" className="text-foreground font-bold hover:text-primary transition-colors underline-offset-4 hover:underline ml-1">
+            Authenticate here
           </Link>
         </p>
       </div>
