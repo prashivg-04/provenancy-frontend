@@ -111,7 +111,7 @@ export default function StudentLayout({ children, activeTitle = "Provenancy", ac
               </div>
               <div className="hidden md:block text-left">
                 <p className="text-[11px] font-bold text-foreground leading-none tracking-wide group-hover:text-primary transition-colors">Alex Rivera</p>
-                <p className="text-[9px] text-muted-foreground tracking-[0.1em] uppercase mt-1">PRV-99281</p>
+                <p className="text-[9px] text-muted-foreground tracking-widest uppercase mt-1">PRV-99281</p>
               </div>
             </div>
 
@@ -124,9 +124,9 @@ export default function StudentLayout({ children, activeTitle = "Provenancy", ac
         </header>
 
         {/* Active Page Payload */}
-        <main className="flex-1 overflow-hidden relative">
+        <main className="flex-1 overflow-y-auto relative">
           {/* Subtle grid pattern background for the content area */}
-          <div className="absolute inset-0 bg-[#ffffff03] bg-[length:24px_24px] pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle, var(--tw-colors-border) 1px, transparent 1px)' }}></div>
+          <div className="fixed inset-0 bg-[#ffffff03] bg-size-[24px_24px] pointer-events-none -z-10" style={{ backgroundImage: 'radial-gradient(circle, var(--tw-colors-border) 1px, transparent 1px)' }}></div>
           {children}
         </main>
       </div>

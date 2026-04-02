@@ -82,7 +82,7 @@ export default function StudentEngagements() {
             
             {/* Primary Action */}
             <button 
-              onClick={() => navigate('/engagements/create')}
+              onClick={() => navigate('/student/engagements/create')}
               className="flex items-center gap-2 px-6 py-2 h-[42px] text-[10px] font-bold uppercase tracking-[0.15em] text-background bg-foreground rounded-lg transition-all shadow-[0_0_15px_rgba(255,255,255,0.05)] hover:shadow-[0_0_20px_rgba(255,255,255,0.1)] active:scale-[0.98]"
             >
               <Plus className="w-3.5 h-3.5" />
@@ -144,7 +144,7 @@ export default function StudentEngagements() {
              </button>
           </div>
 
-          <div className="overflow-x-auto flex-grow">
+          <div className="overflow-x-auto grow">
             <table className="w-full text-left border-collapse whitespace-nowrap">
               <thead>
                 <tr className="bg-muted/10 border-b border-border/10">
@@ -159,7 +159,7 @@ export default function StudentEngagements() {
                   <tr 
                     key={i} 
                     onClick={() => navigate(`/engagements/TC-2023-084${i}`)}
-                    className={`group cursor-pointer transition-all ${row.status === 'Pending' ? 'opacity-80 grayscale hover:grayscale-0 hover:opacity-100' : ''} hover:bg-primary/[0.02]`}
+                    className={`group cursor-pointer transition-all ${row.status === 'Pending' ? 'opacity-80 grayscale hover:grayscale-0 hover:opacity-100' : ''} hover:bg-primary/2`}
                   >
                     <td className="px-6 py-5">
                       <div className="flex items-center gap-4">
