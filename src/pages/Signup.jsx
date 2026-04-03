@@ -33,11 +33,7 @@ export default function Signup() {
   const handleSubmit = (e) => {
     e.preventDefault()
     signup(formData.fullName, formData.email, formData.role, formData.password)
-    if (formData.role === 'supervisor') {
-      navigate('/supervisor/dashboard')
-    } else {
-      navigate('/student/dashboard')
-    }
+    navigate('/complete-profile')
   }
 
   return (

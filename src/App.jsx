@@ -7,6 +7,7 @@ import Layout from './components/Layout'
 import Home from './pages/Home'
 import Login from './pages/Login'
 import Signup from './pages/Signup'
+import CompleteProfile from './pages/CompleteProfile'
 import StudentDashboard from './pages/StudentDashboard'
 import StudentEngagements from './pages/StudentEngagements'
 import StudentSkills from './pages/StudentSkills'
@@ -72,6 +73,7 @@ function AppRoutes() {
         <Route path="/" element={<Layout><Home /></Layout>} />
         <Route path="/login" element={user ? <RoleBasedRedirect /> : <Layout><Login /></Layout>} />
         <Route path="/signup" element={user ? <RoleBasedRedirect /> : <Layout><Signup /></Layout>} />
+        <Route path="/complete-profile" element={<Layout><CompleteProfile /></Layout>} />
         
         {/* Public Profiles Rendered Inside Layout For Navbar Identity */}
         <Route path="/profile/:id" element={<PublicStudentProfile />} />
