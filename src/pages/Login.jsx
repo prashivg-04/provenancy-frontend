@@ -2,23 +2,35 @@ import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import AuthLayout from '../components/AuthLayout'
-import { ArrowRight, Eye, EyeOff } from 'lucide-react'
+import { Eye, EyeOff, Loader2 } from 'lucide-react'
 
 export default function Login() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
-  const [role, setRole] = useState('student')
+  const [loading, setLoading] = useState(false)
   const { login } = useAuth()
   const navigate = useNavigate()
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    login(email, password, role)
-    if (role === 'supervisor') {
-      navigate('/supervisor/dashboard')
-    } else {
-      navigate('/student/dashboard')
+    setLoading(true)
+
+    try {
+      const result = await login(email, password)
+
+      if (!result) return // error already shown via toast
+
+      // Route based on profile completion
+      if (!result.profile_complete) {
+        navigate('/complete-profile')
+      } else if (result.role === 'supervisor') {
+        navigate('/supervisor/dashboard')
+      } else {
+        navigate('/student/dashboard')
+      }
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -46,6 +58,7 @@ export default function Login() {
               onChange={(e) => setEmail(e.target.value)}
               className="w-full bg-background/50 border border-border/50 rounded-lg py-3.5 px-4 text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:ring-1 focus:ring-primary/50 focus:border-primary/50 transition-all font-medium shadow-sm hover:border-border"
               required
+              disabled={loading}
             />
           </div>
         </div>
@@ -72,6 +85,7 @@ export default function Login() {
               onChange={(e) => setPassword(e.target.value)}
               className="w-full bg-background/50 border border-border/50 rounded-lg py-3.5 px-4 pr-12 text-foreground font-mono placeholder:text-muted-foreground/40 focus:outline-none focus:ring-1 focus:ring-primary/50 focus:border-primary/50 transition-all shadow-sm hover:border-border tracking-wider"
               required
+              disabled={loading}
             />
             <button
               type="button"
@@ -83,34 +97,21 @@ export default function Login() {
           </div>
         </div>
 
-        {/* Dev Role toggle helper (not in design but needed for auth engine testing) */}
-        <div className="flex items-center justify-between pt-2 border-t border-border/10 mt-6 pb-2">
-            <span className="text-[9px] font-mono text-muted-foreground uppercase tracking-widest">Dev Environment Role:</span>
-            <div className="flex gap-1 bg-background/50 p-1 rounded-md border border-border/50">
-              <button 
-                type="button" 
-                onClick={() => setRole('student')}
-                className={`text-[9px] px-3 py-1.5 rounded-sm transition-all duration-200 font-bold ${role === 'student' ? 'bg-primary text-primary-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'} uppercase tracking-widest`}
-              >
-                Candidate
-              </button>
-              <button 
-                type="button" 
-                onClick={() => setRole('supervisor')}
-                className={`text-[9px] px-3 py-1.5 rounded-sm transition-all duration-200 font-bold ${role === 'supervisor' ? 'bg-primary text-primary-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'} uppercase tracking-widest`}
-              >
-                Supervisor
-              </button>
-            </div>
-        </div>
-
         {/* Primary Action */}
         <div className="pt-2">
           <button
             type="submit"
-            className="w-full bg-foreground text-background font-bold tracking-widest uppercase text-xs py-4 rounded-lg hover:bg-foreground/90 transition-all duration-300 shadow-[0_0_20px_rgba(255,255,255,0.05)] hover:shadow-[0_0_25px_rgba(255,255,255,0.1)] active:scale-[0.98]"
+            disabled={loading}
+            className="w-full bg-foreground text-background font-bold tracking-widest uppercase text-xs py-4 rounded-lg hover:bg-foreground/90 transition-all duration-300 shadow-[0_0_20px_rgba(255,255,255,0.05)] hover:shadow-[0_0_25px_rgba(255,255,255,0.1)] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100 flex items-center justify-center gap-2"
           >
-            Authenticate Identity
+            {loading ? (
+              <>
+                <Loader2 className="w-4 h-4 animate-spin" />
+                Authenticating...
+              </>
+            ) : (
+              'Authenticate Identity'
+            )}
           </button>
         </div>
       </form>

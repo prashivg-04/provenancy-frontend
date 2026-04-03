@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import AuthLayout from '../components/AuthLayout'
-import { User, ShieldAlert, Eye, EyeOff } from 'lucide-react'
+import { User, ShieldAlert, Eye, EyeOff, Loader2 } from 'lucide-react'
 
 export default function Signup() {
   const [formData, setFormData] = useState({
@@ -12,6 +12,7 @@ export default function Signup() {
     password: '',
   })
   const [showPassword, setShowPassword] = useState(false)
+  const [loading, setLoading] = useState(false)
   const { signup } = useAuth()
   const navigate = useNavigate()
 
@@ -30,10 +31,25 @@ export default function Signup() {
     }))
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    signup(formData.fullName, formData.email, formData.role, formData.password)
-    navigate('/complete-profile')
+    setLoading(true)
+
+    try {
+      const success = await signup(
+        formData.fullName,
+        formData.email,
+        formData.password,
+        formData.role
+      )
+
+      if (success) {
+        navigate('/complete-profile')
+      }
+      // If false, error toast already shown by handleError
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
@@ -61,6 +77,7 @@ export default function Signup() {
               onChange={handleChange}
               className="w-full bg-background/50 border border-border/50 rounded-lg py-3.5 px-4 text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:ring-1 focus:ring-primary/50 focus:border-primary/50 transition-all font-medium shadow-sm hover:border-border"
               required
+              disabled={loading}
             />
           </div>
         </div>
@@ -83,6 +100,7 @@ export default function Signup() {
               onChange={handleChange}
               className="w-full bg-background/50 border border-border/50 rounded-lg py-3.5 px-4 text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:ring-1 focus:ring-primary/50 focus:border-primary/50 transition-all font-medium shadow-sm hover:border-border"
               required
+              disabled={loading}
             />
           </div>
         </div>
@@ -93,7 +111,7 @@ export default function Signup() {
             Account Role
           </label>
           <div className="grid grid-cols-2 gap-3">
-            <label className="cursor-pointer group relative">
+            <label className={`cursor-pointer group relative ${loading ? 'pointer-events-none opacity-50' : ''}`}>
               <input 
                 checked={formData.role === 'student'}
                 onChange={() => handleRoleChange('student')}
@@ -108,7 +126,7 @@ export default function Signup() {
               <div className="absolute top-2 right-2 w-2 h-2 rounded-full bg-primary opacity-0 peer-checked:opacity-100 transition-opacity"></div>
             </label>
 
-            <label className="cursor-pointer group relative">
+            <label className={`cursor-pointer group relative ${loading ? 'pointer-events-none opacity-50' : ''}`}>
               <input 
                 checked={formData.role === 'supervisor'}
                 onChange={() => handleRoleChange('supervisor')}
@@ -143,6 +161,7 @@ export default function Signup() {
               onChange={handleChange}
               className="w-full bg-background/50 border border-border/50 rounded-lg py-3.5 px-4 pr-12 text-foreground font-mono placeholder:text-muted-foreground/40 focus:outline-none focus:ring-1 focus:ring-primary/50 focus:border-primary/50 transition-all shadow-sm hover:border-border tracking-wider"
               required
+              disabled={loading}
             />
             <button
               type="button"
@@ -158,9 +177,17 @@ export default function Signup() {
         <div className="pt-4">
           <button
             type="submit"
-            className="w-full bg-foreground text-background font-bold tracking-widest uppercase text-xs py-4 rounded-lg hover:bg-foreground/90 transition-all duration-300 shadow-[0_0_20px_rgba(255,255,255,0.05)] hover:shadow-[0_0_25px_rgba(255,255,255,0.1)] active:scale-[0.98]"
+            disabled={loading}
+            className="w-full bg-foreground text-background font-bold tracking-widest uppercase text-xs py-4 rounded-lg hover:bg-foreground/90 transition-all duration-300 shadow-[0_0_20px_rgba(255,255,255,0.05)] hover:shadow-[0_0_25px_rgba(255,255,255,0.1)] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100 flex items-center justify-center gap-2"
           >
-            Initialize Account
+            {loading ? (
+              <>
+                <Loader2 className="w-4 h-4 animate-spin" />
+                Initializing...
+              </>
+            ) : (
+              'Initialize Account'
+            )}
           </button>
         </div>
       </form>

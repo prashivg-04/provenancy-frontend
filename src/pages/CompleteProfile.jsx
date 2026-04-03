@@ -10,13 +10,12 @@ import {
   UserCircle2,
   CheckCircle2,
   Linkedin,
-  Globe,
-  BookOpen,
+  Loader2,
 } from 'lucide-react'
 
 // ── Reusable field components (auth-layout style, not workspace style) ──────
 
-function OnboardingInput({ label, id, type = 'text', placeholder, value, onChange, required = false }) {
+function OnboardingInput({ label, id, type = 'text', placeholder, value, onChange, required = false, disabled = false }) {
   return (
     <div className="space-y-1.5 group">
       <label
@@ -32,13 +31,15 @@ function OnboardingInput({ label, id, type = 'text', placeholder, value, onChang
         placeholder={placeholder}
         value={value}
         onChange={onChange}
-        className="w-full bg-background/50 border border-border/50 rounded-lg py-3.5 px-4 text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:ring-1 focus:ring-primary/50 focus:border-primary/50 transition-all font-medium shadow-sm hover:border-border"
+        required={required}
+        className="w-full bg-background/50 border border-border/50 rounded-lg py-3.5 px-4 text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:ring-1 focus:ring-primary/50 focus:border-primary/50 transition-all font-medium shadow-sm hover:border-border disabled:opacity-50"
+        disabled={disabled}
       />
     </div>
   )
 }
 
-function OnboardingTextarea({ label, id, placeholder, value, onChange }) {
+function OnboardingTextarea({ label, id, placeholder, value, onChange, disabled = false }) {
   return (
     <div className="space-y-1.5 group">
       <label
@@ -53,7 +54,8 @@ function OnboardingTextarea({ label, id, placeholder, value, onChange }) {
         value={value}
         onChange={onChange}
         rows={4}
-        className="w-full bg-background/50 border border-border/50 rounded-lg py-3.5 px-4 text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:ring-1 focus:ring-primary/50 focus:border-primary/50 transition-all font-medium shadow-sm hover:border-border resize-none"
+        className="w-full bg-background/50 border border-border/50 rounded-lg py-3.5 px-4 text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:ring-1 focus:ring-primary/50 focus:border-primary/50 transition-all font-medium shadow-sm hover:border-border resize-none disabled:opacity-50"
+        disabled={disabled}
       />
     </div>
   )
@@ -96,13 +98,13 @@ function StepIndicator({ currentStep, totalSteps }) {
 // ── Main page ─────────────────────────────────────────────────────────────────
 
 export default function CompleteProfile() {
-  // Role comes from AuthContext — will be real after integration
-  const { user } = useAuth()
+  const { user, completeProfile } = useAuth()
   const navigate = useNavigate()
-  const role = user?.role ?? 'student' // fallback for UI-only preview
+  const role = user?.role ?? 'student'
   const isStudent = role === 'student'
 
   const [step, setStep] = useState(0) // 0 = step 1, 1 = step 2
+  const [loading, setLoading] = useState(false)
 
   // Step 1 — required field
   const [institution, setInstitution] = useState('')     // student
@@ -118,20 +120,43 @@ export default function CompleteProfile() {
     setStep(1)
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     if (e && e.preventDefault) e.preventDefault()
-    // Will call PUT /auth/complete-profile when wired up
-    console.log('Submit complete profile', {
-      ...(isStudent ? { institution } : { organization }),
-      ...(isStudent ? { title } : { designation: title }),
-      bio,
-      linkedin_url: linkedinUrl,
-    })
-    // Navigate to role-based dashboard
-    if (role === 'supervisor') {
-      navigate('/supervisor/dashboard')
-    } else {
-      navigate('/student/dashboard')
+    setLoading(true)
+
+    try {
+      // Build payload — only include non-empty optional fields as defined values
+      // Empty strings become undefined so they're omitted from the JSON body
+      let payload
+
+      if (isStudent) {
+        payload = {
+          institution,
+          ...(title ? { title } : {}),
+          ...(bio ? { bio } : {}),
+          ...(linkedinUrl ? { linkedin_url: linkedinUrl } : {}),
+        }
+      } else {
+        payload = {
+          organization,
+          ...(title ? { designation: title } : {}),
+          ...(bio ? { bio } : {}),
+          ...(linkedinUrl ? { linkedin_url: linkedinUrl } : {}),
+        }
+      }
+
+      const success = await completeProfile(payload)
+
+      if (success) {
+        if (role === 'supervisor') {
+          navigate('/supervisor/dashboard')
+        } else {
+          navigate('/student/dashboard')
+        }
+      }
+      // If false, error toast already shown by handleError
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -329,6 +354,7 @@ export default function CompleteProfile() {
                   placeholder={isStudent ? 'e.g. Graduate Research Assistant' : 'e.g. Associate Professor, Dean of Faculty'}
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
+                  disabled={loading}
                 />
 
                 <OnboardingTextarea
@@ -341,6 +367,7 @@ export default function CompleteProfile() {
                   }
                   value={bio}
                   onChange={(e) => setBio(e.target.value)}
+                  disabled={loading}
                 />
 
                 <div className="space-y-1.5 group">
@@ -358,7 +385,8 @@ export default function CompleteProfile() {
                       placeholder="https://linkedin.com/in/yourhandle"
                       value={linkedinUrl}
                       onChange={(e) => setLinkedinUrl(e.target.value)}
-                      className="w-full bg-background/50 border border-border/50 rounded-lg py-3.5 pl-10 pr-4 text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:ring-1 focus:ring-primary/50 focus:border-primary/50 transition-all font-medium shadow-sm hover:border-border"
+                      className="w-full bg-background/50 border border-border/50 rounded-lg py-3.5 pl-10 pr-4 text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:ring-1 focus:ring-primary/50 focus:border-primary/50 transition-all font-medium shadow-sm hover:border-border disabled:opacity-50"
+                      disabled={loading}
                     />
                   </div>
                 </div>
@@ -371,27 +399,38 @@ export default function CompleteProfile() {
                 <div className="flex flex-col gap-3 pt-2">
                   <button
                     type="submit"
-                    className="w-full bg-foreground text-background font-bold tracking-widest uppercase text-xs py-4 rounded-lg hover:bg-foreground/90 transition-all duration-300 shadow-[0_0_20px_rgba(255,255,255,0.05)] hover:shadow-[0_0_25px_rgba(255,255,255,0.1)] active:scale-[0.98]"
+                    disabled={loading}
+                    className="w-full bg-foreground text-background font-bold tracking-widest uppercase text-xs py-4 rounded-lg hover:bg-foreground/90 transition-all duration-300 shadow-[0_0_20px_rgba(255,255,255,0.05)] hover:shadow-[0_0_25px_rgba(255,255,255,0.1)] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                   >
-                    Activate Ledger Identity
+                    {loading ? (
+                      <>
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                        Activating...
+                      </>
+                    ) : (
+                      'Activate Ledger Identity'
+                    )}
                   </button>
                   <button
                     type="button"
                     onClick={handleSubmit}
-                    className="w-full text-muted-foreground hover:text-foreground font-bold tracking-widest uppercase text-[10px] py-3 rounded-lg transition-colors"
+                    disabled={loading}
+                    className="w-full text-muted-foreground hover:text-foreground font-bold tracking-widest uppercase text-[10px] py-3 rounded-lg transition-colors disabled:opacity-50"
                   >
                     Skip for now
                   </button>
                 </div>
 
                 {/* Back */}
-                <button
-                  type="button"
-                  onClick={() => setStep(0)}
-                  className="flex items-center gap-1.5 text-[10px] text-muted-foreground/60 hover:text-muted-foreground transition-colors font-bold uppercase tracking-widest mt-1"
-                >
-                  <ArrowLeft className="w-3 h-3" /> Back
-                </button>
+                {!loading && (
+                  <button
+                    type="button"
+                    onClick={() => setStep(0)}
+                    className="flex items-center gap-1.5 text-[10px] text-muted-foreground/60 hover:text-muted-foreground transition-colors font-bold uppercase tracking-widest mt-1"
+                  >
+                    <ArrowLeft className="w-3 h-3" /> Back
+                  </button>
+                )}
               </form>
             )}
           </div>
