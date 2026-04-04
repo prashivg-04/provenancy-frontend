@@ -167,7 +167,7 @@ export default function CompleteProfile() {
       <div className="hidden lg:flex w-1/2 relative bg-muted/20 border-r border-border/10 flex-col justify-between p-12 overflow-hidden shadow-[inset_-20px_0_40px_rgba(0,0,0,0.5)]">
 
         {/* Background glows */}
-        <div className="absolute inset-0 z-0 bg-[radial-gradient(ellipse_at_bottom_left,_var(--tw-gradient-stops))] from-primary/10 via-background to-background pointer-events-none" />
+        <div className="absolute inset-0 z-0 bg-[radial-gradient(ellipse_at_bottom_left,var(--tw-gradient-stops))] from-primary/10 via-background to-background pointer-events-none" />
         <div className="absolute inset-0 z-0 bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-size-[24px_24px] pointer-events-none" />
 
         {/* Back link */}

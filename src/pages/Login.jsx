@@ -1,27 +1,60 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { z } from 'zod'
 import { useAuth } from '../context/AuthContext'
 import AuthLayout from '../components/AuthLayout'
-import { Eye, EyeOff, Loader2 } from 'lucide-react'
+import { Eye, EyeOff, Loader2, AlertCircle } from 'lucide-react'
+
+// ── Zod Schema ────────────────────────────────────────────────────────────────
+
+const loginSchema = z.object({
+  email: z
+    .string()
+    .min(1, 'Email is required.')
+    .email('Enter a valid email address.'),
+  password: z
+    .string()
+    .min(1, 'Password is required.')
+    .min(6, 'Password must be at least 6 characters.'),
+})
+
+// ── Inline field error ────────────────────────────────────────────────────────
+
+function FieldError({ message }) {
+  if (!message) return null
+  return (
+    <p className="flex items-center gap-1.5 mt-1.5 ml-1 text-[10px] font-bold uppercase tracking-widest text-red-400/90 animate-in fade-in slide-in-from-top-1 duration-200">
+      <AlertCircle className="w-3 h-3 shrink-0" />
+      {message}
+    </p>
+  )
+}
+
+// ── Component ─────────────────────────────────────────────────────────────────
 
 export default function Login() {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [loading, setLoading] = useState(false)
   const { login } = useAuth()
   const navigate = useNavigate()
 
-  const handleSubmit = async (e) => {
-    e.preventDefault()
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    resolver: zodResolver(loginSchema),
+    mode: 'onTouched', // validate on blur, then live on change
+  })
+
+  const onSubmit = async (data) => {
     setLoading(true)
-
     try {
-      const result = await login(email, password)
-
+      const result = await login(data.email, data.password)
       if (!result) return // error already shown via toast
 
-      // Route based on profile completion
       if (!result.profile_complete) {
         navigate('/complete-profile')
       } else if (result.role === 'supervisor') {
@@ -35,70 +68,81 @@ export default function Login() {
   }
 
   return (
-    <AuthLayout 
-      title="The Digital Ledger" 
+    <AuthLayout
+      title="The Digital Ledger"
       subtitle="Access the permanent, immutable repository of verified work records and institutional provenance."
       isLogin={true}
     >
-      <form onSubmit={handleSubmit} className="space-y-6">
-        {/* Input: Email */}
-        <div className="space-y-1.5 group">
-          <label 
-            htmlFor="email" 
-            className="block text-[10px] font-bold uppercase tracking-[0.15em] text-muted-foreground ml-1 transition-colors group-focus-within:text-foreground"
+      <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-5">
+
+        {/* Email */}
+        <div className="space-y-0 group">
+          <label
+            htmlFor="email"
+            className="block text-[10px] font-bold uppercase tracking-widest text-muted-foreground ml-1 mb-1.5 transition-colors group-focus-within:text-foreground"
           >
             Institutional Email
           </label>
-          <div className="relative">
-            <input
-              type="email"
-              id="email"
-              placeholder="name@institution.edu"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full bg-background/50 border border-border/50 rounded-lg py-3.5 px-4 text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:ring-1 focus:ring-primary/50 focus:border-primary/50 transition-all font-medium shadow-sm hover:border-border"
-              required
-              disabled={loading}
-            />
-          </div>
+          <input
+            id="email"
+            type="email"
+            placeholder="name@institution.edu"
+            autoComplete="email"
+            disabled={loading}
+            {...register('email')}
+            className={`w-full bg-background/50 border rounded-lg py-3.5 px-4 text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:ring-1 transition-all font-medium shadow-sm hover:border-border ${
+              errors.email
+                ? 'border-red-500/50 focus:ring-red-500/30 focus:border-red-500/50'
+                : 'border-border/50 focus:ring-primary/50 focus:border-primary/50'
+            }`}
+          />
+          <FieldError message={errors.email?.message} />
         </div>
 
-        {/* Input: Password */}
-        <div className="space-y-1.5 group">
+        {/* Password */}
+        <div className="space-y-0 group">
           <div className="flex justify-between items-end mb-1.5">
-            <label 
-              htmlFor="password" 
-              className="block text-[10px] font-bold uppercase tracking-[0.15em] text-muted-foreground ml-1 transition-colors group-focus-within:text-foreground"
+            <label
+              htmlFor="password"
+              className="block text-[10px] font-bold uppercase tracking-widest text-muted-foreground ml-1 transition-colors group-focus-within:text-foreground"
             >
               Secure Passkey
             </label>
-            <Link to="#" className="text-[9px] font-bold text-muted-foreground hover:text-foreground transition-colors uppercase tracking-[0.1em]">
+            <Link
+              to="#"
+              className="text-[9px] font-bold text-muted-foreground hover:text-foreground transition-colors uppercase tracking-widest"
+            >
               Recovery Protocol
             </Link>
           </div>
           <div className="relative">
             <input
-              type={showPassword ? 'text' : 'password'}
               id="password"
+              type={showPassword ? 'text' : 'password'}
               placeholder="••••••••••••"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full bg-background/50 border border-border/50 rounded-lg py-3.5 px-4 pr-12 text-foreground font-mono placeholder:text-muted-foreground/40 focus:outline-none focus:ring-1 focus:ring-primary/50 focus:border-primary/50 transition-all shadow-sm hover:border-border tracking-wider"
-              required
+              autoComplete="current-password"
               disabled={loading}
+              {...register('password')}
+              className={`w-full bg-background/50 border rounded-lg py-3.5 px-4 pr-12 text-foreground font-mono placeholder:text-muted-foreground/40 focus:outline-none focus:ring-1 transition-all shadow-sm hover:border-border tracking-wider ${
+                errors.password
+                  ? 'border-red-500/50 focus:ring-red-500/30 focus:border-red-500/50'
+                  : 'border-border/50 focus:ring-primary/50 focus:border-primary/50'
+              }`}
             />
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
               className="absolute right-3 top-1/2 -translate-y-1/2 p-1.5 rounded-md hover:bg-border/50 text-muted-foreground hover:text-foreground transition-colors"
+              tabIndex={-1}
             >
               {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
             </button>
           </div>
+          <FieldError message={errors.password?.message} />
         </div>
 
-        {/* Primary Action */}
-        <div className="pt-2">
+        {/* Submit */}
+        <div className="pt-3">
           <button
             type="submit"
             disabled={loading}
@@ -115,17 +159,19 @@ export default function Login() {
           </button>
         </div>
       </form>
-      
-      {/* Footnote / Redirect */}
+
+      {/* Footer */}
       <div className="mt-8 text-center border-t border-border/10 pt-6">
         <p className="text-xs font-medium text-muted-foreground">
           Unverified entity?{' '}
-          <Link to="/signup" className="text-foreground font-bold hover:text-primary transition-colors underline-offset-4 hover:underline ml-1">
+          <Link
+            to="/signup"
+            className="text-foreground font-bold hover:text-primary transition-colors underline-offset-4 hover:underline ml-1"
+          >
             Initialize here
           </Link>
         </p>
       </div>
-
     </AuthLayout>
   )
 }
