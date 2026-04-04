@@ -2,8 +2,17 @@ import { NavLink } from 'react-router-dom'
 import { LayoutDashboard, Briefcase, Medal, User, Bell, LogOut, ChevronRight, Fingerprint } from 'lucide-react'
 import { useAuth } from '../../context/AuthContext'
 
+function getInitials(name = '') {
+  return name.split(' ').slice(0, 2).map((w) => w[0]?.toUpperCase() ?? '').join('') || '?'
+}
+
 export default function StudentLayout({ children, activeTitle = "Provenancy", activeSubtitle = "" }) {
-  const { logout } = useAuth()
+  const { logout, profile, user } = useAuth()
+
+  // Prefer profile.full_name, fall back to user.email prefix
+  const displayName = profile?.full_name || user?.email?.split('@')[0] || 'Student'
+  const ledgerId = profile?.ledger_id || user?.ledger_id || ''
+  const initials = getInitials(displayName)
   const navLinks = [
     { name: "Dashboard", path: "/student/dashboard", icon: LayoutDashboard },
     { name: "My Engagements", path: "/student/engagements", icon: Briefcase },
@@ -105,13 +114,13 @@ export default function StudentLayout({ children, activeTitle = "Provenancy", ac
             <div className="flex items-center gap-3 pl-2 pr-4 cursor-pointer group">
               <div className="relative">
                 <div className="w-8 h-8 rounded-full border border-border/50 bg-card flex items-center justify-center shrink-0 group-hover:border-primary/50 transition-colors">
-                  <span className="text-[10px] font-bold text-foreground">AR</span>
+                  <span className="text-[10px] font-bold text-foreground">{initials}</span>
                 </div>
                 <div className="absolute inset-0 rounded-full ring-2 ring-primary/20 scale-110 opacity-0 group-hover:opacity-100 transition-all"></div>
               </div>
               <div className="hidden md:block text-left">
-                <p className="text-[11px] font-bold text-foreground leading-none tracking-wide group-hover:text-primary transition-colors">Alex Rivera</p>
-                <p className="text-[9px] text-muted-foreground tracking-widest uppercase mt-1">PRV-99281</p>
+                <p className="text-[11px] font-bold text-foreground leading-none tracking-wide group-hover:text-primary transition-colors">{displayName}</p>
+                <p className="text-[9px] text-muted-foreground tracking-widest uppercase mt-1">{ledgerId}</p>
               </div>
             </div>
 

@@ -1,8 +1,41 @@
+import { useState, useEffect } from 'react'
 import { Terminal, Lightbulb, Activity, CheckCircle2, Clock, ShieldCheck, Network, Award } from 'lucide-react'
 import StudentLayout from '../components/workspace/StudentLayout'
 import { PageContainer, StatusBadge } from '../components/workspace/SharedPrimitives'
+import { getStudentMe } from '../lib/api'
+import { handleError } from '../lib/handleError'
+
+// ── Skeleton shimmer ──────────────────────────────────────────────────────────
+function Skeleton({ className = '' }) {
+  return (
+    <div
+      className={`animate-pulse bg-border/20 rounded-lg ${className}`}
+      aria-hidden="true"
+    />
+  )
+}
 
 export default function StudentDashboard() {
+  const [profileData, setProfileData] = useState(null)
+  const [loadingProfile, setLoadingProfile] = useState(true)
+
+  useEffect(() => {
+    async function load() {
+      try {
+        const res = await getStudentMe()
+        setProfileData(res.data)
+      } catch (err) {
+        handleError(err)
+      } finally {
+        setLoadingProfile(false)
+      }
+    }
+    load()
+  }, [])
+
+  const profile = profileData?.profile
+  const ledgerId = profileData?.ledger_id
+
   return (
     <StudentLayout>
       <PageContainer>
@@ -20,13 +53,41 @@ export default function StudentDashboard() {
               <div className="flex items-center gap-3 mb-4">
                 <div className="flex items-center gap-2 px-3 py-1 bg-accent/10 border border-accent/20 rounded-full">
                    <div className="w-1.5 h-1.5 bg-accent rounded-full animate-pulse"></div>
-                   <span className="text-[9px] font-bold uppercase tracking-widest text-accent">Active Ledger Profile</span>
+                   <span className="text-[9px] font-bold uppercase tracking-widest text-accent">
+                     Active Ledger Profile
+                   </span>
+                   {/* Real ledger ID */}
+                   {ledgerId && !loadingProfile && (
+                     <span className="text-[9px] font-mono text-accent/70 ml-1">· {ledgerId}</span>
+                   )}
                 </div>
               </div>
-              <h1 className="text-4xl md:text-5xl font-light tracking-tight text-foreground mb-2">Institutional Dashboard</h1>
-              <p className="text-muted-foreground text-sm max-w-xl leading-relaxed">
-                Your cryptographic record of professional engagement. All verified nodes represent immutable, supervisor-signed entries in the global competency network.
-              </p>
+
+              {loadingProfile ? (
+                <>
+                  <Skeleton className="h-10 w-72 mb-3" />
+                  <Skeleton className="h-4 w-96 mb-1" />
+                  <Skeleton className="h-4 w-64" />
+                </>
+              ) : (
+                <>
+                  <h1 className="text-4xl md:text-5xl font-light tracking-tight text-foreground mb-2">
+                    {profile?.full_name
+                      ? `Welcome, ${profile.full_name.split(' ')[0]}`
+                      : 'Institutional Dashboard'}
+                  </h1>
+                  <p className="text-muted-foreground text-sm max-w-xl leading-relaxed">
+                    {profile?.institution
+                      ? `Verified ledger profile for ${profile.institution}. All supervisor-signed entries are permanent and immutable.`
+                      : 'Your cryptographic record of professional engagement. All verified nodes represent immutable, supervisor-signed entries in the global competency network.'}
+                  </p>
+                  {profile?.title && (
+                    <p className="text-xs text-primary/70 font-mono mt-2 uppercase tracking-widest">
+                      {profile.title}
+                    </p>
+                  )}
+                </>
+              )}
             </div>
             
             {/* Quick Stats Bento */}

@@ -14,4 +14,40 @@ api.interceptors.request.use((config) => {
   return config
 })
 
+// ─── Student ─────────────────────────────────────────────────────────────────
+
+/** GET /student/me → { message, profile, profile_complete, ledger_id } */
+export const getStudentMe = () => api.get('/student/me')
+
+/**
+ * PUT /student/me
+ * @param {{ full_name?, title?, bio?, linkedin_url?, institution? }} data
+ */
+export const updateStudentMe = (data) => api.put('/student/me', data)
+
+/**
+ * GET /student/{studentId}/public — no auth required
+ * @param {string} studentId - Profile UUID (StudentProfile.id)
+ */
+export const getStudentPublic = (studentId) =>
+  api.get(`/student/${studentId}/public`)
+
+// ─── Supervisor ───────────────────────────────────────────────────────────────
+
+/** GET /supervisor/me → { message, profile, profile_complete, ledger_id } */
+export const getSupervisorMe = () => api.get('/supervisor/me')
+
+/**
+ * PUT /supervisor/me
+ * @param {{ full_name?, designation?, organization?, bio?, linkedin_url? }} data
+ */
+export const updateSupervisorMe = (data) => api.put('/supervisor/me', data)
+
+/**
+ * GET /supervisor/{supervisorId}/public — no auth required
+ * @param {string} supervisorId - Profile UUID (SupervisorProfile.id)
+ */
+export const getSupervisorPublic = (supervisorId) =>
+  api.get(`/supervisor/${supervisorId}/public`)
+
 export default api

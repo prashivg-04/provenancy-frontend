@@ -1,9 +1,60 @@
+import { useState, useEffect } from 'react'
 import { ShieldCheck, CircleAlert, CheckCircle2, XCircle, RefreshCcw, Terminal, Network, Search, Activity, Lock } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import SupervisorLayout from '../components/workspace/SupervisorLayout'
 import { PageContainer, StatusBadge } from '../components/workspace/SharedPrimitives'
+import { getSupervisorMe } from '../lib/api'
+import { handleError } from '../lib/handleError'
+
+// ── Skeleton shimmer ──────────────────────────────────────────────────────────
+function Skeleton({ className = '' }) {
+  return (
+    <div
+      className={`animate-pulse bg-border/20 rounded-lg ${className}`}
+      aria-hidden="true"
+    />
+  )
+}
+
+// ── Trust tier badge ──────────────────────────────────────────────────────────
+function TrustBadge({ tier }) {
+  if (!tier) return null
+  const isInstitutional = tier === 'institutional'
+  return (
+    <span
+      className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded text-[9px] font-bold uppercase tracking-widest border ${
+        isInstitutional
+          ? 'bg-primary/10 border-primary/30 text-primary'
+          : 'bg-muted/20 border-border/30 text-muted-foreground'
+      }`}
+    >
+      <span className={`w-1.5 h-1.5 rounded-full bg-current ${isInstitutional ? 'animate-pulse' : ''}`} />
+      {tier}
+    </span>
+  )
+}
 
 export default function SupervisorDashboard() {
+  const [profileData, setProfileData] = useState(null)
+  const [loadingProfile, setLoadingProfile] = useState(true)
+
+  useEffect(() => {
+    async function load() {
+      try {
+        const res = await getSupervisorMe()
+        setProfileData(res.data)
+      } catch (err) {
+        handleError(err)
+      } finally {
+        setLoadingProfile(false)
+      }
+    }
+    load()
+  }, [])
+
+  const profile = profileData?.profile
+  const ledgerId = profileData?.ledger_id
+
   const pendingRequests = [
     { name: "Alex Carter", title: "Stanford University • Graduate Research Assistant", duration: "6 months", hash: "0x82...91a" },
     { name: "Elena Rodriguez", title: "CERN Collaborations • PhD Candidate", duration: "12 months", hash: "0x4b...29c" }
@@ -33,16 +84,54 @@ export default function SupervisorDashboard() {
                 <div className="flex items-center gap-2 px-3 py-1 bg-destructive/10 border border-destructive/20 rounded-full">
                    <div className="w-1.5 h-1.5 bg-destructive rounded-full animate-pulse"></div>
                    <span className="text-[9px] font-bold uppercase tracking-widest text-destructive">Oracle View Active</span>
+                   {ledgerId && !loadingProfile && (
+                     <span className="text-[9px] font-mono text-destructive/60 ml-1">· {ledgerId}</span>
+                   )}
                 </div>
               </div>
-              <h1 className="text-4xl md:text-5xl font-light tracking-tight text-foreground mb-2">Registry Oversight</h1>
-              <p className="text-muted-foreground text-sm max-w-xl leading-relaxed">
-                Institutional ledger management for verified student engagements and professional milestones. Validating the integrity of the professional record.
-              </p>
+
+              {loadingProfile ? (
+                <>
+                  <Skeleton className="h-10 w-72 mb-3" />
+                  <Skeleton className="h-4 w-96 mb-1" />
+                  <Skeleton className="h-4 w-64" />
+                </>
+              ) : (
+                <>
+                  <h1 className="text-4xl md:text-5xl font-light tracking-tight text-foreground mb-2">
+                    Registry Oversight
+                  </h1>
+                  <p className="text-muted-foreground text-sm max-w-xl leading-relaxed">
+                    {profile?.organization
+                      ? `Institutional ledger management for ${profile.organization}. Validating the integrity of the professional record.`
+                      : 'Institutional ledger management for verified student engagements and professional milestones. Validating the integrity of the professional record.'}
+                  </p>
+                  {/* Real identity line */}
+                  {(profile?.full_name || profile?.designation) && (
+                    <p className="text-xs text-primary/70 font-mono mt-2 uppercase tracking-widest">
+                      {[profile.full_name, profile.designation].filter(Boolean).join(' · ')}
+                    </p>
+                  )}
+                </>
+              )}
             </div>
             
-            {/* Quick Actions / Node Sync */}
-             <div className="bg-primary/5 rounded-2xl border border-primary/20 p-4 min-w-[200px] flex items-center justify-between shadow-[0_0_15px_rgba(26,35,126,0.1)]">
+            {/* Trust + Sync card */}
+            <div className="flex flex-col gap-3">
+              {/* Real trust tier display */}
+              {!loadingProfile && profile?.trust_tier && (
+                <div className="bg-card/50 backdrop-blur-md border border-border/30 rounded-xl px-4 py-3 flex items-center gap-3">
+                  <ShieldCheck className="w-4 h-4 text-muted-foreground" />
+                  <div className="flex flex-col gap-1">
+                    <span className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground">Trust Tier</span>
+                    <TrustBadge tier={profile.trust_tier} />
+                  </div>
+                </div>
+              )}
+              {loadingProfile && <Skeleton className="h-16 w-[200px]" />}
+
+              {/* Consensus sync */}
+              <div className="bg-primary/5 rounded-2xl border border-primary/20 p-4 min-w-[200px] flex items-center justify-between shadow-[0_0_15px_rgba(26,35,126,0.1)]">
                 <div className="flex gap-3 items-center">
                   <Network className="w-4 h-4 text-primary" />
                   <span className="text-[10px] uppercase font-bold tracking-[0.2em] text-primary leading-tight">Consensus<br/>Sync</span>
@@ -51,6 +140,7 @@ export default function SupervisorDashboard() {
                    <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse shadow-[0_0_5px_hsl(var(--primary))]"></div>
                    <span className="text-[10px] font-mono text-primary">Live</span>
                 </div>
+              </div>
             </div>
           </div>
         </div>

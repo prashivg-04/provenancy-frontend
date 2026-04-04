@@ -2,9 +2,17 @@ import { LayoutDashboard, FileText, User, Bell, LogOut, ShieldCheck, ChevronRigh
 import { Link, useLocation } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
 
+function getInitials(name = '') {
+  return name.split(' ').slice(0, 2).map((w) => w[0]?.toUpperCase() ?? '').join('') || '?'
+}
+
 export default function SupervisorLayout({ children }) {
   const location = useLocation()
-  const { logout } = useAuth()
+  const { logout, profile, user } = useAuth()
+
+  const displayName = profile?.full_name || user?.email?.split('@')[0] || 'Supervisor'
+  const ledgerId = profile?.ledger_id || user?.ledger_id || ''
+  const initials = getInitials(displayName)
 
   const navLinks = [
     { name: "Dashboard", path: "/supervisor/dashboard", icon: LayoutDashboard },
@@ -112,13 +120,13 @@ export default function SupervisorLayout({ children }) {
             <div className="flex items-center gap-3 pl-2 pr-4 cursor-pointer group">
               <div className="relative">
                 <div className="w-8 h-8 rounded-full border border-border/50 bg-card flex items-center justify-center shrink-0 group-hover:border-primary/50 transition-colors">
-                  <span className="text-[10px] font-bold text-foreground">JV</span>
+                  <span className="text-[10px] font-bold text-foreground">{initials}</span>
                 </div>
                 <div className="absolute inset-0 rounded-full ring-2 ring-primary/20 scale-110 opacity-0 group-hover:opacity-100 transition-all"></div>
               </div>
               <div className="hidden md:block text-left">
-                <p className="text-[11px] font-bold text-foreground leading-none tracking-wide group-hover:text-primary transition-colors">Dr. Julian Vance</p>
-                <p className="text-[9px] text-primary/80 tracking-[0.1em] uppercase mt-1 font-bold">Verified Admin</p>
+                <p className="text-[11px] font-bold text-foreground leading-none tracking-wide group-hover:text-primary transition-colors">{displayName}</p>
+                <p className="text-[9px] text-primary/80 tracking-widest uppercase mt-1 font-bold">{ledgerId}</p>
               </div>
             </div>
 
