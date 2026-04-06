@@ -141,7 +141,7 @@ export default function SupervisorLayout({ children }) {
         {/* Active Page Payload */}
         <main className="flex-1 overflow-y-auto w-full flex flex-col relative">
           {/* Subtle grid pattern background for the content area */}
-          <div className="absolute inset-0 bg-[#ffffff03] bg-[length:24px_24px] pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle, var(--tw-colors-border) 1px, transparent 1px)' }}></div>
+          <div className="absolute inset-0 bg-[#ffffff03] bg-size-[24px_24px] pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle, var(--tw-colors-border) 1px, transparent 1px)' }}></div>
           {children}
         </main>
       </div>

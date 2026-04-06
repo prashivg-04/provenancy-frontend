@@ -199,7 +199,7 @@ export default function StudentDashboard() {
                 <div>
                   <div className="flex justify-between items-end mb-2">
                     <span className="text-sm font-medium text-foreground">Python Architecture</span>
-                    <span className="text-[9px] text-primary uppercase font-bold tracking-[0.1em] px-2 py-0.5 bg-primary/10 rounded border border-primary/20">Gold Standard</span>
+                    <span className="text-[9px] text-primary uppercase font-bold tracking-widest px-2 py-0.5 bg-primary/10 rounded border border-primary/20">Gold Standard</span>
                   </div>
                   <div className="h-1.5 w-full bg-background border border-border/50 overflow-hidden rounded-full mb-3">
                     <div className="h-full bg-linear-to-r from-primary to-accent w-[85%] relative">
@@ -217,7 +217,7 @@ export default function StudentDashboard() {
                 <div>
                   <div className="flex justify-between items-end mb-2">
                     <span className="text-sm font-medium text-foreground">Cloud Infrastructure</span>
-                    <span className="text-[9px] text-muted-foreground uppercase font-bold tracking-[0.1em]">Verified Level II</span>
+                    <span className="text-[9px] text-muted-foreground uppercase font-bold tracking-widest">Verified Level II</span>
                   </div>
                   <div className="h-1.5 w-full bg-background border border-border/50 overflow-hidden rounded-full mb-3">
                     <div className="h-full bg-muted-foreground/40 w-[60%]"></div>
@@ -232,7 +232,7 @@ export default function StudentDashboard() {
 
             {/* Protocol Integrity Card */}
             <div className="bg-background/40 backdrop-blur-sm rounded-2xl border border-border/50 p-6 flex items-start gap-4">
-               <div className="w-10 h-10 rounded-full bg-muted/50 border border-border/50 flex flex-shrink-0 items-center justify-center">
+               <div className="w-10 h-10 rounded-full bg-muted/50 border border-border/50 flex shrink-0 items-center justify-center">
                   <ShieldCheck className="w-5 h-5 text-muted-foreground" />
                </div>
                <div>

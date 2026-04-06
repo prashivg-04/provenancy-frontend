@@ -153,8 +153,8 @@ export default function SupervisorDashboard() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-16">
           
           {/* Highlight Action Card */}
-          <div className="md:col-span-2 bg-background/40 backdrop-blur-xl p-8 rounded-[2rem] border border-border/20 relative overflow-hidden group hover:border-primary/40 transition-all shadow-sm">
-            <div className="absolute -top-10 -right-10 w-48 h-48 bg-primary/10 rounded-full blur-[40px] group-hover:bg-primary/20 transition-colors pointer-events-none"></div>
+          <div className="md:col-span-2 bg-background/40 backdrop-blur-xl p-8 rounded-4xl border border-border/20 relative overflow-hidden group hover:border-primary/40 transition-all shadow-sm">
+            <div className="absolute -top-10 -right-10 w-48 h-48 bg-primary/10 rounded-full blur-2xl group-hover:bg-primary/20 transition-colors pointer-events-none"></div>
             
             <p className="text-[10px] text-muted-foreground font-bold tracking-[0.2em] mb-8 uppercase flex items-center gap-2">
               <CircleAlert className="w-3.5 h-3.5 text-primary" /> 
@@ -175,7 +175,7 @@ export default function SupervisorDashboard() {
           </div>
 
           {/* Metric Card 1 */}
-          <div className="bg-card/30 backdrop-blur-md p-8 rounded-[2rem] border border-border/20 flex flex-col justify-between hover:bg-card/50 transition-colors">
+          <div className="bg-card/30 backdrop-blur-md p-8 rounded-4xl border border-border/20 flex flex-col justify-between hover:bg-card/50 transition-colors">
             <p className="text-[10px] text-muted-foreground font-bold tracking-[0.2em] uppercase">Approved Blocks</p>
             <div className="mt-6">
               <span className="text-4xl font-light text-foreground tracking-tight">485</span>
@@ -186,7 +186,7 @@ export default function SupervisorDashboard() {
           </div>
 
           {/* Metric Card 2 */}
-          <div className="bg-card/30 backdrop-blur-md p-8 rounded-[2rem] border border-border/20 flex flex-col justify-between hover:bg-card/50 transition-colors">
+          <div className="bg-card/30 backdrop-blur-md p-8 rounded-4xl border border-border/20 flex flex-col justify-between hover:bg-card/50 transition-colors">
             <p className="text-[10px] text-muted-foreground font-bold tracking-[0.2em] uppercase">Forged Rejections</p>
             <div className="mt-6">
               <span className="text-4xl font-light text-foreground tracking-tight">14</span>

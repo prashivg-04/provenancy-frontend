@@ -14,6 +14,10 @@ api.interceptors.request.use((config) => {
   return config
 })
 
+/** GET /skills/search → array of objects { id, name } */
+export const searchSkills = (query) =>
+  api.get(`/skills/search?q=${encodeURIComponent(query)}`)
+
 // ─── Student ─────────────────────────────────────────────────────────────────
 
 /** GET /student/me → { message, profile, profile_complete, ledger_id } */

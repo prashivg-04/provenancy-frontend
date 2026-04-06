@@ -86,7 +86,7 @@ export default function PublicSupervisorProfile() {
       <div className="fixed inset-0 pointer-events-none z-0">
         <div className="absolute top-0 right-[20%] w-[600px] h-[600px] bg-primary/5 rounded-full blur-[150px]"></div>
         <div className="absolute bottom-[-10%] left-[-10%] w-[500px] h-[500px] bg-primary/10 rounded-full blur-[180px]"></div>
-        <div className="absolute inset-0 bg-[#ffffff02] bg-[length:32px_32px]" style={{ backgroundImage: 'radial-gradient(circle, var(--tw-colors-border) 1px, transparent 1px)' }}></div>
+        <div className="absolute inset-0 bg-[#ffffff02] bg-size-[32px_32px]" style={{ backgroundImage: 'radial-gradient(circle, var(--tw-colors-border) 1px, transparent 1px)' }}></div>
       </div>
 
       {/* Workspace Return Bar */}
@@ -132,8 +132,8 @@ export default function PublicSupervisorProfile() {
                 <div className="flex items-center gap-10 relative z-10">
                   {/* Avatar initials */}
                   <div className="relative group">
-                    <div className="absolute inset-0 bg-primary rounded-[2rem] blur-[20px] opacity-20 group-hover:opacity-40 transition-opacity"></div>
-                    <div className="w-32 h-32 lg:w-40 lg:h-40 rounded-[2rem] bg-background border border-border/40 p-2 relative z-10 overflow-hidden shadow-2xl">
+                    <div className="absolute inset-0 bg-primary rounded-4xl blur-[20px] opacity-20 group-hover:opacity-40 transition-opacity"></div>
+                    <div className="w-32 h-32 lg:w-40 lg:h-40 rounded-4xl bg-background border border-border/40 p-2 relative z-10 overflow-hidden shadow-2xl">
                        <div className="w-full h-full bg-card rounded-xl flex items-center justify-center relative overflow-hidden">
                          <div className="absolute inset-0 bg-primary/5"></div>
                          <span className="text-5xl font-light text-foreground/80 tracking-tighter">{initials}</span>
@@ -276,7 +276,7 @@ export default function PublicSupervisorProfile() {
                 </div>
 
                 {engagements.length === 0 ? (
-                  <div className="flex flex-col items-center justify-center py-24 border border-dashed border-border/20 rounded-[2rem] text-center">
+                  <div className="flex flex-col items-center justify-center py-24 border border-dashed border-border/20 rounded-4xl text-center">
                     <Activity className="w-10 h-10 text-muted-foreground/30 mb-4" />
                     <h3 className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-2">No Verification Logs</h3>
                     <p className="text-sm text-muted-foreground/60 max-w-xs leading-relaxed">This supervisor has no signed verification records on the ledger yet.</p>
@@ -296,8 +296,8 @@ export default function PublicSupervisorProfile() {
                         {/* Horizontal connecting line */}
                         <div className="absolute -left-8 md:-left-16 top-8 w-8 md:w-16 h-[2px] bg-primary/40 -z-10 transition-colors duration-300 group-hover:bg-primary"></div>
 
-                        <article className="bg-card/10 backdrop-blur-xl border border-border/20 hover:border-border/50 transition-all rounded-[2rem] p-8 md:p-10 relative overflow-hidden">
-                          <div className="absolute inset-x-0 bottom-0 h-1/2 bg-linear-to-t from-primary/5 to-transparent blur-[40px] opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
+                        <article className="bg-card/10 backdrop-blur-xl border border-border/20 hover:border-border/50 transition-all rounded-4xl p-8 md:p-10 relative overflow-hidden">
+                          <div className="absolute inset-x-0 bottom-0 h-1/2 bg-linear-to-t from-primary/5 to-transparent blur-2xl opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
 
                           <div className="flex flex-col gap-6 relative z-10">
                             <div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
@@ -340,7 +340,7 @@ export default function PublicSupervisorProfile() {
               {/* Column 3: Endorsed Domains — Coming Soon (Col-3) */}
               <div className="lg:col-span-3 space-y-8">
                 <div className="bg-card/20 backdrop-blur-xl border border-border/30 rounded-3xl p-8 relative overflow-hidden pb-12">
-                  <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full blur-[40px] pointer-events-none"></div>
+                  <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full blur-2xl pointer-events-none"></div>
                   
                   <div className="flex items-center gap-3 border-b border-border/20 pb-6 mb-8">
                     <Hexagon className="w-4 h-4 text-primary" />
