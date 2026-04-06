@@ -4,7 +4,7 @@ import { useAuth } from '../context/AuthContext'
 import Footer from '../components/Footer'
 import {
   ArrowLeft, Fingerprint, Lock, ShieldCheck, FileCheck,
-  CheckCircle2, Activity, Hexagon, Terminal, Network, Loader2
+  CheckCircle2, Activity, Hexagon, Terminal, Network, Loader2, Shield
 } from 'lucide-react'
 import { getStudentPublic } from '../lib/api'
 import { handleError } from '../lib/handleError'
@@ -353,20 +353,38 @@ export default function PublicStudentProfile() {
 
               {/* Column 3: Verified Capabilities (Col-3) */}
               <div className="lg:col-span-3 space-y-8">
-                <div className="bg-card/20 backdrop-blur-xl border border-border/30 rounded-3xl p-8 relative overflow-hidden pb-12">
+                <div className="bg-card/20 backdrop-blur-xl border border-border/30 rounded-3xl p-8 relative overflow-hidden pb-12 flex flex-col min-h-[400px]">
                   <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full blur-2xl pointer-events-none"></div>
                   
-                  <div className="flex items-center gap-3 border-b border-border/20 pb-6 mb-8">
+                  <div className="flex items-center gap-3 border-b border-border/20 pb-6 mb-8 relative z-10">
                     <Hexagon className="w-4 h-4 text-primary" />
-                    <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-foreground">Verified Capabilities</span>
+                    <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-foreground flex-1">Skills Profile</span>
                   </div>
                   
-                  <div className="flex flex-col items-center justify-center py-8 text-center">
-                    <div className="w-10 h-10 rounded-full bg-border/10 flex items-center justify-center mb-4">
-                      <Hexagon className="w-5 h-5 text-muted-foreground/30" />
-                    </div>
-                    <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/60">Skills Module</p>
-                    <p className="text-[9px] text-muted-foreground/40 mt-1">Coming Soon</p>
+                  <div className="relative z-10 flex-1 flex flex-col">
+                    {(!data?.skills || (data.skills.verified.length === 0 && data.skills.declared.length === 0)) ? (
+                      <div className="flex flex-col items-center justify-center py-8 text-center h-full opacity-60">
+                         <Shield className="w-8 h-8 text-muted-foreground/50 mb-3" />
+                         <span className="text-[11px] text-muted-foreground uppercase tracking-widest font-bold">No skills declared yet</span>
+                      </div>
+                    ) : (
+                      <div className="flex flex-wrap gap-2">
+                        {data.skills.verified.map((skill, i) => (
+                           <div key={`v-${i}`} className="group relative overflow-hidden px-3 py-1.5 bg-primary/10 border border-primary/30 rounded-xl flex items-center gap-2 shadow-sm transition-all hover:bg-primary/20 hover:border-primary/50 hover:-translate-y-0.5 hover:shadow-[0_4px_12px_-3px_rgba(26,35,126,0.2)]">
+                              <div className="absolute inset-0 bg-linear-to-r from-primary/0 via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
+                              <Shield className="w-3 h-3 text-primary" />
+                              <span className="text-[11px] font-bold tracking-wide text-foreground capitalize relative z-10">{skill.name}</span>
+                              <span className="text-[7px] bg-primary/20 px-1 py-0.5 rounded text-primary border border-primary/20 uppercase tracking-widest font-bold relative z-10 ml-0.5">Verified</span>
+                           </div>
+                        ))}
+                        {data.skills.declared.map((skill, i) => (
+                           <div key={`d-${i}`} className="group relative overflow-hidden px-3 py-1.5 bg-background/50 backdrop-blur-sm border border-border/60 hover:border-border rounded-xl flex items-center gap-2 transition-all hover:bg-card/80 hover:-translate-y-0.5 shadow-sm hover:shadow-md cursor-default">
+                             <div className="absolute inset-0 bg-linear-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
+                             <span className="text-[11px] font-bold tracking-wide text-muted-foreground group-hover:text-foreground capitalize transition-colors relative z-10">{skill.name}</span>
+                           </div>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 </div>
 

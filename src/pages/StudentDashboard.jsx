@@ -2,7 +2,8 @@ import { useState, useEffect } from 'react'
 import { Terminal, Lightbulb, Activity, CheckCircle2, Clock, ShieldCheck, Network, Award } from 'lucide-react'
 import StudentLayout from '../components/workspace/StudentLayout'
 import { PageContainer, StatusBadge } from '../components/workspace/SharedPrimitives'
-import { getStudentMe } from '../lib/api'
+import { useNavigate } from 'react-router-dom'
+import { getStudentMe, getUserSkills } from '../lib/api'
 import { handleError } from '../lib/handleError'
 
 // ── Skeleton shimmer ──────────────────────────────────────────────────────────
@@ -16,18 +17,24 @@ function Skeleton({ className = '' }) {
 }
 
 export default function StudentDashboard() {
+  const navigate = useNavigate()
   const [profileData, setProfileData] = useState(null)
-  const [loadingProfile, setLoadingProfile] = useState(true)
+  const [skills, setSkills] = useState({ declared: [], verified: [] })
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     async function load() {
       try {
-        const res = await getStudentMe()
-        setProfileData(res.data)
+        const [profileRes, skillsRes] = await Promise.all([
+          getStudentMe(),
+          getUserSkills()
+        ])
+        setProfileData(profileRes.data)
+        setSkills(skillsRes.data)
       } catch (err) {
         handleError(err)
       } finally {
-        setLoadingProfile(false)
+        setLoading(false)
       }
     }
     load()
@@ -57,13 +64,13 @@ export default function StudentDashboard() {
                      Active Ledger Profile
                    </span>
                    {/* Real ledger ID */}
-                   {ledgerId && !loadingProfile && (
+                   {ledgerId && !loading && (
                      <span className="text-[9px] font-mono text-accent/70 ml-1">· {ledgerId}</span>
                    )}
                 </div>
               </div>
 
-              {loadingProfile ? (
+              {loading ? (
                 <>
                   <Skeleton className="h-10 w-72 mb-3" />
                   <Skeleton className="h-4 w-96 mb-1" />
@@ -188,45 +195,57 @@ export default function StudentDashboard() {
           <div className="xl:col-span-4 space-y-6">
             
             {/* Endorsed Proficiencies Bento */}
-            <div className="bg-card/30 backdrop-blur-md rounded-2xl border border-border/50 p-6 shadow-sm overflow-hidden relative group">
+            <div className="bg-card/30 backdrop-blur-md rounded-2xl border border-border/50 p-6 shadow-sm overflow-hidden relative group flex flex-col min-h-[300px]">
               <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full blur-3xl group-hover:bg-primary/10 transition-colors"></div>
-              <h2 className="text-[11px] font-bold text-foreground uppercase tracking-[0.2em] mb-6 flex items-center gap-2 relative z-10">
-                <Award className="w-4 h-4 text-primary" /> Endorsed Proficiencies
-              </h2>
               
-              <div className="space-y-6 relative z-10">
-                {/* Skill 1 */}
-                <div>
-                  <div className="flex justify-between items-end mb-2">
-                    <span className="text-sm font-medium text-foreground">Python Architecture</span>
-                    <span className="text-[9px] text-primary uppercase font-bold tracking-widest px-2 py-0.5 bg-primary/10 rounded border border-primary/20">Gold Standard</span>
+              <div className="flex items-center justify-between mb-6 relative z-10">
+                <h2 className="text-[11px] font-bold text-foreground uppercase tracking-[0.2em] flex items-center gap-2">
+                  <Award className="w-4 h-4 text-primary" /> Endorsed Proficiencies
+                </h2>
+                <button 
+                  onClick={() => navigate('/student/skills')}
+                  className="text-[10px] font-bold tracking-[0.15em] text-primary uppercase hover:bg-primary/10 px-3 py-1.5 rounded-md transition-colors border border-transparent hover:border-primary/20"
+                >
+                  Manage Assets
+                </button>
+              </div>
+              
+              <div className="space-y-6 relative z-10 flex-1">
+                {skills.verified.length === 0 && skills.declared.length === 0 && !loading && (
+                  <div className="flex flex-col items-center justify-center h-[100px] opacity-50 text-center space-y-2 py-4">
+                    <ShieldCheck className="w-8 h-8 text-primary/40" />
+                    <p className="text-xs">No skills configured in registry.</p>
                   </div>
-                  <div className="h-1.5 w-full bg-background border border-border/50 overflow-hidden rounded-full mb-3">
-                    <div className="h-full bg-linear-to-r from-primary to-accent w-[85%] relative">
-                       <div className="absolute top-0 right-0 bottom-0 w-10 bg-linear-to-r from-transparent to-white/30 animate-[shimmer_2s_infinite]"></div>
+                )}
+                
+                {skills.verified.map((v, i) => (
+                  <div key={`v-${i}`}>
+                    <div className="flex justify-between items-end mb-2">
+                      <span className="text-sm font-medium text-foreground capitalize">{v.name}</span>
+                      <span className="text-[9px] text-primary uppercase font-bold tracking-widest px-2 py-0.5 bg-primary/10 rounded border border-primary/20">
+                        {v.count > 3 ? "Gold Standard" : (v.count > 1 ? "Verified Level II" : "Verified Level I")}
+                      </span>
+                    </div>
+                    <div className="h-1.5 w-full bg-background border border-border/50 overflow-hidden rounded-full">
+                      <div className="h-full bg-linear-to-r from-primary to-accent relative" style={{ width: `${Math.min(30 + v.count * 20, 100)}%` }}>
+                         <div className="absolute top-0 right-0 bottom-0 w-10 bg-linear-to-r from-transparent to-white/30 animate-[shimmer_2s_infinite]"></div>
+                      </div>
                     </div>
                   </div>
-                  <div className="flex flex-wrap gap-2">
-                    <span className="text-[9px] px-2 py-1 bg-card border border-border text-muted-foreground font-bold rounded uppercase tracking-widest hover:border-primary/50 transition-colors cursor-default">Django</span>
-                    <span className="text-[9px] px-2 py-1 bg-card border border-border text-muted-foreground font-bold rounded uppercase tracking-widest hover:border-primary/50 transition-colors cursor-default">FastAPI</span>
-                    <span className="text-[9px] px-2 py-1 bg-card border border-border text-muted-foreground font-bold rounded uppercase tracking-widest hover:border-primary/50 transition-colors cursor-default">PyTest</span>
-                  </div>
-                </div>
+                ))}
 
-                {/* Skill 2 */}
-                <div>
-                  <div className="flex justify-between items-end mb-2">
-                    <span className="text-sm font-medium text-foreground">Cloud Infrastructure</span>
-                    <span className="text-[9px] text-muted-foreground uppercase font-bold tracking-widest">Verified Level II</span>
+                {skills.declared.length > 0 && (
+                  <div className="pt-2 border-t border-border/10 mt-2">
+                    <h3 className="text-[10px] uppercase font-bold text-muted-foreground tracking-widest mb-3">Declared</h3>
+                    <div className="flex flex-wrap gap-2">
+                      {skills.declared.map((d, i) => (
+                        <span key={`d-${i}`} className="text-[9px] px-2 py-1 bg-card border border-border text-muted-foreground font-bold rounded uppercase tracking-widest hover:border-primary/50 transition-colors cursor-default">
+                          {d.name}
+                        </span>
+                      ))}
+                    </div>
                   </div>
-                  <div className="h-1.5 w-full bg-background border border-border/50 overflow-hidden rounded-full mb-3">
-                    <div className="h-full bg-muted-foreground/40 w-[60%]"></div>
-                  </div>
-                  <div className="flex flex-wrap gap-2">
-                    <span className="text-[9px] px-2 py-1 bg-card border border-border text-muted-foreground font-bold rounded uppercase tracking-widest hover:border-primary/50 transition-colors cursor-default">Docker</span>
-                    <span className="text-[9px] px-2 py-1 bg-card border border-border text-muted-foreground font-bold rounded uppercase tracking-widest hover:border-primary/50 transition-colors cursor-default">AWS EC2</span>
-                  </div>
-                </div>
+                )}
               </div>
             </div>
 

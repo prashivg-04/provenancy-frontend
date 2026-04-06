@@ -1,12 +1,13 @@
 import { useState, useEffect } from 'react'
-import { Save, ExternalLink, User as UserIcon, Loader2, Lock, Edit2 } from 'lucide-react'
+import { Save, ExternalLink, User as UserIcon, Loader2, Lock, Edit2, Shield } from 'lucide-react'
 import StudentLayout from '../components/workspace/StudentLayout'
 import { FormSection } from '../components/workspace/FormElements'
 import { Link } from 'react-router-dom'
 import { PageContainer } from '../components/workspace/SharedPrimitives'
-import { getStudentMe, updateStudentMe } from '../lib/api'
+import { getStudentMe, updateStudentMe, getUserSkills } from '../lib/api'
 import { handleError } from '../lib/handleError'
 import { useAuth } from '../context/AuthContext'
+import { useNavigate } from 'react-router-dom'
 import toast from 'react-hot-toast'
 
 // ── Shared input classes ──────────────────────────────────────────────────────
@@ -29,9 +30,11 @@ function Skeleton({ className = '' }) {
 
 export default function Profile() {
   const { user } = useAuth()
+  const navigate = useNavigate()
 
   const [profileId, setProfileId] = useState(null) // UUID for public link
   const [ledgerId, setLedgerId] = useState(null)
+  const [skills, setSkills] = useState({ declared: [], verified: [] })
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [isEditing, setIsEditing] = useState(false)
@@ -49,10 +52,14 @@ export default function Profile() {
   useEffect(() => {
     async function load() {
       try {
-        const res = await getStudentMe()
+        const [res, skillsRes] = await Promise.all([
+          getStudentMe(),
+          getUserSkills()
+        ])
         const { profile, ledger_id } = res.data
         setProfileId(profile.id)
         setLedgerId(ledger_id)
+        setSkills(skillsRes.data)
         const initialForm = {
           full_name: profile.full_name ?? '',
           title: profile.title ?? '',
@@ -294,38 +301,60 @@ export default function Profile() {
                   </FormSection>
                 </div>
 
-                {/* Skills Management — UI only, no API yet */}
-                <FormSection title="Skills Management" subTitle="Automated network cross-referencing.">
+                {/* Skills Management */}
+                <FormSection title="Skills Repository" subTitle="Cryptographically verified competences linked to your identity.">
                   <div className="space-y-6 mt-2 relative">
-                    {/* Coming Soon overlay */}
-                    <div className="absolute inset-0 bg-background/60 backdrop-blur-sm rounded-xl z-10 flex items-center justify-center">
-                      <div className="flex items-center gap-2 px-4 py-2 bg-card border border-border/50 rounded-full shadow-sm">
-                        <span className="w-1.5 h-1.5 rounded-full bg-muted-foreground/50"></span>
-                        <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Skills API — Coming Soon</span>
-                      </div>
-                    </div>
-                    <div className="flex flex-col sm:flex-row gap-4 items-end opacity-30 pointer-events-none select-none">
-                      <div className="flex-1 w-full">
-                        <label className={labelCls}>Add Registry Skill</label>
-                        <input
-                          type="text"
-                          placeholder="e.g. Data Analysis, React, Quantum Physics..."
-                          className={inputCls}
-                          disabled
-                        />
+                    <div className="flex flex-col sm:flex-row gap-4 items-end">
+                      <div className="flex-1 w-full flex flex-col gap-2">
+                         <span className="text-xs text-muted-foreground">
+                           Your skills are managed in the dedicated Skill Repository where you can track endorsements and validations.
+                         </span>
                       </div>
                       <button
                         type="button"
-                        disabled
-                        className="w-full sm:w-auto px-8 py-2 bg-muted/40 border border-border/30 text-foreground font-bold text-[10px] uppercase tracking-widest rounded-xl h-[44px] mb-[2px]"
+                        onClick={() => navigate('/student/skills')}
+                        className="group relative overflow-hidden w-full sm:w-auto px-6 py-2.5 bg-background border border-primary/20 hover:border-primary/50 text-primary font-bold text-[10px] uppercase tracking-widest rounded-xl transition-all shadow-sm flex items-center justify-center gap-2"
                       >
-                        Inject Node
+                        <div className="absolute inset-0 bg-linear-to-r from-primary/0 via-primary/10 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700 ease-in-out"></div>
+                        <span className="relative z-10 flex items-center gap-2">
+                           <Edit2 className="w-3.5 h-3.5 group-hover:-rotate-12 transition-transform" />
+                           Manage Assets
+                        </span>
                       </button>
                     </div>
                     
-                    <div className="flex flex-wrap gap-2.5 p-5 bg-card/60 backdrop-blur-sm border border-border/20 rounded-2xl shadow-inner opacity-30 pointer-events-none select-none">
-                      <span className="px-4 py-2 bg-primary/10 border border-primary/20 text-primary rounded-lg text-[11px] font-bold uppercase tracking-widest">Data Analysis</span>
-                      <span className="px-4 py-2 bg-primary/10 border border-primary/20 text-primary rounded-lg text-[11px] font-bold uppercase tracking-widest">Machine Learning</span>
+                    <div className="relative p-6 bg-card/20 backdrop-blur-xl border border-border/40 rounded-2xl shadow-[inset_0_0_20px_rgba(0,0,0,0.2)] min-h-[140px] overflow-hidden flex flex-col">
+                      <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-3xl pointer-events-none"></div>
+                      <div className="absolute bottom-0 left-0 w-40 h-40 bg-accent/5 rounded-full blur-3xl pointer-events-none"></div>
+                      
+                      {loading ? (
+                         <div className="w-full h-full flex-1 flex flex-col items-center justify-center gap-3">
+                            <Loader2 className="w-6 h-6 text-primary/50 animate-spin" />
+                            <span className="text-[10px] uppercase tracking-widest text-muted-foreground font-bold">Synchronizing...</span>
+                         </div>
+                      ) : skills.verified.length === 0 && skills.declared.length === 0 ? (
+                         <div className="w-full h-full flex-1 flex flex-col items-center justify-center gap-3 opacity-60 py-4">
+                           <Shield className="w-8 h-8 text-muted-foreground/50" />
+                           <span className="text-[11px] text-muted-foreground uppercase tracking-widest font-bold">No skills declared yet</span>
+                         </div>
+                      ) : (
+                         <div className="flex flex-wrap gap-3 relative z-10">
+                           {skills.verified.map((skill, i) => (
+                             <div key={`v-${i}`} className="group relative overflow-hidden px-4 py-2 bg-primary/10 border border-primary/30 rounded-xl flex items-center gap-2 shadow-sm transition-all hover:bg-primary/20 hover:border-primary/50 hover:-translate-y-0.5 hover:shadow-[0_5px_15px_-3px_rgba(26,35,126,0.2)]">
+                                <div className="absolute inset-0 bg-linear-to-r from-primary/0 via-white/10 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"></div>
+                                <Shield className="w-3.5 h-3.5 text-primary" />
+                                <span className="text-[12px] font-bold tracking-wide text-foreground capitalize relative z-10">{skill.name}</span>
+                                <span className="text-[8px] bg-primary/20 px-1.5 py-0.5 rounded text-primary border border-primary/20 uppercase tracking-widest font-bold relative z-10 ml-1">Verified</span>
+                             </div>
+                           ))}
+                           {skills.declared.map((skill, i) => (
+                             <div key={`d-${i}`} className="group relative overflow-hidden px-4 py-2 bg-background/50 backdrop-blur-sm border border-border/60 hover:border-border rounded-xl flex items-center gap-2 transition-all hover:bg-card/80 hover:-translate-y-0.5 shadow-sm hover:shadow-md cursor-default">
+                               <div className="absolute inset-0 bg-linear-to-r from-transparent via-white/5 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"></div>
+                               <span className="text-[12px] font-bold tracking-wide text-muted-foreground group-hover:text-foreground capitalize transition-colors relative z-10">{skill.name}</span>
+                             </div>
+                           ))}
+                         </div>
+                      )}
                     </div>
                   </div>
                 </FormSection>

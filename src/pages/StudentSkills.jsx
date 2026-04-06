@@ -3,10 +3,13 @@ import { Plus, X, Search, BadgeCheck, Shield, ChevronRight, Loader2, Save } from
 import toast from 'react-hot-toast'
 import StudentLayout from '../components/workspace/StudentLayout'
 import { PageContainer } from '../components/workspace/SharedPrimitives'
-import { searchSkills } from '../lib/api'
+import { searchSkills, getUserSkills, addDeclaredSkills, deleteDeclaredSkill } from '../lib/api'
 
 export default function StudentSkills() {
   const [declaredSkills, setDeclaredSkills] = useState([])
+  const [stagedSkills, setStagedSkills] = useState([])
+  const [verifiedSkills, setVerifiedSkills] = useState([])
+  const [isLoading, setIsLoading] = useState(true)
   const [searchQuery, setSearchQuery] = useState('')
   const [searchResults, setSearchResults] = useState([])
   const [isSearching, setIsSearching] = useState(false)
@@ -43,62 +46,72 @@ export default function StudentSkills() {
     return () => clearTimeout(delayDebounceFn)
   }, [searchQuery])
 
+  const fetchSkills = async () => {
+    setIsLoading(true);
+    try {
+      const { data } = await getUserSkills();
+      setDeclaredSkills(data.declared);
+      
+      const mappedVerified = data.verified.map((v, idx) => ({
+        id: `V-ID: ${String(idx + 1).padStart(3, '0')}`,
+        name: v.name,
+        subtitle: `${v.count} verification${v.count > 1 ? 's' : ''} logged`,
+        level: v.count > 3 ? "Gold Standard" : (v.count > 1 ? "Verified Level II" : "Verified Level I"),
+        tags: ["Verified"]
+      }));
+      setVerifiedSkills(mappedVerified);
+    } catch (error) {
+      console.error("Failed to load skills", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchSkills();
+  }, []);
+
   const handleAddSkill = (skill) => {
-    if (!declaredSkills.find(s => s.name === skill.name)) {
-      setDeclaredSkills([...declaredSkills, skill])
-      setHasChanges(true)
+    const nameMatch = (s) => s.name.toLowerCase() === skill.name.toLowerCase();
+    if (!declaredSkills.find(nameMatch) && !stagedSkills.find(nameMatch)) {
+      setStagedSkills([...stagedSkills, skill]);
+      setHasChanges(true);
     }
-    // Keeps the search open and query intact so users can add multiple
-  }
+  };
 
-  const handleRemoveSkill = (skillName) => {
-    setDeclaredSkills(declaredSkills.filter(s => s.name !== skillName))
-    setHasChanges(true)
-  }
-
-  const handleSave = () => {
-    toast.success("Skills configuration saved locally!")
-    setHasChanges(false)
-    // Future API call to save declared assets will go here
-  }
-
-  const verifiedSkills = [
-    {
-      id: "V-ID: 001",
-      name: "Python",
-      subtitle: "12 verifications from 4 institutions",
-      level: "Gold Standard",
-      tags: ["Django", "NumPy"]
-    },
-    {
-      id: "V-ID: 002",
-      name: "Agile",
-      subtitle: "8 verifications from Project Managers",
-      level: "Verified Level II",
-      tags: ["Agile", "Scrum"]
-    },
-    {
-      id: "V-ID: 003",
-      name: "Data Analysis",
-      subtitle: "5 verifications in Financial Auditing",
-      level: "Verified Level I",
-      tags: ["Pandas", "SQL"]
-    },
-    {
-      id: "V-ID: 004",
-      name: "Technical Writing",
-      subtitle: "4 verifications across Documentation",
-      level: "Verified Level I",
-      tags: ["Markdown", "API Docs"]
-    },
-    {
-      id: "V-ID: 005",
-      name: "UI/UX Design",
-      subtitle: "3 verifications from Product Leads",
-      level: "Verified Level I",
-      tags: ["Figma", "Research"]
+  const handleRemoveSkill = async (skillObj) => {
+    const isStaged = stagedSkills.find(s => s.name === skillObj.name);
+    if (isStaged) {
+      const newStaged = stagedSkills.filter(s => s.name !== skillObj.name);
+      setStagedSkills(newStaged);
+      if (newStaged.length === 0) setHasChanges(false);
+      toast.success(`${skillObj.name} removed from staging`);
+    } else {
+      try {
+        await deleteDeclaredSkill(skillObj.id);
+        toast.success(`${skillObj.name} removed`);
+        fetchSkills();
+      } catch (err) {
+        toast.error(err.response?.data?.detail || "Failed to remove skill");
+      }
     }
-  ]
+    setSkillToDelete(null);
+  };
+
+  const handleSave = async () => {
+    try {
+      if (stagedSkills.length > 0) {
+        await addDeclaredSkills(stagedSkills.map(s => s.name));
+        toast.success("Skills successfully saved to your registry!");
+        setStagedSkills([]);
+        setHasChanges(false);
+        fetchSkills();
+      }
+    } catch (err) {
+      toast.error("Failed to save skills");
+    }
+    setSaveModalOpen(false);
+  };
 
   return (
     <StudentLayout>
@@ -171,7 +184,7 @@ export default function StudentSkills() {
                       </div>
                       
                       <div className="relative z-10">
-                        <h4 className="text-2xl font-light mb-2 text-foreground group-hover:text-primary transition-colors">{skill.name}</h4>
+                        <h4 className="text-2xl font-light mb-2 text-foreground group-hover:text-primary transition-colors capitalize">{skill.name}</h4>
                         <p className="text-[11px] text-muted-foreground leading-relaxed mb-4">{skill.subtitle}</p>
                         
                         <div className="flex flex-wrap gap-2">
@@ -223,19 +236,40 @@ export default function StudentSkills() {
                 
                 <div className="flex flex-col gap-4 relative z-10 pt-2">
                   <div className="flex flex-wrap gap-3">
-                    {declaredSkills.length === 0 && (
+                    {(stagedSkills.length === 0 && declaredSkills.length === 0) && (
                       <div className="text-xs text-muted-foreground italic w-full p-4 text-center rounded-lg border border-dashed border-border/30">
                         No competencies declared yet. Start typing below to add.
                       </div>
                     )}
-                    {declaredSkills.map((skill, i) => (
-                      <div key={i} className="group px-4 py-2.5 bg-background/50 border border-border/40 rounded-lg flex items-center gap-3 hover:border-primary/40 hover:bg-primary/5 transition-all shadow-sm">
-                        <span className="text-xs font-semibold text-muted-foreground group-hover:text-foreground transition-colors">{skill.name}</span>
+                    {stagedSkills.map((skill, i) => (
+                      <div key={`staged-${i}`} className="group px-4 py-3 bg-primary/10 border border-primary/40 rounded-xl flex items-center justify-between gap-4 shadow-sm relative overflow-hidden">
+                        <div className="absolute top-0 right-0 w-24 h-24 bg-primary/20 blur-xl"></div>
+                        <span className="text-sm font-semibold text-primary transition-colors flex items-center gap-3 relative z-10 capitalize">
+                           {skill.name} 
+                           <span className="text-[9px] uppercase tracking-wider font-bold bg-primary/20 border border-primary/30 px-2 py-0.5 rounded text-primary">Pending Save</span>
+                        </span>
                         <button 
-                          onClick={() => setSkillToDelete(skill.name)}
-                          className="w-4 h-4 rounded-full flex items-center justify-center hover:bg-destructive/10 transition-colors"
+                          onClick={() => setSkillToDelete(skill)}
+                          className="w-6 h-6 rounded-full flex items-center justify-center hover:bg-destructive/10 transition-colors z-10"
                         >
-                          <X className="w-3 h-3 text-muted-foreground/30 group-hover:text-destructive transition-colors" />
+                          <X className="w-3.5 h-3.5 text-primary/60 group-hover:text-destructive transition-colors" />
+                        </button>
+                      </div>
+                    ))}
+                    {declaredSkills.map((skill, i) => (
+                      <div key={`decl-${i}`} className="group px-4 py-2 bg-card/60 backdrop-blur-sm border border-border/80 hover:border-primary/50 flex items-center justify-between gap-4 rounded-xl transition-all shadow-[0_2px_10px_-3px_rgba(0,0,0,0.1)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] cursor-default relative overflow-hidden">
+                        <div className="absolute inset-0 bg-linear-to-r from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
+                        <div className="flex items-center gap-3 relative z-10">
+                           <div className="w-7 h-7 rounded-full bg-muted/40 border border-border/50 group-hover:bg-primary/10 group-hover:border-primary/30 flex items-center justify-center transition-colors">
+                             <Shield className="w-3.5 h-3.5 text-muted-foreground group-hover:text-primary transition-colors" />
+                           </div>
+                           <span className="text-sm font-semibold text-foreground tracking-wide group-hover:text-primary transition-colors capitalize">{skill.name}</span>
+                        </div>
+                        <button 
+                          onClick={() => setSkillToDelete(skill)}
+                          className="w-6 h-6 rounded-full flex items-center justify-center bg-muted/50 hover:bg-destructive/10 transition-colors opacity-100 sm:opacity-0 sm:group-hover:opacity-100 z-10"
+                        >
+                          <X className="w-3.5 h-3.5 text-muted-foreground/60 group-hover:text-destructive transition-colors" />
                         </button>
                       </div>
                     ))}
@@ -313,7 +347,7 @@ export default function StudentSkills() {
           <div className="relative w-full max-w-sm bg-card border border-border/50 rounded-2xl shadow-2xl overflow-hidden p-6 animate-in fade-in zoom-in duration-200">
             <h3 className="text-xl font-light mb-2 text-foreground">Remove Asset?</h3>
             <p className="text-sm text-muted-foreground mb-6 leading-relaxed">
-              Are you sure you want to remove <span className="font-semibold text-foreground">"{skillToDelete}"</span> from your declared assets?
+              Are you sure you want to remove <span className="font-semibold text-foreground">"{skillToDelete?.name}"</span> from your declared assets?
             </p>
             <div className="flex justify-end gap-3 mt-2">
               <button 
@@ -402,7 +436,7 @@ export default function StudentSkills() {
               <div className="overflow-y-auto" style={{ maxHeight: '400px' }}>
                 <ul className="py-2">
                   {searchResults.map((result) => {
-                    const isSelected = !!declaredSkills.find(s => s.name === result.name);
+                    const isSelected = !!declaredSkills.find(s => s.name === result.name) || !!stagedSkills.find(s => s.name === result.name);
                     return (
                       <li 
                         key={result.id}
@@ -410,7 +444,7 @@ export default function StudentSkills() {
                         className={`px-6 py-4 flex items-center justify-between transition-colors border-b border-border/5 last:border-0 group ${isSelected ? 'opacity-50 cursor-not-allowed bg-muted/5' : 'hover:bg-primary/5 cursor-pointer'}`}
                       >
                         <div className="flex flex-col gap-1">
-                          <span className="text-sm font-medium text-foreground">{result.name}</span>
+                          <span className="text-sm font-medium text-foreground capitalize">{result.name}</span>
                           <span className="text-[10px] text-muted-foreground tracking-widest uppercase">{result.id.substring(0, 8)} • System Asset</span>
                         </div>
                         {!isSelected ? (
@@ -450,20 +484,20 @@ export default function StudentSkills() {
             )}
             
             {/* Selected tags footer contextualizer */}
-            {declaredSkills.length > 0 && (
+            {stagedSkills.length > 0 && (
                <div className="p-6 bg-background border-t border-border/10">
                  <div className="flex items-center justify-between mb-3">
                    <h4 className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground">Currently Staged</h4>
-                   <span className="text-[10px] text-muted-foreground/60 font-mono">{declaredSkills.length} selected</span>
+                   <span className="text-[10px] text-muted-foreground/60 font-mono">{stagedSkills.length} selected</span>
                  </div>
                  <div className="flex flex-wrap gap-2 max-h-24 overflow-y-auto no-scrollbar">
-                   {declaredSkills.map(skill => (
+                   {stagedSkills.map(skill => (
                       <div key={skill.name} className="px-3 py-1.5 bg-primary/5 border border-primary/20 rounded-lg flex items-center gap-2 group/tag">
-                         <span className="text-xs font-semibold text-primary">{skill.name}</span>
+                         <span className="text-xs font-semibold text-primary capitalize">{skill.name}</span>
                          <button 
                            onClick={(e) => {
                              e.stopPropagation()
-                             handleRemoveSkill(skill.name)
+                             handleRemoveSkill(skill)
                            }}
                            className="hover:bg-primary/20 rounded-full p-0.5 transition-colors"
                          >

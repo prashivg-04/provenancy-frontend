@@ -18,6 +18,15 @@ api.interceptors.request.use((config) => {
 export const searchSkills = (query) =>
   api.get(`/skills/search?q=${encodeURIComponent(query)}`)
 
+/** GET /skills → { declared: [], verified: [] } */
+export const getUserSkills = () => api.get('/skills')
+
+/** POST /skills → Add multiple declared skills */
+export const addDeclaredSkills = (skills) => api.post('/skills', { skills })
+
+/** DELETE /skills/{skillId} → Remove a declared skill */
+export const deleteDeclaredSkill = (skillId) => api.delete(`/skills/${skillId}`)
+
 // ─── Student ─────────────────────────────────────────────────────────────────
 
 /** GET /student/me → { message, profile, profile_complete, ledger_id } */
