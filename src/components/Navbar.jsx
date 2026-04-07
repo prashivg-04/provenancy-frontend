@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { ShieldCheck, ArrowRight } from 'lucide-react'
-import logoImg from '../assets/logo.png'
+import Logo from './Logo'
 
 export default function Navbar() {
   const { user, logout } = useAuth()
@@ -11,8 +11,8 @@ export default function Navbar() {
       
       {/* Left side: Logo */}
       <div className="flex items-center gap-10">
-        <Link to="/" className="flex items-center group">
-          <img src={logoImg} alt="Provenancy Logo" className="h-8 md:h-10 w-auto object-contain group-hover:opacity-80 transition-opacity" />
+        <Link to="/" className="block">
+          <Logo textClassName="text-xl md:text-2xl" iconSize={40} />
         </Link>
         
         {/* Intermediary Links (Desktop only) */}

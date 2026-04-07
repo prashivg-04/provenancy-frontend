@@ -1,7 +1,7 @@
-import { NavLink } from 'react-router-dom'
+import { NavLink, Link } from 'react-router-dom'
 import { LayoutDashboard, Briefcase, Medal, User, Bell, LogOut, ChevronRight, Fingerprint } from 'lucide-react'
 import { useAuth } from '../../context/AuthContext'
-import logoImg from '../../assets/logo.png'
+import Logo from '../Logo'
 
 function getInitials(name = '') {
   return name.split(' ').slice(0, 2).map((w) => w[0]?.toUpperCase() ?? '').join('') || '?'
@@ -35,9 +35,14 @@ export default function StudentLayout({ children, activeTitle = "Provenancy", ac
       <aside className="w-72 border-r border-border/20 flex-col hidden md:flex shrink-0 bg-background/50 backdrop-blur-xl z-20 relative">
         <div className="absolute inset-0 bg-linear-to-b from-primary/5 to-transparent pointer-events-none opacity-50"></div>
         
-        <div className="p-8 pb-4 relative z-10 flex flex-col justify-center gap-1.5">
-          <img src={logoImg} alt="Provenancy Logo" className="h-8 w-auto object-contain self-start" />
-          <p className="text-[9px] text-primary uppercase tracking-[0.2em] font-bold ml-1">Digital Ledger</p>
+        <div className="px-8 pt-8 pb-4 relative z-10 flex flex-col justify-center gap-2">
+          <Link to="/">
+            <Logo textClassName="text-[17px]" iconSize={32} />
+          </Link>
+          <div className="flex items-center gap-2 mt-1 -ml-1">
+             <div className="w-1 h-3 bg-primary/30 rounded-full"></div>
+             <p className="text-[9px] text-primary uppercase tracking-[0.25em] font-bold">Digital Ledger</p>
+          </div>
         </div>
         
         <nav className="mt-8 px-5 grow relative z-10 max-h-[calc(100vh-250px)] overflow-y-auto no-scrollbar">
