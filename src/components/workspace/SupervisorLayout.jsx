@@ -1,6 +1,7 @@
 import { LayoutDashboard, FileText, User, Bell, LogOut, ShieldCheck, ChevronRight, Activity } from 'lucide-react'
 import { Link, useLocation } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
+import logoImg from '../../assets/logo.png'
 
 function getInitials(name = '') {
   return name.split(' ').slice(0, 2).map((w) => w[0]?.toUpperCase() ?? '').join('') || '?'
@@ -34,14 +35,9 @@ export default function SupervisorLayout({ children }) {
       <aside className="w-72 border-r border-border/20 flex-col hidden md:flex shrink-0 bg-background/50 backdrop-blur-xl z-20 relative">
         <div className="absolute inset-0 bg-linear-to-b from-primary/5 to-transparent pointer-events-none opacity-50"></div>
         
-        <div className="p-8 pb-4 relative z-10 flex items-center gap-4">
-          <div className="w-10 h-10 rounded-xl bg-primary/10 border border-primary/30 flex items-center justify-center shadow-[0_0_15px_rgba(26,35,126,0.2)]">
-            <ShieldCheck className="w-5 h-5 text-primary" />
-          </div>
-          <div>
-            <h1 className="text-foreground font-light text-2xl tracking-tight leading-none">Provenancy</h1>
-            <p className="text-[9px] text-primary uppercase tracking-[0.2em] mt-1.5 font-bold">Verification Oracle</p>
-          </div>
+        <div className="p-8 pb-4 relative z-10 flex flex-col justify-center gap-1.5">
+          <img src={logoImg} alt="Provenancy Logo" className="h-8 w-auto object-contain self-start" />
+          <p className="text-[9px] text-primary uppercase tracking-[0.2em] font-bold ml-1">Verification Oracle</p>
         </div>
         
         <nav className="mt-8 px-5 grow relative z-10 max-h-[calc(100vh-250px)] overflow-y-auto no-scrollbar">

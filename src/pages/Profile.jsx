@@ -11,9 +11,9 @@ import { useNavigate } from 'react-router-dom'
 import toast from 'react-hot-toast'
 
 // ── Shared input classes ──────────────────────────────────────────────────────
-const inputCls = "w-full bg-background/50 border border-border/50 rounded-xl px-4 py-3.5 text-sm text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:ring-1 focus:ring-primary/50 focus:border-primary/50 transition-all shadow-sm focus-within:shadow-[0_0_15px_rgba(26,35,126,0.1)]"
-const readonlyCls = "w-full bg-background/20 border border-border/20 rounded-xl px-4 py-3.5 text-sm text-muted-foreground cursor-not-allowed select-none shadow-sm"
-const labelCls = "text-[10px] font-bold uppercase tracking-[0.15em] text-muted-foreground pl-1"
+const inputCls = "w-full bg-background/60 backdrop-blur-sm border border-border/40 rounded-xl px-4 py-4 text-sm text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary/50 transition-all hover:bg-background/80 hover:border-border/60 shadow-[inset_0_2px_4px_rgba(0,0,0,0.05)] focus-within:shadow-[0_0_20px_rgba(var(--primary),0.1)]"
+const readonlyCls = "w-full bg-background/40 backdrop-blur-sm border border-border/30 rounded-xl px-4 py-4 text-sm text-muted-foreground/80 cursor-not-allowed select-none shadow-[inset_0_2px_4px_rgba(0,0,0,0.05)]"
+const labelCls = "text-[10px] font-bold uppercase tracking-[0.2em] text-foreground/70 pl-1 mb-1"
 
 function Field({ label, children }) {
   return (
@@ -127,7 +127,7 @@ export default function Profile() {
       <div className="flex flex-1 h-full overflow-hidden w-full relative bg-background/50">
         
         {/* Ambient Top Glow */}
-        <div className="absolute top-[-10%] left-1/2 -translate-x-1/2 w-[80%] h-[30%] bg-primary/10 blur-[120px] pointer-events-none -z-10 rounded-full"></div>
+        <div className="absolute top-[-10%] left-1/2 -translate-x-1/2 w-[90%] h-[35%] bg-primary/15 blur-[120px] pointer-events-none z-0 rounded-full"></div>
 
         <div className="flex-1 overflow-y-auto no-scrollbar relative z-10">
           <PageContainer>
@@ -140,7 +140,7 @@ export default function Profile() {
                      <UserIcon className="w-3.5 h-3.5 text-primary" />
                      <span className="text-[10px] font-bold uppercase tracking-widest text-primary">Identity Settings</span>
                   </div>
-                  <h1 className="text-4xl md:text-5xl font-light tracking-tight text-foreground mb-3">Profile Management</h1>
+                  <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-transparent bg-clip-text bg-linear-to-r from-foreground via-foreground/90 to-muted-foreground mb-3">Profile Management</h1>
                   <p className="text-muted-foreground text-sm max-w-xl leading-relaxed">
                     Maintain your institutional identity. Your basic information and verified skills dictate how you appear on the public ledger.
                   </p>
@@ -153,7 +153,7 @@ export default function Profile() {
                   ) : (
                     <Link
                       to={`/profile/${profileId}`}
-                      className="group flex flex-col items-center justify-center py-4 px-6 bg-card/60 backdrop-blur-md border border-border/30 hover:border-primary/50 hover:bg-primary/5 rounded-2xl transition-all shadow-sm"
+                      className="group flex flex-col items-center justify-center py-4 px-6 bg-card/60 backdrop-blur-md border border-border/30 hover:border-primary/50 hover:bg-primary/10 rounded-2xl transition-all shadow-md hover:shadow-[0_0_20px_rgba(var(--primary),0.15)]"
                     >
                       <div className="flex items-center gap-3">
                         <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center group-hover:scale-110 transition-transform">
@@ -258,7 +258,7 @@ export default function Profile() {
                                 disabled
                                 className={readonlyCls}
                               />
-                              <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1 px-2 py-0.5 bg-background border border-border/30 rounded text-[9px] font-bold uppercase tracking-widest text-muted-foreground">
+                              <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1 px-2 py-0.5 bg-background/80 backdrop-blur-md border border-border/30 rounded text-[9px] font-bold uppercase tracking-widest text-muted-foreground shadow-sm">
                                 <Lock className="w-2.5 h-2.5" />
                                 Immutable
                               </div>
@@ -287,7 +287,7 @@ export default function Profile() {
                       {loading ? (
                         <Skeleton className="h-[80px]" />
                       ) : (
-                        <div className="p-5 border border-primary/20 bg-primary/5 rounded-2xl flex flex-col gap-3">
+                        <div className="p-5 border border-primary/20 bg-primary/5 rounded-2xl flex flex-col gap-3 shadow-[inset_0_0_20px_rgba(var(--primary),0.05)]">
                           <div className="flex justify-between items-start w-full">
                             <p className="text-[10px] text-muted-foreground uppercase tracking-widest font-bold">Ledger ID</p>
                             <div className="px-2.5 py-1 bg-background border border-border/30 rounded shadow-sm text-[9px] uppercase font-bold tracking-widest text-primary">
@@ -315,7 +315,7 @@ export default function Profile() {
                         onClick={() => navigate('/student/skills')}
                         className="group relative overflow-hidden w-full sm:w-auto px-6 py-2.5 bg-background border border-primary/20 hover:border-primary/50 text-primary font-bold text-[10px] uppercase tracking-widest rounded-xl transition-all shadow-sm flex items-center justify-center gap-2"
                       >
-                        <div className="absolute inset-0 bg-linear-to-r from-primary/0 via-primary/10 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700 ease-in-out"></div>
+                        <div className="absolute inset-0 bg-linear-to-r from-primary/0 via-primary/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-in-out"></div>
                         <span className="relative z-10 flex items-center gap-2">
                            <Edit2 className="w-3.5 h-3.5 group-hover:-rotate-12 transition-transform" />
                            Manage Assets
@@ -341,7 +341,7 @@ export default function Profile() {
                          <div className="flex flex-wrap gap-3 relative z-10">
                            {skills.verified.map((skill, i) => (
                              <div key={`v-${i}`} className="group relative overflow-hidden px-4 py-2 bg-primary/10 border border-primary/30 rounded-xl flex items-center gap-2 shadow-sm transition-all hover:bg-primary/20 hover:border-primary/50 hover:-translate-y-0.5 hover:shadow-[0_5px_15px_-3px_rgba(26,35,126,0.2)]">
-                                <div className="absolute inset-0 bg-linear-to-r from-primary/0 via-white/10 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"></div>
+                                <div className="absolute inset-0 bg-linear-to-r from-primary/0 via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
                                 <Shield className="w-3.5 h-3.5 text-primary" />
                                 <span className="text-[12px] font-bold tracking-wide text-foreground capitalize relative z-10">{skill.name}</span>
                                 <span className="text-[8px] bg-primary/20 px-1.5 py-0.5 rounded text-primary border border-primary/20 uppercase tracking-widest font-bold relative z-10 ml-1">Verified</span>
@@ -349,7 +349,7 @@ export default function Profile() {
                            ))}
                            {skills.declared.map((skill, i) => (
                              <div key={`d-${i}`} className="group relative overflow-hidden px-4 py-2 bg-background/50 backdrop-blur-sm border border-border/60 hover:border-border rounded-xl flex items-center gap-2 transition-all hover:bg-card/80 hover:-translate-y-0.5 shadow-sm hover:shadow-md cursor-default">
-                               <div className="absolute inset-0 bg-linear-to-r from-transparent via-white/5 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"></div>
+                               <div className="absolute inset-0 bg-linear-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
                                <span className="text-[12px] font-bold tracking-wide text-muted-foreground group-hover:text-foreground capitalize transition-colors relative z-10">{skill.name}</span>
                              </div>
                            ))}

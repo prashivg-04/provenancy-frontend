@@ -1,4 +1,5 @@
 import { ShieldCheck } from 'lucide-react'
+import logoImg from '../assets/logo.png'
 
 export default function Footer() {
   return (
@@ -6,7 +7,7 @@ export default function Footer() {
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-start gap-12">
         <div className="max-w-xs">
           <div className="flex items-center gap-2 mb-6">
-            <span className="text-accent font-bold text-lg flex items-center gap-2"><ShieldCheck className="w-5 h-5 text-accent"/> Provenancy</span>
+            <img src={logoImg} alt="Provenancy Logo" className="h-9 w-auto object-contain opacity-90" />
           </div>
           <p className="text-muted-foreground text-sm leading-relaxed">
             Building the global infrastructure for professional trust and immutable work verification.
