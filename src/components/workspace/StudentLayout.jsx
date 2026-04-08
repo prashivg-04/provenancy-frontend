@@ -2,6 +2,7 @@ import { NavLink, Link } from 'react-router-dom'
 import { LayoutDashboard, Briefcase, Medal, User, Bell, LogOut, ChevronRight, Fingerprint } from 'lucide-react'
 import { useAuth } from '../../context/AuthContext'
 import Logo from '../Logo'
+import SystemStatusIndicator from './SystemStatusIndicator'
 
 function getInitials(name = '') {
   return name.split(' ').slice(0, 2).map((w) => w[0]?.toUpperCase() ?? '').join('') || '?'
@@ -71,19 +72,7 @@ export default function StudentLayout({ children, activeTitle = "Provenancy", ac
 
         {/* System Integrity Indicator */}
         <div className="px-5 pb-6 mt-auto relative z-10">
-          <div className="bg-background/80 p-5 rounded-xl border border-border/30 shadow-sm group hover:border-primary/40 transition-all cursor-default relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-24 h-24 bg-primary/5 rounded-full blur-[20px] group-hover:bg-primary/10 transition-colors"></div>
-            <div className="flex items-center gap-3 mb-3 relative z-10">
-              <div className="relative flex items-center justify-center w-2 h-2">
-                <div className="absolute inset-0 rounded-full bg-primary/40 animate-ping"></div>
-                <div className="w-1.5 h-1.5 rounded-full bg-primary relative z-10 shadow-[0_0_8px_hsl(var(--primary))]"></div>
-              </div>
-              <span className="text-[10px] text-foreground font-bold tracking-[0.15em] uppercase">Network Node</span>
-            </div>
-            <p className="text-[10px] text-muted-foreground leading-relaxed relative z-10">
-              Connection established. Ledger synchronization <span className="text-primary font-bold">optimal</span>.
-            </p>
-          </div>
+          <SystemStatusIndicator type="student" />
         </div>
       </aside>
 
