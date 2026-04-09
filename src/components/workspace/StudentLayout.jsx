@@ -3,6 +3,7 @@ import { LayoutDashboard, Briefcase, Medal, User, Bell, LogOut, ChevronRight, Fi
 import { useAuth } from '../../context/AuthContext'
 import Logo from '../Logo'
 import SystemStatusIndicator from './SystemStatusIndicator'
+import NotificationDropdown from './NotificationDropdown'
 
 function getInitials(name = '') {
   return name.split(' ').slice(0, 2).map((w) => w[0]?.toUpperCase() ?? '').join('') || '?'
@@ -94,10 +95,7 @@ export default function StudentLayout({ children, activeTitle = "Provenancy", ac
           </div>
 
           <div className="flex items-center gap-6 bg-card/50 backdrop-blur-md px-2 py-1.5 rounded-full border border-border/30 shadow-sm">
-            <button className="w-9 h-9 rounded-full flex items-center justify-center text-muted-foreground hover:text-primary hover:bg-primary/10 transition-all relative group">
-              <Bell className="w-4 h-4" strokeWidth={2} />
-              <span className="absolute top-2 right-2.5 w-1.5 h-1.5 bg-primary rounded-full shadow-[0_0_8px_hsl(var(--primary))]"></span>
-            </button>
+            <NotificationDropdown />
             
             <div className="h-5 w-px bg-border/40"></div>
             

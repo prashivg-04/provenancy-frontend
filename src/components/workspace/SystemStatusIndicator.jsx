@@ -1,19 +1,62 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { Activity } from 'lucide-react'
+import api from '../../lib/api'
 
 export default function SystemStatusIndicator({ type = 'student' }) {
-  const [isOnline, setIsOnline] = useState(navigator.onLine)
+  const [isBrowserOnline, setIsBrowserOnline] = useState(navigator.onLine)
+  const [isBackendOnline, setIsBackendOnline] = useState(true)
+
+  const checkBackendHealth = useCallback(async () => {
+    if (!navigator.onLine) return
+    try {
+      const res = await api.get('/health')
+      if (res.status === 200) setIsBackendOnline(true)
+      else setIsBackendOnline(false)
+    } catch (error) {
+      setIsBackendOnline(false)
+    }
+  }, [])
 
   useEffect(() => {
-    const handleOnline = () => setIsOnline(true)
-    const handleOffline = () => setIsOnline(false)
+    const handleOnline = () => {
+      setIsBrowserOnline(true)
+      checkBackendHealth()
+    }
+    const handleOffline = () => {
+      setIsBrowserOnline(false)
+      setIsBackendOnline(false)
+    }
+
     window.addEventListener('online', handleOnline)
     window.addEventListener('offline', handleOffline)
+    
+    // Initial check
+    checkBackendHealth()
+
+    // Poll every 30 seconds
+    const interval = setInterval(() => {
+      if (document.visibilityState === 'visible') {
+         checkBackendHealth()
+      }
+    }, 30000)
+
+    // Re-check when user focuses window
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible') checkBackendHealth()
+    }
+    document.addEventListener('visibilitychange', handleVisibilityChange)
+
     return () => {
       window.removeEventListener('online', handleOnline)
       window.removeEventListener('offline', handleOffline)
+      document.removeEventListener('visibilitychange', handleVisibilityChange)
+      clearInterval(interval)
     }
-  }, [])
+  }, [checkBackendHealth])
+
+  let state = 'online'
+  if (!isBrowserOnline) state = 'local_offline'
+  else if (!isBackendOnline) state = 'server_offline'
 
   const content = type === 'supervisor' ? {
     title: 'Oracle Node Sync',
@@ -22,10 +65,15 @@ export default function SystemStatusIndicator({ type = 'student' }) {
       status: 'Verified',
       icon: <Activity className="w-3.5 h-3.5 text-primary shrink-0 opacity-80" />
     },
-    offline: {
-      text: 'Authority Validation',
-      status: 'Halted',
+    local_offline: {
+      text: 'Local connection lost',
+      status: 'Offline',
       icon: <Activity className="w-3.5 h-3.5 text-red-500 shrink-0 opacity-80" />
+    },
+    server_offline: {
+      text: 'Core Node Unreachable',
+      status: 'Degraded',
+      icon: <Activity className="w-3.5 h-3.5 text-orange-500 shrink-0 opacity-80" />
     }
   } : {
     title: 'Network Node',
@@ -34,16 +82,36 @@ export default function SystemStatusIndicator({ type = 'student' }) {
       status: 'Synced',
       icon: null
     },
-    offline: {
-      text: 'Ledger Synchronization',
-      status: 'Paused',
+    local_offline: {
+      text: 'Local network down',
+      status: 'Offline',
+      icon: null
+    },
+    server_offline: {
+      text: 'Ledger API unresponsive',
+      status: 'Degraded',
       icon: null
     }
   }
 
-  const bgClass = isOnline ? 'bg-primary/5 group-hover:bg-primary/10' : 'bg-red-500/5 group-hover:bg-red-500/10'
-  const pingClass = isOnline ? 'bg-primary/40' : 'bg-red-500/40'
-  const dotClass = isOnline ? 'bg-primary shadow-[0_0_8px_hsl(var(--primary))]' : 'bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.8)]'
+  const activeContent = content[state]
+
+  let bgClass = 'bg-primary/5 group-hover:bg-primary/10'
+  let pingClass = 'bg-primary/40'
+  let dotClass = 'bg-primary shadow-[0_0_8px_hsl(var(--primary))]'
+  let badgeColorClass = 'bg-primary/10 text-primary border-primary/30 shadow-[0_0_8px_rgba(26,35,126,0.15)]'
+  
+  if (state === 'local_offline') {
+    bgClass = 'bg-red-500/5 group-hover:bg-red-500/10'
+    pingClass = 'bg-red-500/40'
+    dotClass = 'bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.8)]'
+    badgeColorClass = 'bg-red-500/10 text-red-500 border-red-500/30 shadow-[0_0_8px_rgba(239,68,68,0.15)]'
+  } else if (state === 'server_offline') {
+    bgClass = 'bg-orange-500/5 group-hover:bg-orange-500/10'
+    pingClass = 'bg-orange-500/40'
+    dotClass = 'bg-orange-500 shadow-[0_0_8px_rgba(249,115,22,0.8)]'
+    badgeColorClass = 'bg-orange-500/10 text-orange-500 border-orange-500/30 shadow-[0_0_8px_rgba(249,115,22,0.15)]'
+  }
   
   return (
     <div className="bg-background/80 p-5 rounded-xl border border-border/30 shadow-sm group hover:border-border/60 transition-all cursor-default relative overflow-hidden">
@@ -51,25 +119,21 @@ export default function SystemStatusIndicator({ type = 'student' }) {
       
       <div className="flex items-center gap-3 mb-4 relative z-10">
         <div className="relative flex items-center justify-center w-2 h-2">
-          {/* We only ping if online (or we can ping red if offline, up to design, let's keep pinging red to show it's trying to connect) */}
-          <div className={`absolute inset-0 rounded-full ${isOnline ? 'animate-ping' : ''} ${pingClass}`}></div>
+          {/* We animate ping only if the system is attempting to reach out / is active */}
+          <div className={`absolute inset-0 rounded-full ${state === 'online' ? 'animate-ping' : ''} ${pingClass}`}></div>
           <div className={`w-1.5 h-1.5 rounded-full relative z-10 ${dotClass}`}></div>
         </div>
-        <span className="text-[10px] text-foreground font-bold tracking-[0.15em] uppercase">{content.title}</span>
+        <span className="text-[10px] text-foreground font-bold tracking-[0.15em] uppercase">{activeContent.title}</span>
       </div>
       
       {/* Sleek Status Readout Footer */}
       <div className="flex items-center justify-between gap-3 pt-3 mt-1 border-t border-border/30 relative z-10">
         <div className="flex items-center gap-1.5 text-[10px] text-muted-foreground/80 font-medium tracking-wide">
-          {isOnline ? content.online.icon : content.offline.icon}
-          <span>{isOnline ? content.online.text : content.offline.text}</span>
+          {activeContent.icon}
+          <span>{activeContent.text}</span>
         </div>
-        <div className={`px-2 py-0.5 rounded-md text-[9px] uppercase tracking-[0.15em] font-bold border backdrop-blur-sm ${
-          isOnline 
-            ? 'bg-primary/10 text-primary border-primary/30 shadow-[0_0_8px_rgba(26,35,126,0.15)]' 
-            : 'bg-red-500/10 text-red-500 border-red-500/30 shadow-[0_0_8px_rgba(239,68,68,0.15)]'
-        }`}>
-          {isOnline ? content.online.status : content.offline.status}
+        <div className={`px-2 py-0.5 rounded-md text-[9px] uppercase tracking-[0.15em] font-bold border backdrop-blur-sm ${badgeColorClass}`}>
+          {activeContent.status}
         </div>
       </div>
     </div>
