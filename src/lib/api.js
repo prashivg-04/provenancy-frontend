@@ -14,7 +14,47 @@ api.interceptors.request.use((config) => {
   return config
 })
 
-/** GET /skills/search → array of objects { id, name } */
+// ─── Engagements ─────────────────────────────────────────────────────────────
+
+/**
+ * POST /engagements — Create a new draft engagement
+ * @param {{ organization_name, role, start_date, end_date?, summary?, highlights?, links?, supervisor_ref?, skills? }} data
+ */
+export const createEngagement = (data) => api.post('/engagements', data)
+
+/**
+ * GET /engagements — List engagements for the current user (role-aware)
+ * @param {string} [status] — Optional filter: all | draft | pending | verified | rejected | edit_requested
+ */
+export const getEngagements = (status) =>
+  api.get('/engagements', { params: status ? { status } : undefined })
+
+/**
+ * GET /engagements/:id — Get full details of a single engagement
+ * @param {string} id - Engagement UUID
+ */
+export const getEngagement = (id) => api.get(`/engagements/${id}`)
+
+/**
+ * PUT /engagements/:id — Update a draft or edit_requested engagement
+ * @param {string} id - Engagement UUID
+ * @param {object} data - Partial update payload
+ */
+export const updateEngagement = (id, data) => api.put(`/engagements/${id}`, data)
+
+/**
+ * DELETE /engagements/:id — Permanently delete a non-verified engagement
+ * @param {string} id - Engagement UUID
+ */
+export const deleteEngagement = (id) => api.delete(`/engagements/${id}`)
+
+/**
+ * POST /engagements/:id/submit — Submit a draft engagement for supervisor verification
+ * @param {string} id - Engagement UUID
+ */
+export const submitEngagement = (id) => api.post(`/engagements/${id}/submit`)
+
+
 export const searchSkills = (query) =>
   api.get(`/skills/search?q=${encodeURIComponent(query)}`)
 

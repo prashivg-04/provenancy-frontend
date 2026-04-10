@@ -12,6 +12,7 @@ import StudentDashboard from './pages/StudentDashboard'
 import StudentEngagements from './pages/StudentEngagements'
 import StudentSkills from './pages/StudentSkills'
 import EngagementCreate from './pages/EngagementCreate'
+import EngagementEdit from './pages/EngagementEdit'
 import EngagementDetail from './pages/EngagementDetail'
 import Profile from './pages/Profile'
 import SupervisorDashboard from './pages/SupervisorDashboard'
@@ -147,6 +148,14 @@ function AppRoutes() {
           element={
             <ProtectedRoute allowedRole={["student", "supervisor"]}>
               <EngagementDetail />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/student/engagements/:id/edit"
+          element={
+            <ProtectedRoute allowedRole="student">
+              <EngagementEdit />
             </ProtectedRoute>
           }
         />

@@ -11,32 +11,44 @@ export function PageContainer({ children, className = "" }) {
 
 // Ledger Status Identifier
 export function StatusBadge({ status, className = "" }) {
-  const normStatus = status?.toUpperCase() || "PENDING";
+  const normStatus = status?.toUpperCase() || "DRAFT";
   
   let styles = ""
   let dotAnimation = ""
+  let dot = false
   
   switch(normStatus) {
     case 'VERIFIED':
     case 'ACCEPTED':
       styles = "bg-primary/10 border-primary/20 text-primary"
       dotAnimation = "animate-pulse shadow-[0_0_8px_hsl(var(--primary))]"
+      dot = true
       break;
     case 'REJECTED':
       styles = "bg-destructive/10 border-destructive/20 text-destructive"
       break;
     case 'PENDING':
+      styles = "bg-amber-500/10 border-amber-500/20 text-amber-500"
+      dotAnimation = "animate-pulse"
+      dot = true
+      break;
+    case 'EDIT_REQUESTED':
+      styles = "bg-orange-500/10 border-orange-500/20 text-orange-500"
+      break;
+    case 'DRAFT':
     default:
-      styles = "bg-muted/10 border-border/20 text-muted-foreground"
+      styles = "bg-muted/20 border-border/30 text-muted-foreground"
       break;
   }
 
+  const label = normStatus === 'EDIT_REQUESTED' ? 'EDIT REQ.' : normStatus
+
   return (
     <span className={`inline-flex items-center gap-2 px-2 py-1 rounded border text-[10px] font-bold uppercase tracking-widest ${styles} ${className}`}>
-      {normStatus === 'VERIFIED' && (
+      {dot && (
         <span className={`w-1.5 h-1.5 rounded-full bg-current ${dotAnimation}`}></span>
       )}
-      {normStatus}
+      {label}
     </span>
   )
 }

@@ -20,7 +20,7 @@ export function FormSection({ title, subTitle, number, children }) {
   )
 }
 
-export function InputField({ label, type = "text", placeholder, className = "" }) {
+export function InputField({ label, type = "text", placeholder, className = "", ...props }) {
   return (
     <div className={`flex flex-col space-y-2.5 ${className}`}>
       <label className="text-[10px] font-bold uppercase tracking-[0.15em] text-muted-foreground pl-1">{label}</label>
@@ -28,12 +28,13 @@ export function InputField({ label, type = "text", placeholder, className = "" }
         type={type} 
         placeholder={placeholder}
         className="w-full bg-background/50 border border-border/50 rounded-xl px-4 py-3.5 text-sm text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:ring-1 focus:ring-primary/50 focus:border-primary/50 transition-all shadow-sm focus-within:shadow-[0_0_15px_rgba(26,35,126,0.1)]"
+        {...props}
       />
     </div>
   )
 }
 
-export function TextArea({ label, placeholder, rows = 3, className = "" }) {
+export function TextArea({ label, placeholder, rows = 3, className = "", ...props }) {
   return (
     <div className={`flex flex-col space-y-2.5 ${className}`}>
       <label className="text-[10px] font-bold uppercase tracking-[0.15em] text-muted-foreground pl-1">{label}</label>
@@ -41,6 +42,7 @@ export function TextArea({ label, placeholder, rows = 3, className = "" }) {
         rows={rows}
         placeholder={placeholder}
         className="w-full bg-background/50 border border-border/50 rounded-xl px-4 py-3.5 text-sm text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:ring-1 focus:ring-primary/50 focus:border-primary/50 transition-all shadow-sm focus-within:shadow-[0_0_15px_rgba(26,35,126,0.1)] resize-y min-h-[100px]"
+        {...props}
       />
     </div>
   )

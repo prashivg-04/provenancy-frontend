@@ -1,33 +1,77 @@
-import { useState } from 'react'
-import { BadgeCheck, Link2, Trash2, Info, FileSignature, Plus, Save, Loader2 } from 'lucide-react'
+import { useState, useEffect } from 'react'
+import { BadgeCheck, Link2, Trash2, Info, FileSignature, Plus, Save, Loader2, ArrowLeft, AlertCircle } from 'lucide-react'
 import StudentLayout from '../components/workspace/StudentLayout'
 import { FormSection, InputField, TextArea } from '../components/workspace/FormElements'
 import { PageContainer } from '../components/workspace/SharedPrimitives'
 import EngagementSkillSelector from '../components/workspace/EngagementSkillSelector'
 import DatePickerField from '../components/workspace/DatePickerField'
 import { toast } from 'react-hot-toast'
-import { useNavigate } from 'react-router-dom'
-import { createEngagement, submitEngagement } from '../lib/api'
-import { Paperclip } from 'lucide-react'
+import { useNavigate, useParams } from 'react-router-dom'
+import { getEngagement, updateEngagement, submitEngagement } from '../lib/api'
 
-const INITIAL_FORM = {
-  organization_name: '',
-  role: '',
-  start_date: '',
-  end_date: '',
-  summary: '',
-  supervisor_ref: '',
-}
-
-export default function EngagementCreate() {
+export default function EngagementEdit() {
+  const { id } = useParams()
   const navigate = useNavigate()
-  const [form, setForm] = useState(INITIAL_FORM)
-  const [highlights, setHighlights] = useState(['', '', ''])
+
+  const [loading, setLoading] = useState(true)
+  const [engagement, setEngagement] = useState(null)
+  const [form, setForm] = useState({
+    organization_name: '',
+    role: '',
+    start_date: '',
+    end_date: '',
+    summary: '',
+    supervisor_ref: '',
+  })
+  const [highlights, setHighlights] = useState([''])
   const [links, setLinks] = useState([''])
   const [skills, setSkills] = useState([])
   const [errors, setErrors] = useState({})
   const [saving, setSaving] = useState(false)
   const [submitting, setSubmitting] = useState(false)
+
+  // Load existing engagement data
+  useEffect(() => {
+    if (!id) return
+    setLoading(true)
+    getEngagement(id)
+      .then(res => {
+        const eng = res.data
+        setEngagement(eng)
+
+        // Check if editable
+        if (!['draft', 'edit_requested'].includes(eng.status)) {
+          toast.error('This engagement cannot be edited in its current status')
+          navigate(`/student/engagements/${id}`)
+          return
+        }
+
+        // Pre-fill form
+        setForm({
+          organization_name: eng.organization_name || '',
+          role: eng.role || '',
+          start_date: eng.start_date ? eng.start_date.split('T')[0] : '',
+          end_date: eng.end_date ? eng.end_date.split('T')[0] : '',
+          summary: eng.summary || '',
+          supervisor_ref: eng.supervisor_ref || '',
+        })
+        setHighlights(eng.highlights?.length > 0
+          ? eng.highlights.length < 3
+            ? [...eng.highlights, ...Array(3 - eng.highlights.length).fill('')]
+            : eng.highlights
+          : ['', '', ''])
+        setLinks(eng.links?.length > 0 ? eng.links : [''])
+        setSkills(eng.skills?.map(s => s.name) || [])
+      })
+      .catch(err => {
+        const status = err.response?.status
+        if (status === 403) toast.error("You don't have access to this engagement")
+        else if (status === 404) toast.error('Engagement not found')
+        else toast.error('Failed to load engagement')
+        navigate('/student/engagements')
+      })
+      .finally(() => setLoading(false))
+  }, [id, navigate])
 
   const handleChange = (field) => (e) => {
     setForm(prev => ({ ...prev, [field]: e.target.value }))
@@ -74,66 +118,102 @@ export default function EngagementCreate() {
     skills: skills.length > 0 ? skills : null,
   })
 
-  const handleSaveDraft = async () => {
+  const handleSave = async () => {
     const errs = validate()
     if (Object.keys(errs).length > 0) { setErrors(errs); return }
     setSaving(true)
     try {
-      await createEngagement(buildPayload())
-      toast.success('Draft saved successfully')
-      navigate('/student/engagements')
+      await updateEngagement(id, buildPayload())
+      toast.success('Changes saved successfully')
+      navigate(`/student/engagements/${id}`)
     } catch (err) {
       const detail = err.response?.data?.detail
-      if (typeof detail === 'string') toast.error(detail)
-      else toast.error('Failed to save draft')
+      toast.error(typeof detail === 'string' ? detail : 'Failed to save changes')
     } finally {
       setSaving(false)
     }
   }
 
-  const handleSubmit = async (e) => {
+  const handleSaveAndSubmit = async (e) => {
     e.preventDefault()
     const errs = validateForSubmit()
     if (Object.keys(errs).length > 0) { setErrors(errs); return }
     setSubmitting(true)
     try {
-      const created = await createEngagement(buildPayload())
-      const engagementId = created.data.id
-      await submitEngagement(engagementId)
-      toast.success('Engagement submitted for cryptographic verification')
+      await updateEngagement(id, buildPayload())
+      await submitEngagement(id)
+      toast.success('Engagement resubmitted for verification')
       navigate('/student/engagements')
     } catch (err) {
       const detail = err.response?.data?.detail
-      if (typeof detail === 'string') toast.error(detail)
-      else toast.error('Submission failed. Please try again.')
+      toast.error(typeof detail === 'string' ? detail : 'Failed to submit. Please try again.')
     } finally {
       setSubmitting(false)
     }
   }
 
   const isLoading = saving || submitting
+  const isEditRequested = engagement?.status === 'edit_requested'
+
+  if (loading) {
+    return (
+      <StudentLayout>
+        <div className="flex-1 flex items-center justify-center h-full">
+          <div className="flex flex-col items-center gap-4">
+            <Loader2 className="w-8 h-8 text-primary/40 animate-spin" />
+            <p className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground">Loading engagement...</p>
+          </div>
+        </div>
+      </StudentLayout>
+    )
+  }
 
   return (
     <StudentLayout>
       <div className="flex flex-1 overflow-hidden h-full">
         <div className="flex-1 overflow-y-auto no-scrollbar relative">
           <PageContainer>
-            
+
             {/* HEADER */}
             <div className="mb-12 relative border-b border-border/10 pb-8">
               <div className="absolute inset-x-0 top-0 h-32 bg-primary/5 blur-[80px] rounded-full pointer-events-none -z-10"></div>
+
+              <button
+                onClick={() => navigate(`/student/engagements/${id}`)}
+                className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-muted-foreground hover:text-foreground transition-colors mb-6"
+              >
+                <ArrowLeft className="w-3.5 h-3.5" /> Back to Record
+              </button>
+
               <div className="flex items-center gap-2 px-3 py-1 bg-primary/10 border border-primary/20 rounded-full w-fit mb-4">
-                 <FileSignature className="w-3 h-3 text-primary" />
-                 <span className="text-[9px] font-bold uppercase tracking-widest text-primary">New Ledger Entry</span>
+                <FileSignature className="w-3 h-3 text-primary" />
+                <span className="text-[9px] font-bold uppercase tracking-widest text-primary">
+                  {isEditRequested ? 'Edit Requested' : 'Edit Draft'}
+                </span>
               </div>
-              <h1 className="text-4xl md:text-5xl font-light tracking-tight text-foreground mb-4">Initialize Record</h1>
+              <h1 className="text-4xl md:text-5xl font-light tracking-tight text-foreground mb-4">
+                Update Record
+              </h1>
               <p className="text-muted-foreground text-sm max-w-xl leading-relaxed">
-                Document your professional experience for institutional verification. Upon supervisor review, this record becomes immutable.
+                {isEditRequested
+                  ? 'Your supervisor has requested changes. Update the relevant fields and resubmit for verification.'
+                  : 'Make changes to your draft engagement before submitting for verification.'}
               </p>
             </div>
 
-            <form className="space-y-12" onSubmit={handleSubmit}>
-              
+            {/* Edit Feedback Banner */}
+            {isEditRequested && engagement?.rejection_reason && (
+              <div className="mb-8 p-5 bg-orange-500/5 border border-orange-500/20 rounded-xl flex items-start gap-4">
+                <AlertCircle className="w-5 h-5 text-orange-500 shrink-0 mt-0.5" />
+                <div>
+                  <p className="text-[10px] font-bold uppercase tracking-widest text-orange-500 mb-1">Supervisor Feedback</p>
+                  <p className="text-sm text-muted-foreground leading-relaxed">{engagement.rejection_reason}</p>
+                </div>
+              </div>
+            )}
+
+            <form className="space-y-12" onSubmit={handleSaveAndSubmit}>
+
               {/* SECTION 01 — Core Details */}
               <FormSection title="Core Details" number="01">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-8">
@@ -229,7 +309,7 @@ export default function EngagementCreate() {
               {/* SECTION 03 — Verification Metadata */}
               <FormSection title="Verification Metadata" number="03">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-8">
-                  
+
                   {/* Skills */}
                   <EngagementSkillSelector
                     selectedSkills={skills}
@@ -246,14 +326,14 @@ export default function EngagementCreate() {
                     />
                     {errors.supervisor_ref && <p className="text-destructive text-[10px] mt-2 pl-1">{errors.supervisor_ref}</p>}
                     <p className="text-[10px] text-muted-foreground mt-3 italic bg-muted/20 p-3 rounded-lg border border-border/10">
-                      Enter the supervisor's Provenancy Ledger ID (e.g. PRV-SUP-8821). Only needed to submit — optional when saving draft.
+                      The supervisor's Provenancy Ledger ID (e.g. PRV-SUP-8821). Required to submit for verification.
                     </p>
                   </div>
                 </div>
               </FormSection>
 
               {/* SECTION 04 — Supporting Evidence */}
-              <FormSection title="Supporting Evidence" description="Link external proof or upload documentation." number="04">
+              <FormSection title="Supporting Evidence" number="04">
                 <div className="space-y-3">
                   <div className="flex items-center justify-between mb-1">
                     <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-muted-foreground">Links</span>
@@ -262,7 +342,7 @@ export default function EngagementCreate() {
                   {links.map((link, idx) => (
                     <div key={idx} className="flex items-center gap-3 p-4 bg-background/50 border border-border/50 rounded-xl group hover:border-primary/30 transition-all shadow-sm">
                       <div className="w-8 h-8 rounded bg-muted/30 flex items-center justify-center border border-border/20 shrink-0">
-                         <Link2 className="text-muted-foreground w-4 h-4" />
+                        <Link2 className="text-muted-foreground w-4 h-4" />
                       </div>
                       <input
                         type="url"
@@ -296,79 +376,41 @@ export default function EngagementCreate() {
               {/* ACTION FOOTER */}
               <div className="pb-12 pt-8 flex flex-col items-center gap-6">
                 <div className="flex flex-col sm:flex-row gap-4 w-full max-w-md">
-                  
-                  {/* Save as Draft */}
+
+                  {/* Save changes only */}
                   <button
                     type="button"
-                    onClick={handleSaveDraft}
+                    onClick={handleSave}
                     disabled={isLoading}
                     className="flex-1 px-6 py-4 h-[56px] border border-border/50 text-foreground font-bold uppercase tracking-[0.15em] text-[10px] rounded-xl hover:bg-muted/10 transition-all flex items-center justify-center gap-3 disabled:opacity-50"
                   >
                     {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
-                    Save as Draft
+                    Save Changes
                   </button>
 
-                  {/* Submit */}
-                  <button 
-                    className="flex-1 px-6 py-4 h-[56px] bg-foreground text-background font-bold uppercase tracking-[0.15em] text-[10px] rounded-xl hover:bg-foreground/90 transition-all flex items-center justify-center gap-3 shadow-[0_0_20px_rgba(255,255,255,0.05)] hover:shadow-[0_0_25px_rgba(255,255,255,0.1)] active:scale-[0.98] disabled:opacity-50"
+                  {/* Save + Submit */}
+                  <button
                     type="submit"
                     disabled={isLoading}
+                    className="flex-1 px-6 py-4 h-[56px] bg-foreground text-background font-bold uppercase tracking-[0.15em] text-[10px] rounded-xl hover:bg-foreground/90 transition-all flex items-center justify-center gap-3 shadow-[0_0_20px_rgba(255,255,255,0.05)] hover:shadow-[0_0_25px_rgba(255,255,255,0.1)] active:scale-[0.98] disabled:opacity-50"
                   >
                     {submitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <BadgeCheck className="w-4 h-4" />}
-                    Sign & Submit
+                    {isEditRequested ? 'Save & Resubmit' : 'Save & Submit'}
                   </button>
                 </div>
 
                 <div className="mt-2 p-4 bg-muted/10 border border-border/20 rounded-xl max-w-md w-full flex items-start gap-4">
                   <Info className="w-4 h-4 text-muted-foreground shrink-0 mt-0.5" />
                   <p className="text-[10px] text-muted-foreground leading-relaxed italic">
-                    "Save as Draft" stores the record privately. "Sign & Submit" sends it to your supervisor for cryptographic verification. A ledger entry becomes immutable upon approval.
+                    {isEditRequested
+                      ? '"Save Changes" updates the record without resubmitting. "Save & Resubmit" saves your changes and sends it back to the supervisor for verification.'
+                      : '"Save Changes" keeps the record as a draft. "Save & Submit" updates and immediately sends it to your supervisor for verification.'}
                   </p>
                 </div>
               </div>
             </form>
           </PageContainer>
         </div>
-
-        {/* Right Info Pane */}
-        <aside className="w-80 lg:w-96 border-l border-border/10 bg-card/10 backdrop-blur-md p-8 hidden xl:flex flex-col gap-12 static right-0 top-0 shadow-[-10px_0_30px_rgba(0,0,0,0.2)]">
-          <div>
-            <h3 className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground font-bold mb-10 flex items-center gap-2">
-               <span className="w-2 h-2 rounded-full bg-primary/40 animate-pulse"></span>
-               Verification Pipeline
-            </h3>
-            <div className="relative pl-8 border-l border-border/20 space-y-16 ml-2">
-              <div className="relative group">
-                <div className="absolute top-1.5 -left-[37px] w-3 h-3 rounded-full bg-primary ring-4 ring-primary/20 shadow-[0_0_12px_hsl(var(--primary))] transition-all group-hover:scale-125"></div>
-                <p className="text-[11px] font-bold text-foreground mb-2 uppercase tracking-widest">1. Compile Record</p>
-                <p className="text-xs text-muted-foreground leading-relaxed">Ensure all impact metrics are quantified. The node requires substantial proof of work.</p>
-              </div>
-              <div className="relative opacity-60 group hover:opacity-100 transition-opacity">
-                <div className="absolute top-1.5 -left-[37px] w-3 h-3 rounded-full border-2 border-border/50 bg-background transition-all group-hover:border-primary/50 group-hover:bg-primary/10"></div>
-                <p className="text-[11px] font-bold text-foreground mb-2 uppercase tracking-widest">2. Network Consensus</p>
-                <p className="text-xs text-muted-foreground leading-relaxed">Requests routing through institutional supervisors. Typically resolves in 48h.</p>
-              </div>
-              <div className="relative opacity-60 group hover:opacity-100 transition-opacity">
-                <div className="absolute top-1.5 -left-[37px] w-3 h-3 rounded-full border-2 border-border/50 bg-background transition-all group-hover:border-primary/50 group-hover:bg-primary/10"></div>
-                <p className="text-[11px] font-bold text-foreground mb-2 uppercase tracking-widest">3. Ledger Finalization</p>
-                <p className="text-xs text-muted-foreground leading-relaxed">Immutable block written. Record permanently verifiable by third parties.</p>
-              </div>
-            </div>
-          </div>
-          
-          <div className="mt-auto relative overflow-hidden rounded-2xl border border-primary/20 bg-primary/5 p-6 group">
-            <div className="absolute -inset-10 bg-primary/10 blur-2xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none"></div>
-            <div className="relative z-10">
-               <div className="flex items-center gap-2 mb-3">
-                 <BadgeCheck className="text-primary w-4 h-4" />
-                 <span className="text-[10px] uppercase tracking-widest font-bold text-primary">Security Note</span>
-               </div>
-               <p className="text-xs text-primary/80 leading-relaxed">
-                 Submitting fraudulent supervisors will result in immediate network flagging and node rejection. Verify the ledger ID or email before submitting.
-               </p>
-            </div>
-          </div>
-        </aside>
       </div>
     </StudentLayout>
   )
