@@ -105,7 +105,12 @@ export default function SupervisorLayout({ children }) {
             
             <div className="h-5 w-px bg-border/40"></div>
             
-            <div className="flex items-center gap-3 pl-2 pr-4 cursor-pointer group">
+            <a 
+              href={profile?.id ? `/supervisor/${profile.id}` : '#'}
+              target="_blank"
+              rel="noopener noreferrer" 
+              className="flex items-center gap-3 pl-2 pr-4 cursor-pointer group"
+            >
               <div className="relative">
                 <div className="w-8 h-8 rounded-full border border-border/50 bg-card flex items-center justify-center shrink-0 group-hover:border-primary/50 transition-colors">
                   <span className="text-[10px] font-bold text-foreground">{initials}</span>
@@ -116,7 +121,7 @@ export default function SupervisorLayout({ children }) {
                 <p className="text-[11px] font-bold text-foreground leading-none tracking-wide group-hover:text-primary transition-colors">{displayName}</p>
                 <p className="text-[9px] text-primary/80 tracking-widest uppercase mt-1 font-bold">{ledgerId}</p>
               </div>
-            </div>
+            </a>
 
             <div className="h-5 w-px bg-border/40"></div>
 

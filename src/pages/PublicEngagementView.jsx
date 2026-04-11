@@ -151,8 +151,8 @@ export default function PublicEngagementView() {
               <div className="relative bg-card/30 backdrop-blur-2xl border border-emerald-500/20 rounded-[2.5rem] p-10 lg:p-14 overflow-hidden">
 
                 {/* Top accent line */}
-                <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-emerald-500/60 to-transparent" />
-                <div className="absolute top-0 right-12 w-[2px] h-24 bg-gradient-to-b from-emerald-500/40 to-transparent" />
+                <div className="absolute top-0 left-0 right-0 h-[2px] bg-linear-to-r from-transparent via-emerald-500/60 to-transparent" />
+                <div className="absolute top-0 right-12 w-[2px] h-24 bg-linear-to-b from-emerald-500/40 to-transparent" />
 
                 <div className="flex flex-col lg:flex-row justify-between gap-8 items-start">
                   <div className="space-y-5">
@@ -294,7 +294,7 @@ export default function PublicEngagementView() {
             {/* ── ORACLE AUTHORITY (SUPERVISOR) ──────────────────────────── */}
             {engagement.supervisor_profile_id && (
               <div className="bg-card/20 backdrop-blur-xl border border-primary/15 rounded-3xl p-8 relative overflow-hidden">
-                <div className="absolute top-0 inset-x-0 h-[2px] bg-gradient-to-r from-transparent via-primary/40 to-transparent" />
+                <div className="absolute top-0 inset-x-0 h-[2px] bg-linear-to-r from-transparent via-primary/40 to-transparent" />
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
                   <div className="flex items-center gap-5">
                     {/* Icon */}
@@ -377,7 +377,7 @@ export default function PublicEngagementView() {
                     <div className="flex flex-wrap gap-2.5">
                       {engagement.skills.map((s, idx) => (
                         <div key={idx} className="group relative overflow-hidden px-3.5 py-2 bg-primary/10 border border-primary/30 rounded-xl flex items-center gap-2.5 shadow-sm transition-all hover:bg-primary/20 hover:border-primary/50 hover:-translate-y-0.5">
-                           <div className="absolute inset-0 bg-gradient-to-r from-primary/0 via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
+                           <div className="absolute inset-0 bg-linear-to-r from-primary/0 via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
                            <Shield className="w-3.5 h-3.5 text-primary" />
                            <span className="text-[12px] font-bold tracking-wide text-foreground capitalize relative z-10">{s.name}</span>
                         </div>

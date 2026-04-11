@@ -357,11 +357,11 @@ export default function SupervisorDashboard() {
                       </div>
                       <div>
                         {req.student ? (
-                          <p className="text-base font-medium text-foreground mb-1 tracking-tight group-hover:text-amber-500 transition-colors">
+                          <p className="text-sm font-medium text-foreground mb-1 tracking-tight group-hover:text-amber-500 transition-colors">
                             {req.student.full_name}
                           </p>
                         ) : (
-                          <p className="text-base font-medium text-foreground mb-1 tracking-tight group-hover:text-amber-500 transition-colors font-mono text-sm">
+                          <p className="font-medium text-foreground mb-1 tracking-tight group-hover:text-amber-500 transition-colors font-mono text-sm">
                             {req.id.slice(0, 12).toUpperCase()}
                           </p>
                         )}
@@ -430,7 +430,7 @@ export default function SupervisorDashboard() {
             ) : (
               <div className="relative space-y-12">
                 {/* Single timeline line — goes from top through all dots */}
-                <div className="absolute left-[-1px] top-2 bottom-2 w-[2px] bg-gradient-to-b from-primary/40 via-border/30 to-transparent pointer-events-none" />
+                <div className="absolute -left-1px top-2 bottom-2 w-[2px] bg-linear-to-b from-primary/40 via-border/30 to-transparent pointer-events-none" />
                 {feedItems.map((item, i) => {
                   const isVerified = item.status === 'verified'
                   const isRejected = item.status === 'rejected'
