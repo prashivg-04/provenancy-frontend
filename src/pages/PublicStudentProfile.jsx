@@ -207,78 +207,8 @@ export default function PublicStudentProfile() {
             {/* Triple Column Grid */}
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 w-full items-start">
               
-              {/* Column 1: Trust Profile (Col-3) */}
-              <div className="lg:col-span-3 space-y-8 sticky top-24">
-                
-                {/* Trust Matrix */}
-                <div className="bg-card/20 backdrop-blur-xl border border-border/30 rounded-3xl p-8 relative overflow-hidden group">
-                   <div className="absolute top-0 inset-x-0 h-1 bg-linear-to-r from-primary/10 via-primary/50 to-primary/10"></div>
-                   <div className="mb-8">
-                     <div className="w-12 h-12 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center mb-6">
-                       <Network className="w-5 h-5 text-primary" />
-                     </div>
-                     <h2 className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground">Verified Engagements</h2>
-                     <div className="text-5xl font-light tracking-tighter text-foreground mt-2">
-                       {engagements.length}
-                       <span className="text-2xl text-muted-foreground"> blocks</span>
-                     </div>
-                   </div>
-                   
-                   <div className="space-y-5">
-                     <div>
-                       <div className="flex justify-between text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-2">
-                         <span>Identity Nodes</span>
-                         <span className="text-primary">100%</span>
-                       </div>
-                       <div className="w-full h-1.5 bg-background rounded-full overflow-hidden">
-                         <div className="h-full bg-primary w-full rounded-full shadow-[0_0_10px_hsl(var(--primary))]"></div>
-                       </div>
-                     </div>
-                     <div>
-                       <div className="flex justify-between text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-2">
-                         <span>Institutional verified</span>
-                         <span className="text-foreground">
-                           {engagements.length > 0
-                             ? `${Math.round((engagements.filter(e => e.verification_type === 'institutional').length / engagements.length) * 100)}%`
-                             : '—'}
-                         </span>
-                       </div>
-                       <div className="w-full h-1.5 bg-background rounded-full overflow-hidden">
-                         <div
-                           className="h-full bg-border rounded-full"
-                           style={{
-                             width: engagements.length > 0
-                               ? `${(engagements.filter(e => e.verification_type === 'institutional').length / engagements.length) * 100}%`
-                               : '0%'
-                           }}
-                         ></div>
-                       </div>
-                     </div>
-                   </div>
-                </div>
-
-                {/* Institution card */}
-                {data.institution && (
-                  <div className="bg-card/20 backdrop-blur-xl border border-border/30 rounded-3xl p-8 relative overflow-hidden group">
-                    <div className="flex items-center gap-3 mb-6 border-b border-border/20 pb-6">
-                      <FileCheck className="w-4 h-4 text-primary" />
-                      <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-foreground">Linked Oracle</span>
-                    </div>
-                    <div className="flex items-center gap-5">
-                      <div className="w-16 h-16 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center shrink-0">
-                        <CheckCircle2 className="w-8 h-8 text-primary" />
-                      </div>
-                      <div>
-                        <h4 className="text-lg font-medium text-foreground mb-1 tracking-tight leading-tight">{data.institution}</h4>
-                        <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Affiliated Institution</p>
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </div>
-
-              {/* Column 2: Verified Execution Chain (Col-6) */}
-              <div className="lg:col-span-6 space-y-8 relative">
+              {/* Main Column: Verified Execution Chain (Col-8) */}
+              <div className="lg:col-span-8 space-y-8 relative">
                 
                 <div className="flex items-center justify-between mb-8 overflow-hidden rounded-2xl border border-border/20 bg-background/50 backdrop-blur-md p-4 px-6 md:px-8 shadow-sm">
                    <h2 className="text-sm font-bold tracking-[0.2em] uppercase text-foreground">Verified Execution Chain</h2>
@@ -343,6 +273,19 @@ export default function PublicStudentProfile() {
                                 </span>
                               </div>
                             </div>
+
+                            {/* View Record link */}
+                            <div className="pt-4 border-t border-border/10 flex justify-end">
+                              <Link
+                                to={`/profile/${data.id}/engagement/${eng.id}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 text-[10px] font-bold uppercase tracking-widest rounded-xl hover:bg-emerald-500 hover:text-white transition-all"
+                              >
+                                View Full Record →
+                              </Link>
+                            </div>
+
                           </div>
                         </article>
                       </div>
@@ -351,8 +294,28 @@ export default function PublicStudentProfile() {
                 )}
               </div>
 
-              {/* Column 3: Verified Capabilities (Col-3) */}
-              <div className="lg:col-span-3 space-y-8">
+              {/* Sidebar Column: Oracle & Capabilities (Col-4) */}
+              <div className="lg:col-span-4 space-y-8 sticky top-24">
+                {/* Institution card */}
+                {data.institution && (
+                  <div className="bg-card/20 backdrop-blur-xl border border-border/30 rounded-3xl p-8 relative overflow-hidden group">
+                    <div className="flex items-center gap-3 mb-6 border-b border-border/20 pb-6">
+                      <FileCheck className="w-4 h-4 text-primary" />
+                      <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-foreground">Linked Oracle</span>
+                    </div>
+                    <div className="flex items-center gap-5">
+                      <div className="w-16 h-16 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center shrink-0">
+                        <CheckCircle2 className="w-8 h-8 text-primary" />
+                      </div>
+                      <div>
+                        <h4 className="text-lg font-medium text-foreground mb-1 tracking-tight leading-tight">{data.institution}</h4>
+                        <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Affiliated Institution</p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Skills Profile */}
                 <div className="bg-card/20 backdrop-blur-xl border border-border/30 rounded-3xl p-8 relative overflow-hidden pb-12 flex flex-col min-h-[400px]">
                   <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full blur-2xl pointer-events-none"></div>
                   
@@ -368,21 +331,49 @@ export default function PublicStudentProfile() {
                          <span className="text-[11px] text-muted-foreground uppercase tracking-widest font-bold">No skills declared yet</span>
                       </div>
                     ) : (
-                      <div className="flex flex-wrap gap-2">
-                        {data.skills.verified.map((skill, i) => (
-                           <div key={`v-${i}`} className="group relative overflow-hidden px-3 py-1.5 bg-primary/10 border border-primary/30 rounded-xl flex items-center gap-2 shadow-sm transition-all hover:bg-primary/20 hover:border-primary/50 hover:-translate-y-0.5 hover:shadow-[0_4px_12px_-3px_rgba(26,35,126,0.2)]">
-                              <div className="absolute inset-0 bg-linear-to-r from-primary/0 via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
-                              <Shield className="w-3 h-3 text-primary" />
-                              <span className="text-[11px] font-bold tracking-wide text-foreground capitalize relative z-10">{skill.name}</span>
-                              <span className="text-[7px] bg-primary/20 px-1 py-0.5 rounded text-primary border border-primary/20 uppercase tracking-widest font-bold relative z-10 ml-0.5">Verified</span>
-                           </div>
-                        ))}
-                        {data.skills.declared.map((skill, i) => (
-                           <div key={`d-${i}`} className="group relative overflow-hidden px-3 py-1.5 bg-background/50 backdrop-blur-sm border border-border/60 hover:border-border rounded-xl flex items-center gap-2 transition-all hover:bg-card/80 hover:-translate-y-0.5 shadow-sm hover:shadow-md cursor-default">
-                             <div className="absolute inset-0 bg-linear-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
-                             <span className="text-[11px] font-bold tracking-wide text-muted-foreground group-hover:text-foreground capitalize transition-colors relative z-10">{skill.name}</span>
-                           </div>
-                        ))}
+                      <div className="flex flex-col space-y-6">
+                        
+                        {/* Verified Skills */}
+                        {data.skills.verified.length > 0 && (
+                          <div>
+                            <div className="flex items-center justify-between mb-4">
+                              <span className="text-[9px] uppercase tracking-widest font-bold text-primary">Verified Competencies</span>
+                              <span className="text-[9px] font-mono text-primary/70">{data.skills.verified.length}</span>
+                            </div>
+                            <div className="space-y-2.5">
+                              {data.skills.verified.map((skill, i) => (
+                                 <div key={`v-${i}`} className="group relative overflow-hidden px-4 py-3 bg-primary/5 hover:bg-primary/10 border border-primary/20 rounded-xl flex items-center justify-between shadow-sm transition-all">
+                                    <div className="flex items-center gap-3 relative z-10 w-full pr-16 justify-between">
+                                       <div className="flex items-center gap-3">
+                                         <Shield className="w-4 h-4 text-primary shrink-0" />
+                                         <span className="text-[13px] font-bold tracking-wide text-foreground capitalize truncate">{skill.name}</span>
+                                       </div>
+                                       <span className="text-[10px] font-bold text-primary/80 bg-primary/10 px-1.5 py-0.5 rounded border border-primary/20 ml-2 shadow-sm shrink-0">x{skill.count || 1}</span>
+                                    </div>
+                                    <span className="absolute right-4 text-[8px] bg-primary/20 px-2 py-1 rounded-sm text-primary border border-primary/20 uppercase tracking-widest font-bold z-10">Verified</span>
+                                 </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Declared Skills */}
+                        {data.skills.declared.length > 0 && (
+                          <div>
+                            <div className="flex items-center justify-between mb-4 pt-2 border-t border-border/10">
+                              <span className="text-[9px] uppercase tracking-widest font-bold text-muted-foreground">Self Declared</span>
+                              <span className="text-[9px] font-mono text-muted-foreground">{data.skills.declared.length}</span>
+                            </div>
+                            <div className="flex flex-wrap gap-2">
+                              {data.skills.declared.map((skill, i) => (
+                                 <div key={`d-${i}`} className="px-3.5 py-2 bg-background/50 border border-border/50 rounded-lg flex items-center shadow-sm">
+                                   <span className="text-[12px] font-medium tracking-wide text-muted-foreground capitalize">{skill.name}</span>
+                                 </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+
                       </div>
                     )}
                   </div>

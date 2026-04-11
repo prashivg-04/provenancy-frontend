@@ -20,6 +20,7 @@ import SupervisorRequests from './pages/SupervisorRequests'
 import SupervisorProfile from './pages/SupervisorProfile'
 import PublicStudentProfile from './pages/PublicStudentProfile'
 import PublicSupervisorProfile from './pages/PublicSupervisorProfile'
+import PublicEngagementView from './pages/PublicEngagementView'
 
 // Role-based protection wrapper with loading support
 function ProtectedRoute({ children, allowedRole = null, checkCompletion = true }) {
@@ -116,6 +117,7 @@ function AppRoutes() {
         
         {/* Public Profiles Rendered Inside Layout For Navbar Identity */}
         <Route path="/profile/:id" element={<PublicStudentProfile />} />
+        <Route path="/profile/:id/engagement/:engId" element={<PublicEngagementView />} />
         <Route path="/supervisor/:id" element={<PublicSupervisorProfile />} />
 
         {/* Student Workspace Paths */}
