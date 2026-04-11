@@ -201,6 +201,14 @@ function AppRoutes() {
             </ProtectedRoute>
           }
         />
+        <Route
+          path="/supervisor/engagements/:id"
+          element={
+            <ProtectedRoute allowedRole="supervisor">
+              <EngagementDetail />
+            </ProtectedRoute>
+          }
+        />
       </Routes>
     </>
   )

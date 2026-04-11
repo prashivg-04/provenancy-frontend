@@ -7,7 +7,7 @@ import StudentLayout from '../components/workspace/StudentLayout'
 import SupervisorLayout from '../components/workspace/SupervisorLayout'
 import { EngagementHeader } from '../components/workspace/DetailElements'
 import { PageContainer, StatusBadge } from '../components/workspace/SharedPrimitives'
-import { getEngagement, deleteEngagement, submitEngagement } from '../lib/api'
+import { getEngagement, deleteEngagement, submitEngagement, approveEngagement, rejectEngagement, requestEditEngagement, getStudentPublic } from '../lib/api'
 import { useAuth } from '../context/AuthContext'
 
 function formatDate(dateStr) {
@@ -32,16 +32,29 @@ export default function EngagementDetail() {
   const [engagement, setEngagement] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
-  const [confirmAction, setConfirmAction] = useState(null) // 'approve' | 'reject' | 'delete' | null
+  const [confirmAction, setConfirmAction] = useState(null) // 'approve' | 'reject' | 'edit' | 'delete' | null
+  const [actionReason, setActionReason] = useState('')
+  const [actioning, setActioning] = useState(false)
   const [deleting, setDeleting] = useState(false)
   const [submitting, setSubmitting] = useState(false)
+  const [studentInfo, setStudentInfo] = useState(null) // { full_name, ledger_id, institution }
 
   useEffect(() => {
     if (!id) return
     setLoading(true)
     setError(null)
     getEngagement(id)
-      .then(res => setEngagement(res.data))
+      .then(async res => {
+        const eng = res.data
+        setEngagement(eng)
+        // For supervisors: fetch student identity from student_profile_id
+        if (isSupervisor && eng.student_profile_id) {
+          try {
+            const sr = await getStudentPublic(eng.student_profile_id)
+            setStudentInfo({ full_name: sr.data.full_name, ledger_id: sr.data.ledger_id, institution: sr.data.institution })
+          } catch { /* non-critical */ }
+        }
+      })
       .catch(err => {
         const status = err.response?.status
         if (status === 404) setError('Engagement not found.')
@@ -49,7 +62,7 @@ export default function EngagementDetail() {
         else setError('Failed to load engagement. Please try again.')
       })
       .finally(() => setLoading(false))
-  }, [id])
+  }, [id, isSupervisor])
 
   const handleSubmitDraft = async () => {
     setSubmitting(true)
@@ -80,9 +93,32 @@ export default function EngagementDetail() {
     }
   }
 
-  const handleSupervisorAction = (type) => {
-    toast.success(`Ledger ${type === 'approve' ? 'signature verified' : 'action submitted'} successfully`)
-    setTimeout(() => navigate('/supervisor/requests'), 1200)
+  const handleSupervisorAction = async () => {
+    if (!confirmAction) return
+    if ((confirmAction === 'reject' || confirmAction === 'edit') && !actionReason.trim()) {
+      toast.error('Please provide a reason before proceeding.')
+      return
+    }
+    setActioning(true)
+    try {
+      if (confirmAction === 'approve') {
+        await approveEngagement(id)
+        toast.success('Engagement verified and signed to ledger')
+      } else if (confirmAction === 'reject') {
+        await rejectEngagement(id, actionReason.trim())
+        toast.success('Engagement rejected')
+      } else if (confirmAction === 'edit') {
+        await requestEditEngagement(id, actionReason.trim())
+        toast.success('Edit request sent to student')
+      }
+      navigate('/supervisor/requests')
+    } catch (err) {
+      toast.error(err.response?.data?.detail || 'Action failed. Please try again.')
+    } finally {
+      setActioning(false)
+      setConfirmAction(null)
+      setActionReason('')
+    }
   }
 
   const LayoutWrapper = isSupervisor ? SupervisorLayout : StudentLayout
@@ -131,7 +167,10 @@ export default function EngagementDetail() {
           
           {/* Back + Header Actions */}
           <div className="flex items-center justify-between mb-6">
-            <button onClick={() => navigate('/student/engagements')} className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-muted-foreground hover:text-foreground transition-colors">
+            <button
+              onClick={() => navigate(isSupervisor ? '/supervisor/requests' : '/student/engagements')}
+              className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-muted-foreground hover:text-foreground transition-colors"
+            >
               <ArrowLeft className="w-3.5 h-3.5" /> Back
             </button>
             <div className="flex items-center gap-3">
@@ -279,7 +318,21 @@ export default function EngagementDetail() {
                       </div>
                     </div>
                   )}
-                  
+
+                  {/* Supervisor view: show student identity */}
+                  {isSupervisor && studentInfo && (
+                    <div className="flex flex-col gap-1">
+                      <span className="text-[10px] text-muted-foreground font-bold uppercase tracking-widest">Student Ledger ID</span>
+                      <div className="flex items-center gap-2">
+                        <Fingerprint className="w-3.5 h-3.5 text-primary/60 shrink-0" />
+                        <p className="text-sm font-mono font-semibold text-foreground tracking-wider">{studentInfo.ledger_id}</p>
+                      </div>
+                      {studentInfo.full_name && (
+                        <p className="text-[10px] text-muted-foreground mt-0.5 pl-5">{studentInfo.full_name}</p>
+                      )}
+                    </div>
+                  )}
+
                   {engagement.supervisor_ref && (
                     <div className="flex flex-col gap-1">
                       <span className="text-[10px] text-muted-foreground font-bold uppercase tracking-widest">Supervisor Ref</span>
@@ -354,54 +407,130 @@ export default function EngagementDetail() {
           </div>
 
           {/* Supervisor Actions Block */}
-          {isSupervisor && engagement.status === 'pending' && (
-            <div className="mt-8 border-t-2 border-b-2 border-border/20 py-8 bg-muted/5 relative">
-              <div className="absolute top-0 left-0 w-1 h-full bg-primary/20"></div>
-              
-              {confirmAction !== 'delete' && !confirmAction ? (
-                <div className="flex flex-col md:flex-row items-center justify-between gap-6 px-8">
-                  <div>
-                    <h3 className="text-xs font-mono uppercase tracking-[0.3em] font-bold text-primary mb-2 flex items-center gap-2">
-                      <ShieldAlert className="w-4 h-4" /> Signature Required
-                    </h3>
-                    <p className="text-muted-foreground text-sm max-w-lg leading-relaxed">
-                      Provide cryptographic authorization to append this engagement to the student's institutional ledger.
-                    </p>
-                  </div>
-                  <div className="flex flex-col sm:flex-row gap-4 w-full md:w-auto z-10">
-                    <button onClick={() => setConfirmAction('edit')} className="flex items-center justify-center gap-2 px-6 py-3 bg-muted/20 border border-border/40 text-muted-foreground font-bold text-[10px] uppercase tracking-widest hover:bg-muted/40 transition-colors">
-                      <AlertCircle className="w-4 h-4" /> Req. Edit
-                    </button>
-                    <button onClick={() => setConfirmAction('reject')} className="flex items-center justify-center gap-2 px-6 py-3 bg-destructive/10 border border-destructive/20 text-destructive font-bold text-[10px] uppercase tracking-widest hover:bg-destructive hover:text-destructive-foreground transition-colors">
-                      <XCircle className="w-4 h-4" /> Reject Node
-                    </button>
-                    <button onClick={() => setConfirmAction('approve')} className="flex items-center justify-center gap-2 px-8 py-3 bg-primary/20 border border-primary/40 text-primary font-bold text-[10px] uppercase tracking-widest hover:bg-primary hover:text-primary-foreground transition-all">
-                      <CheckCircle2 className="w-4 h-4" /> Sign & Verify
-                    </button>
-                  </div>
+          {isSupervisor && engagement.status === 'pending' && !confirmAction && (
+            <div className="mt-8 border-t-2 border-border/20 pt-8 bg-muted/5 relative">
+              <div className="absolute top-0 left-0 w-1 h-full bg-primary/20" />
+              <div className="flex flex-col md:flex-row items-center justify-between gap-6 px-8">
+                <div>
+                  <h3 className="text-xs font-mono uppercase tracking-[0.3em] font-bold text-primary mb-2 flex items-center gap-2">
+                    <ShieldAlert className="w-4 h-4" /> Signature Required
+                  </h3>
+                  <p className="text-muted-foreground text-sm max-w-lg leading-relaxed">
+                    Provide cryptographic authorization to append this engagement to the institutional ledger.
+                  </p>
                 </div>
-              ) : (
-                <div className="flex flex-col md:flex-row items-center justify-between gap-6 px-8">
-                  <div>
-                    <h3 className={`text-xs font-mono uppercase tracking-[0.3em] font-bold mb-2 flex items-center gap-2 ${confirmAction === 'approve' ? 'text-primary' : 'text-destructive'}`}>
-                      {confirmAction === 'approve' ? <ShieldAlert className="w-4 h-4" /> : <XCircle className="w-4 h-4" />}
-                      Confirm {confirmAction === 'approve' ? 'Signature' : confirmAction === 'reject' ? 'Rejection' : 'Edit Request'}
-                    </h3>
-                    <p className="text-muted-foreground text-xs font-mono uppercase tracking-widest">
-                      WARNING: Action is cryptographically irreversible on the ledger.
-                    </p>
-                  </div>
-                  <div className="flex gap-4">
-                    <button onClick={() => setConfirmAction(null)} className="px-6 py-3 border border-border/30 text-muted-foreground text-[10px] uppercase font-bold tracking-widest hover:bg-muted/30 transition-colors">
-                      Abort
-                    </button>
-                    <button onClick={() => handleSupervisorAction(confirmAction)} className={`px-8 py-3 font-bold text-[10px] uppercase tracking-widest transition-all ${confirmAction === 'approve' ? 'bg-primary text-primary-foreground hover:bg-primary/90' : 'bg-destructive text-destructive-foreground hover:bg-destructive/90'}`}>
-                      Execute Payload
-                    </button>
-                  </div>
+                <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto shrink-0">
+                  <button
+                    onClick={() => { setConfirmAction('edit'); setActionReason('') }}
+                    className="flex items-center justify-center gap-2 px-5 py-3 bg-muted/20 border border-border/40 text-muted-foreground font-bold text-[10px] uppercase tracking-widest hover:bg-muted/40 rounded-lg transition-all"
+                  >
+                    <AlertCircle className="w-4 h-4" /> Request Edit
+                  </button>
+                  <button
+                    onClick={() => { setConfirmAction('reject'); setActionReason('') }}
+                    className="flex items-center justify-center gap-2 px-5 py-3 bg-destructive/10 border border-destructive/20 text-destructive font-bold text-[10px] uppercase tracking-widest hover:bg-destructive hover:text-destructive-foreground rounded-lg transition-all"
+                  >
+                    <XCircle className="w-4 h-4" /> Reject
+                  </button>
+                  <button
+                    onClick={() => setConfirmAction('approve')}
+                    className="flex items-center justify-center gap-2 px-6 py-3 bg-primary/20 border border-primary/40 text-primary font-bold text-[10px] uppercase tracking-widest hover:bg-primary hover:text-primary-foreground rounded-lg transition-all"
+                  >
+                    <CheckCircle2 className="w-4 h-4" /> Sign & Verify
+                  </button>
                 </div>
-              )}
+              </div>
             </div>
+          )}
+
+          {/* Supervisor Action Portal Modal — approve / reject / request-edit */}
+          {isSupervisor && confirmAction && confirmAction !== 'delete' && createPortal(
+            <div
+              className="fixed inset-0 z-[9999] flex items-center justify-center p-4"
+              onClick={e => { if (e.target === e.currentTarget) { setConfirmAction(null); setActionReason('') } }}
+            >
+              <div className="absolute inset-0 bg-background/80 backdrop-blur-sm" />
+              <div className="relative z-10 w-full max-w-lg bg-card border border-border/30 rounded-2xl shadow-2xl overflow-hidden">
+                <div className="p-6 space-y-5">
+                  {/* Header */}
+                  <div className="flex items-start gap-4">
+                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${
+                      confirmAction === 'approve' ? 'bg-primary/10' : confirmAction === 'reject' ? 'bg-destructive/10' : 'bg-orange-500/10'
+                    }`}>
+                      {confirmAction === 'approve'
+                        ? <CheckCircle2 className="w-5 h-5 text-primary" />
+                        : confirmAction === 'reject'
+                        ? <XCircle className="w-5 h-5 text-destructive" />
+                        : <AlertCircle className="w-5 h-5 text-orange-500" />}
+                    </div>
+                    <div>
+                      <h2 className="text-sm font-bold text-foreground mb-1">
+                        {confirmAction === 'approve' && 'Confirm Verification'}
+                        {confirmAction === 'reject' && 'Reject Engagement'}
+                        {confirmAction === 'edit' && 'Request Student Edit'}
+                      </h2>
+                      <p className="text-xs text-muted-foreground leading-relaxed">
+                        {confirmAction === 'approve' &&
+                          'This will cryptographically sign and verify the engagement. Once approved, the record becomes immutable on the ledger.'}
+                        {confirmAction === 'reject' &&
+                          'The student will be notified with your reason. Rejected engagements cannot be resubmitted.'}
+                        {confirmAction === 'edit' &&
+                          'The student will receive your feedback and can update the record before resubmitting for review.'}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Reason textarea — only for reject and edit */}
+                  {(confirmAction === 'reject' || confirmAction === 'edit') && (
+                    <div className="space-y-2">
+                      <label className="text-[10px] font-bold uppercase tracking-[0.15em] text-muted-foreground">
+                        {confirmAction === 'reject' ? 'Rejection Reason' : 'Edit Instructions'}
+                        <span className="text-destructive ml-1">*</span>
+                      </label>
+                      <textarea
+                        value={actionReason}
+                        onChange={e => setActionReason(e.target.value)}
+                        placeholder={confirmAction === 'reject'
+                          ? 'Explain why this engagement cannot be verified…'
+                          : 'Describe what the student needs to change or clarify…'}
+                        rows={4}
+                        className="w-full bg-background/60 border border-border/40 rounded-xl px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:ring-1 focus:ring-primary/40 resize-none"
+                      />
+                      {actionReason.trim().length === 0 && (
+                        <p className="text-[10px] text-muted-foreground/60">A reason is required to proceed.</p>
+                      )}
+                    </div>
+                  )}
+
+                  {/* Actions */}
+                  <div className="flex gap-3 pt-1">
+                    <button
+                      onClick={() => { setConfirmAction(null); setActionReason('') }}
+                      className="flex-1 px-4 py-2.5 border border-border/40 text-muted-foreground text-[10px] uppercase font-bold tracking-widest hover:bg-muted/20 rounded-xl transition-all"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      onClick={handleSupervisorAction}
+                      disabled={actioning || ((confirmAction === 'reject' || confirmAction === 'edit') && !actionReason.trim())}
+                      className={`flex-1 flex items-center justify-center gap-2 px-4 py-2.5 font-bold text-[10px] uppercase tracking-widest rounded-xl transition-all disabled:opacity-40 ${
+                        confirmAction === 'approve'
+                          ? 'bg-primary text-primary-foreground hover:bg-primary/90'
+                          : confirmAction === 'reject'
+                          ? 'bg-destructive text-destructive-foreground hover:bg-destructive/90'
+                          : 'bg-orange-500 text-white hover:bg-orange-500/90'
+                      }`}
+                    >
+                      {actioning ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : null}
+                      {confirmAction === 'approve' && 'Sign & Verify'}
+                      {confirmAction === 'reject' && 'Reject Permanently'}
+                      {confirmAction === 'edit' && 'Send Edit Request'}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>,
+            document.body
           )}
 
           {/* Delete Confirmation — Portal Modal */}

@@ -20,8 +20,8 @@ export function StatusBadge({ status, className = "" }) {
   switch(normStatus) {
     case 'VERIFIED':
     case 'ACCEPTED':
-      styles = "bg-primary/10 border-primary/20 text-primary"
-      dotAnimation = "animate-pulse shadow-[0_0_8px_hsl(var(--primary))]"
+      styles = "bg-emerald-500/10 border-emerald-500/20 text-emerald-500"
+      dotAnimation = "animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.5)]"
       dot = true
       break;
     case 'REJECTED':

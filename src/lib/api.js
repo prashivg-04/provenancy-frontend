@@ -103,4 +103,38 @@ export const updateSupervisorMe = (data) => api.put('/supervisor/me', data)
 export const getSupervisorPublic = (supervisorId) =>
   api.get(`/supervisor/${supervisorId}/public`)
 
+// ─── Supervisor Engagements ───────────────────────────────────────────────────
+
+/**
+ * GET /engagements/supervisor/engagements/requests
+ * List all engagements assigned to the logged-in supervisor.
+ * @param {string} [status] — Optional: all | pending | verified | rejected | edit_requested
+ */
+export const getSupervisorEngagements = (status) =>
+  api.get('/engagements/supervisor/engagements/requests', {
+    params: status && status !== 'all' ? { status } : undefined,
+  })
+
+/**
+ * POST /engagements/:id/approve — Approve a pending engagement (no body)
+ * @param {string} id - Engagement UUID
+ */
+export const approveEngagement = (id) => api.post(`/engagements/${id}/approve`)
+
+/**
+ * POST /engagements/:id/reject — Reject a pending engagement
+ * @param {string} id - Engagement UUID
+ * @param {string} reason - Required human-readable rejection reason
+ */
+export const rejectEngagement = (id, reason) =>
+  api.post(`/engagements/${id}/reject`, { reason })
+
+/**
+ * POST /engagements/:id/request-edit — Request student to make changes
+ * @param {string} id - Engagement UUID
+ * @param {string} reason - Required explanation of what needs to change
+ */
+export const requestEditEngagement = (id, reason) =>
+  api.post(`/engagements/${id}/request-edit`, { reason })
+
 export default api
