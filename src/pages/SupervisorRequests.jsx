@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { ChevronRight, ShieldCheck, Activity, Search, AlertCircle, Fingerprint, Loader2, Calendar, Building2 } from 'lucide-react'
+import { ChevronRight, ChevronLeft, ShieldCheck, Activity, Search, AlertCircle, Fingerprint, Loader2, Calendar, Building2 } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import SupervisorLayout from '../components/workspace/SupervisorLayout'
 import { PageContainer, StatusBadge, EmptyState } from '../components/workspace/SharedPrimitives'
@@ -214,6 +214,14 @@ export default function SupervisorRequests() {
   const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState('')
 
+  // Local pagination
+  const [currentPage, setCurrentPage] = useState(1)
+  const itemsPerPage = 5
+
+  useEffect(() => {
+    setCurrentPage(1)
+  }, [activeTab, search])
+
   // Fetch engagements for the active tab
   const loadEngagements = async (tab) => {
     setLoading(true)
@@ -318,6 +326,10 @@ export default function SupervisorRequests() {
       })
     : engagements
 
+  // Pagination metrics
+  const totalPages = Math.max(1, Math.ceil(filtered.length / itemsPerPage))
+  const paginatedItems = filtered.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
+
   return (
     <SupervisorLayout>
       <div className="relative min-h-screen">
@@ -362,31 +374,57 @@ export default function SupervisorRequests() {
             </div>
           </header>
 
-          {/* Filter Tabs */}
-          <div className="flex flex-wrap gap-3 mb-10">
-            {TABS.map(tab => {
-              const isActive = activeTab === tab.key
-              const tc = STATUS_COLORS[tab.key] || STATUS_COLORS.all
-              return (
-                <button
-                  key={tab.key}
-                  onClick={() => setActiveTab(tab.key)}
-                  className={`relative px-5 py-2.5 rounded-xl border transition-all flex items-center gap-2 ${
-                    isActive
-                      ? tc.tabActive
-                      : 'bg-card/20 border-border/30 text-muted-foreground hover:bg-card/40 hover:text-foreground hover:border-border/50'
-                  }`}
+          {/* Toolbar: Tabs & Pagination */}
+          <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-4 mb-8">
+            {/* Filter Tabs */}
+            <div className="flex flex-wrap gap-2">
+              {TABS.map(tab => {
+                const isActive = activeTab === tab.key
+                const tc = STATUS_COLORS[tab.key] || STATUS_COLORS.all
+                return (
+                  <button
+                    key={tab.key}
+                    onClick={() => setActiveTab(tab.key)}
+                    className={`relative px-5 py-2.5 rounded-xl border transition-all flex items-center gap-2 ${
+                      isActive
+                        ? tc.tabActive
+                        : 'bg-card/20 border-border/30 text-muted-foreground hover:bg-card/40 hover:text-foreground hover:border-border/50'
+                    }`}
+                  >
+                    {isActive && <div className={`w-1.5 h-1.5 ${tc.dot || 'bg-current'} rounded-full animate-pulse`} />}
+                    <span className="text-[10px] font-bold uppercase tracking-[0.2em]">{tab.label}</span>
+                    <span className={`ml-1 px-2 py-0.5 rounded text-[9px] font-mono ${
+                      isActive ? (tc.countBadge || 'bg-current/20 text-current') : 'bg-background border border-border/30 text-muted-foreground'
+                    }`}>
+                      {counts[tab.key] ?? '—'}
+                    </span>
+                  </button>
+                )
+              })}
+            </div>
+
+            {/* Top Pagination */}
+            <div className="flex items-center justify-between xl:justify-end gap-3 shrink-0 bg-card/40 border border-border/40 px-2 py-1.5 rounded-xl backdrop-blur-md shadow-sm">
+              <span className="text-[10px] uppercase tracking-[0.2em] font-medium text-foreground/80 px-3">
+                Page <span className="font-bold text-foreground mx-0.5">{currentPage}</span> of {totalPages}
+              </span>
+              <div className="flex gap-1 border-l border-border/30 pl-2">
+                <button 
+                  onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                  disabled={currentPage === 1}
+                  className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-background hover:text-foreground transition-colors text-muted-foreground disabled:opacity-30 disabled:hover:bg-transparent bg-background/50 border border-transparent hover:border-border/50"
                 >
-                  {isActive && <div className={`w-1.5 h-1.5 ${tc.dot || 'bg-current'} rounded-full animate-pulse`} />}
-                  <span className="text-[10px] font-bold uppercase tracking-[0.2em]">{tab.label}</span>
-                  <span className={`ml-1 px-2 py-0.5 rounded text-[9px] font-mono ${
-                    isActive ? (tc.countBadge || 'bg-current/20 text-current') : 'bg-background border border-border/30 text-muted-foreground'
-                  }`}>
-                    {counts[tab.key] ?? '—'}
-                  </span>
+                  <ChevronLeft className="w-4 h-4" />
                 </button>
-              )
-            })}
+                <button 
+                  onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                  disabled={currentPage === totalPages}
+                  className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-background hover:text-foreground transition-colors text-muted-foreground disabled:opacity-30 disabled:hover:bg-transparent bg-background/50 border border-transparent hover:border-border/50"
+                >
+                  <ChevronRight className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
           </div>
 
           {/* Two-column layout */}
@@ -418,7 +456,7 @@ export default function SupervisorRequests() {
                   ))}
                 </>
               ) : filtered.length > 0 ? (
-                filtered.map(req => (
+                paginatedItems.map(req => (
                   <RequestCard
                     key={req.id}
                     req={req}
