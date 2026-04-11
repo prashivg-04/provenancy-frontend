@@ -202,73 +202,11 @@ export default function PublicSupervisorProfile() {
             </header>
 
             {/* Triple Column Grid */}
+            {/* Two Column Grid layout */}
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 w-full items-start">
               
-              {/* Column 1: Trust Profile (Col-3) */}
-              <div className="lg:col-span-3 space-y-8 sticky top-24">
-                
-                {/* Trust Matrix */}
-                <div className="bg-card/20 backdrop-blur-xl border border-border/30 rounded-3xl p-8 relative overflow-hidden group">
-                   <div className="absolute top-0 inset-x-0 h-1 bg-linear-to-r from-primary/10 via-primary/50 to-primary/10"></div>
-                   <div className="mb-8">
-                     <div className="w-12 h-12 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center mb-6">
-                       <Network className="w-5 h-5 text-primary" />
-                     </div>
-                     <h2 className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground">Authority Trust Index</h2>
-                     <div className="text-5xl font-light tracking-tighter text-foreground mt-2">
-                       {engagements.length}
-                       <span className="text-2xl text-muted-foreground"> sigs</span>
-                     </div>
-                   </div>
-                   
-                   <div className="space-y-5">
-                     <div>
-                       <div className="flex justify-between text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-2">
-                         <span>Institutional Tier</span>
-                         <span className={isInstitutional ? 'text-primary' : 'text-muted-foreground'}>
-                           {isInstitutional ? 'Yes' : 'No'}
-                         </span>
-                       </div>
-                       <div className="w-full h-1.5 bg-background rounded-full overflow-hidden">
-                         <div className={`h-full rounded-full shadow-[0_0_10px_hsl(var(--primary))] ${isInstitutional ? 'bg-primary w-full' : 'bg-border w-1/4'}`}></div>
-                       </div>
-                     </div>
-                     <div>
-                       <div className="flex justify-between text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-2">
-                         <span>Uptime Reliability</span>
-                         <span className="text-foreground">99.9%</span>
-                       </div>
-                       <div className="w-full h-1.5 bg-background rounded-full overflow-hidden">
-                         <div className="h-full bg-border w-[99%] rounded-full"></div>
-                       </div>
-                     </div>
-                   </div>
-                </div>
-
-                {/* Organization card */}
-                {data.organization && (
-                  <div className="bg-card/20 backdrop-blur-xl border border-border/30 rounded-3xl p-8 relative overflow-hidden group">
-                    <div className="flex items-center gap-3 mb-6 border-b border-border/20 pb-6">
-                      <FileCheck className="w-4 h-4 text-primary" />
-                      <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-foreground">Root Authority</span>
-                    </div>
-                    <div className="flex items-center gap-5">
-                      <div className="w-16 h-16 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center shrink-0">
-                        <Building className="w-8 h-8 text-primary" />
-                      </div>
-                      <div>
-                        <h4 className="text-lg font-medium text-foreground mb-1 tracking-tight leading-tight">{data.organization}</h4>
-                        <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
-                          {data.designation ?? 'Affiliated Institution'}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </div>
-
-              {/* Column 2: Oracle Verification Logs (Col-6) */}
-              <div className="lg:col-span-6 space-y-8 relative">
+              {/* Main Column: Oracle Verification Logs (Col-8) */}
+              <div className="lg:col-span-8 space-y-8 relative">
                 
                 <div className="flex items-center justify-between mb-8 overflow-hidden rounded-2xl border border-border/20 bg-background/50 backdrop-blur-md p-4 px-6 md:px-8 shadow-sm">
                    <h2 className="text-sm font-bold tracking-[0.2em] uppercase text-foreground">Oracle Verification Logs</h2>
@@ -329,6 +267,19 @@ export default function PublicSupervisorProfile() {
                                 </span>
                               </div>
                             </div>
+                            
+                            {/* View Record link */}
+                            <div className="pt-4 border-t border-border/10 flex justify-end">
+                              <Link
+                                to={`/profile/${eng.student_profile_id}/engagement/${eng.id}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 text-[10px] font-bold uppercase tracking-widest rounded-xl hover:bg-emerald-500 hover:text-white transition-all"
+                              >
+                                View Full Record →
+                              </Link>
+                            </div>
+
                           </div>
                         </article>
                       </div>
@@ -337,24 +288,31 @@ export default function PublicSupervisorProfile() {
                 )}
               </div>
 
-              {/* Column 3: Endorsed Domains — Coming Soon (Col-3) */}
-              <div className="lg:col-span-3 space-y-8">
-                <div className="bg-card/20 backdrop-blur-xl border border-border/30 rounded-3xl p-8 relative overflow-hidden pb-12">
-                  <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full blur-2xl pointer-events-none"></div>
-                  
-                  <div className="flex items-center gap-3 border-b border-border/20 pb-6 mb-8">
-                    <Hexagon className="w-4 h-4 text-primary" />
-                    <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-foreground">Endorsed Domains</span>
-                  </div>
-                  
-                  <div className="flex flex-col items-center justify-center py-8 text-center">
-                    <div className="w-10 h-10 rounded-full bg-border/10 flex items-center justify-center mb-4">
-                      <Hexagon className="w-5 h-5 text-muted-foreground/30" />
+              {/* Sidebar Column: Trust Matrix & Domains (Col-4) */}
+              <div className="lg:col-span-4 space-y-8 sticky top-24">
+                
+
+                {/* Organization card */}
+                {data.organization && (
+                  <div className="bg-card/20 backdrop-blur-xl border border-border/30 rounded-3xl p-8 relative overflow-hidden group">
+                    <div className="flex items-center gap-3 mb-6 border-b border-border/20 pb-6">
+                      <FileCheck className="w-4 h-4 text-primary" />
+                      <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-foreground">Root Authority</span>
                     </div>
-                    <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/60">Domain Module</p>
-                    <p className="text-[9px] text-muted-foreground/40 mt-1">Coming Soon</p>
+                    <div className="flex items-center gap-5">
+                      <div className="w-16 h-16 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center shrink-0">
+                        <Building className="w-8 h-8 text-primary" />
+                      </div>
+                      <div>
+                        <h4 className="text-lg font-medium text-foreground mb-1 tracking-tight leading-tight">{data.organization}</h4>
+                        <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+                          {data.designation ?? 'Affiliated Institution'}
+                        </p>
+                      </div>
+                    </div>
                   </div>
-                </div>
+                )}
+
 
                 <div className="mt-8 pt-6 relative z-10 px-4 text-center">
                   <p className="text-[9px] leading-relaxed text-muted-foreground font-medium uppercase tracking-widest">
