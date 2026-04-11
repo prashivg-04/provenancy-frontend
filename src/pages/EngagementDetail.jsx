@@ -446,7 +446,7 @@ export default function EngagementDetail() {
           {/* Supervisor Action Portal Modal — approve / reject / request-edit */}
           {isSupervisor && confirmAction && confirmAction !== 'delete' && createPortal(
             <div
-              className="fixed inset-0 z-[9999] flex items-center justify-center p-4"
+              className="fixed inset-0 z-9999 flex items-center justify-center p-4"
               onClick={e => { if (e.target === e.currentTarget) { setConfirmAction(null); setActionReason('') } }}
             >
               <div className="absolute inset-0 bg-background/80 backdrop-blur-sm" />
@@ -536,7 +536,7 @@ export default function EngagementDetail() {
           {/* Delete Confirmation — Portal Modal */}
           {confirmAction === 'delete' && createPortal(
             <div
-              className="fixed inset-0 z-[9999] flex items-center justify-center p-4"
+              className="fixed inset-0 z-9999 flex items-center justify-center p-4"
               onClick={(e) => { if (e.target === e.currentTarget) setConfirmAction(null) }}
             >
               <div className="absolute inset-0 bg-background/80 backdrop-blur-sm" />

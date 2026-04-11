@@ -125,12 +125,12 @@ function RequestCard({ req, studentInfo, navigate }) {
   return (
     <div
       onClick={() => navigate(`/supervisor/engagements/${req.id}`)}
-      className={`group cursor-pointer bg-card/20 backdrop-blur-md p-8 border ${c.border} transition-all duration-300 rounded-[2rem] shadow-sm relative overflow-hidden`}
+      className={`group cursor-pointer bg-card/20 backdrop-blur-md p-8 border ${c.border} transition-all duration-300 rounded-4xl shadow-sm relative overflow-hidden`}
     >
       {/* Left accent bar — color matches status */}
       <div className={`absolute inset-y-0 left-0 w-1 ${c.accent} opacity-0 group-hover:opacity-60 ${c.glow} transition-all duration-300`} />
       {/* Corner glow — color matches status */}
-      <div className={`absolute top-0 right-0 w-48 h-48 ${c.cardGlow} rounded-full blur-[40px] transition-colors pointer-events-none`} />
+      <div className={`absolute top-0 right-0 w-48 h-48 ${c.cardGlow} rounded-full blur-2xl transition-colors pointer-events-none`} />
 
       {/* Top row: student + status */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4 relative z-10 border-b border-border/10 pb-6">
@@ -397,7 +397,7 @@ export default function SupervisorRequests() {
               {loading ? (
                 <>
                   {[1, 2, 3].map(i => (
-                    <div key={i} className="bg-card/20 p-8 rounded-[2rem] border border-border/20 space-y-6">
+                    <div key={i} className="bg-card/20 p-8 rounded-4xl border border-border/20 space-y-6">
                       <div className="flex items-center gap-4 pb-6 border-b border-border/10">
                         <Skeleton className="w-11 h-11 rounded-xl" />
                         <div className="flex-1 space-y-2">
@@ -444,7 +444,7 @@ export default function SupervisorRequests() {
             {/* Sidebar — real queue metrics */}
             <div className="hidden lg:block lg:col-span-4 sticky top-24 h-max">
               <div className="bg-card/20 backdrop-blur-xl p-8 border border-border/30 rounded-3xl relative overflow-hidden shadow-sm">
-                <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full blur-[40px] pointer-events-none" />
+                <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full blur-2xl pointer-events-none" />
 
                 <div className="flex items-center gap-3 border-b border-border/20 pb-6 mb-8 relative z-10">
                   <Activity className="w-4 h-4 text-primary" />

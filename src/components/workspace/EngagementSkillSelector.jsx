@@ -131,7 +131,7 @@ export default function EngagementSkillSelector({ selectedSkills = [], onChange 
       {/* ─── Modal (portal) ─── */}
       {modalOpen && createPortal(
         <div
-          className="fixed inset-0 z-[9999] flex items-center justify-center p-4"
+          className="fixed inset-0 z-9999 flex items-center justify-center p-4"
           onClick={(e) => { if (e.target === e.currentTarget) closeModal() }}
         >
           {/* Backdrop */}
