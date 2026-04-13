@@ -1,35 +1,193 @@
-# provenancy
+# Provenancy — Frontend
 
-This is a [Next.js](https://nextjs.org) project bootstrapped with [v0](https://v0.app).
+Provenancy is a work verification platform where students log internship and freelance engagements, and supervisors verify them. This is the React frontend repo — it communicates with the FastAPI backend via Axios and handles role-based routing for both students and supervisors.
 
-## Built with v0
+---
 
-This repository is linked to a [v0](https://v0.app) project. You can continue developing by visiting the link below -- start new chats to make changes, and v0 will push commits directly to this repo. Every merge to `main` will automatically deploy.
+## Tech Stack
 
-[Continue working on v0 →](https://v0.app/chat/projects/prj_D6J0Hhfji7l1dOF0UOoEA00M22Nn)
+| Concern          | Technology                        |
+| ---------------- | --------------------------------- |
+| Framework        | React 19                          |
+| Build Tool       | Vite                              |
+| Routing          | React Router v6                   |
+| HTTP             | Axios (centralized instance)      |
+| Styling          | Tailwind CSS v4                   |
+| Components       | shadcn/ui                         |
+| Notifications    | react-hot-toast                   |
+| Form Validation  | react-hook-form + Zod             |
+| Auth             | JWT in `localStorage`             |
+| Deployment       | Vercel                            |
 
-## Getting Started
+---
 
-First, run the development server:
+## Project Structure
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
+```
+provenancy_frontend/
+├── src/
+│   ├── components/
+│   │   ├── profile/             # Public profile sub-components
+│   │   ├── workspace/           # Shared dashboard UI primitives
+│   │   ├── ErrorBoundary.jsx    # Runtime crash fallback wrapper
+│   │   ├── Layout.jsx           # Public page shell
+│   │   ├── AuthLayout.jsx       # Auth page shell
+│   │   ├── Navbar.jsx
+│   │   ├── Sidebar.jsx
+│   │   ├── Logo.jsx
+│   │   └── Footer.jsx
+│   ├── context/
+│   │   └── AuthContext.jsx      # Global auth state, login/logout, /me fetch
+│   ├── lib/
+│   │   ├── api.js               # Centralized Axios instance + interceptors
+│   │   └── handleError.js       # Central API error handler (toast + return)
+│   ├── pages/
+│   │   ├── Home.jsx
+│   │   ├── Login.jsx
+│   │   ├── Signup.jsx
+│   │   ├── StudentDashboard.jsx
+│   │   ├── StudentEngagements.jsx
+│   │   ├── EngagementCreate.jsx
+│   │   ├── EngagementDetail.jsx
+│   │   ├── EngagementEdit.jsx
+│   │   ├── StudentSkills.jsx
+│   │   ├── Profile.jsx
+│   │   ├── SupervisorDashboard.jsx
+│   │   ├── SupervisorRequests.jsx
+│   │   ├── SupervisorProfile.jsx
+│   │   ├── PublicStudentProfile.jsx
+│   │   ├── PublicSupervisorProfile.jsx
+│   │   ├── PublicEngagementView.jsx
+│   │   └── NotFound.jsx
+│   ├── App.jsx                  # Routes and ProtectedRoute wrappers
+│   └── main.jsx                 # Entry point — ErrorBoundary wrap
+├── vercel.json                  # SPA rewrite rule for Vercel
+├── README.md                 
+├── CHANGELOG.md 
+├── .env
+└── .gitignore
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Prerequisites
 
-## Learn More
+- Node.js 18+
+- npm
+- Provenancy backend running locally or pointing to a deployed URL
 
-To learn more, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-- [v0 Documentation](https://v0.app/docs) - learn about v0 and how to use it.
+## Environment Setup
 
-<a href="https://v0.app/chat/api/kiro/clone/prashivg-04/provenancy" alt="Open in Kiro"><img src="https://pdgvvgmkdvyeydso.public.blob.vercel-storage.com/open%20in%20kiro.svg?sanitize=true" /></a>
+Create a `.env` file in the project root:
+
+```env
+VITE_API_URL=http://localhost:8000
+```
+
+> In production on Vercel, set `VITE_API_URL` to your deployed backend URL (e.g. `https://provenancy-api.onrender.com`).
+
+---
+
+## Installation & Running Locally
+
+```bash
+npm install
+npm run dev
+```
+
+The app will be available at `http://localhost:3000` or `http://localhost:5173` (or whichever port Vite assigns).
+
+---
+
+## Building for Production
+
+```bash
+npm run build
+```
+
+Output goes to `dist/`. To preview the production build locally:
+
+```bash
+npm run preview
+```
+
+---
+
+## Auth
+
+| Detail         | Value                                        |
+| -------------- | -------------------------------------------- |
+| Storage        | `localStorage` key: `provenancy_token`       |
+| Header         | `Authorization: Bearer <token>` on all requests |
+| Session expiry | Global Axios `401` interceptor auto-clears token and redirects to `/login` |
+
+### Roles
+
+| Role         | Accessible Routes                                        |
+| ------------ | -------------------------------------------------------- |
+| `student`    | Dashboard, Engagements, Skills, Profile                  |
+| `supervisor` | Dashboard, Engagement Requests, Profile                  |
+
+---
+
+## Pages Overview
+
+| Page                     | Description                                                    |
+| ------------------------ | -------------------------------------------------------------- |
+| `Home`                   | Public landing page                                            |
+| `Login`                  | Email + password login with role-aware redirect                |
+| `Signup`                 | Account creation for students and supervisors                  |
+| `StudentDashboard`       | Engagement stats, recent activity, top skills                  |
+| `StudentEngagements`     | Engagement list with status filters, search, and pagination    |
+| `EngagementCreate`       | Multi-step form to log a new engagement                        |
+| `EngagementEdit`         | Edit a draft or edit-requested engagement                      |
+| `EngagementDetail`       | Full engagement view; supervisor approval/rejection actions    |
+| `StudentSkills`          | View verified and declared skills, add/remove declared skills  |
+| `Profile`                | Edit student profile details                                   |
+| `SupervisorDashboard`    | Pending queue count, approval stats, activity feed             |
+| `SupervisorRequests`     | Full verification queue with status tabs and search            |
+| `SupervisorProfile`      | Edit supervisor profile details                                |
+| `PublicStudentProfile`   | Public-facing student portfolio with verified engagements      |
+| `PublicSupervisorProfile`| Public-facing supervisor identity and verified records         |
+| `PublicEngagementView`   | Shareable public view of a single verified engagement          |
+| `NotFound`               | 404 catch-all for unmatched routes                             |
+
+---
+
+## Deployment
+
+This project is deployed on **[Vercel](https://vercel.com/)**.
+
+### `vercel.json`
+
+```json
+{
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/" }
+  ]
+}
+```
+
+This tells Vercel to route all paths to `index.html`, which is required for client-side routing with React Router. Without it, a direct page visit or refresh on any non-root URL returns a 404 from Vercel.
+
+### Vercel Environment Variables
+
+Set the following in your Vercel project settings under **Settings → Environment Variables**:
+
+| Variable       | Value                                   |
+| -------------- | --------------------------------------- |
+| `VITE_API_URL` | `https://your-backend.onrender.com`     |
+
+The backend is deployed separately on **[Render](https://render.com/)** — see the backend repo for its setup.
+
+---
+
+## Team
+
+| Name            | Role       |
+| --------------- | ---------- |
+| Prashiv Goyal   | Frontend   |
+| Aman Verma      | Database   |
+| Sumeet Rawat    | Backend    |
