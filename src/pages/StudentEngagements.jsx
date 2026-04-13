@@ -5,6 +5,7 @@ import StudentLayout from '../components/workspace/StudentLayout'
 import { PageContainer, StatusBadge, EmptyState } from '../components/workspace/SharedPrimitives'
 import { getEngagements } from '../lib/api'
 import { toast } from 'react-hot-toast'
+import { handleError } from '../lib/handleError'
 
 const STATUS_COLORS = {
   pending: {
@@ -231,7 +232,7 @@ export default function StudentEngagements() {
     } catch (err) {
       const msg = err.response?.data?.detail || 'Failed to load engagements'
       setError(msg)
-      toast.error(msg)
+      handleError(err)
     } finally {
       setLoading(false)
     }

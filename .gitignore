@@ -1,14 +1,9 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
-
 # dependencies
 /node_modules
 
-# next.js
-/.next/
-/out/
-
-# production
+# production build
 /build
+/dist
 
 # debug
 npm-debug.log*
@@ -25,3 +20,11 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# temp folders
+/stitch_tmp
+/.claude
+
+# OS
+.DS_Store
+Thumbs.db

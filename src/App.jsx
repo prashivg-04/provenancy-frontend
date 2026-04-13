@@ -21,6 +21,7 @@ import SupervisorProfile from './pages/SupervisorProfile'
 import PublicStudentProfile from './pages/PublicStudentProfile'
 import PublicSupervisorProfile from './pages/PublicSupervisorProfile'
 import PublicEngagementView from './pages/PublicEngagementView'
+import NotFound from './pages/NotFound'
 
 // Role-based protection wrapper with loading support
 function ProtectedRoute({ children, allowedRole = null, checkCompletion = true }) {
@@ -211,6 +212,9 @@ function AppRoutes() {
             </ProtectedRoute>
           }
         />
+
+        {/* Catch-all — 404 */}
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </>
   )

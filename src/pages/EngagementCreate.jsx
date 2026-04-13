@@ -6,6 +6,7 @@ import { PageContainer } from '../components/workspace/SharedPrimitives'
 import EngagementSkillSelector from '../components/workspace/EngagementSkillSelector'
 import DatePickerField from '../components/workspace/DatePickerField'
 import { toast } from 'react-hot-toast'
+import { handleError } from '../lib/handleError'
 import { useNavigate } from 'react-router-dom'
 import { createEngagement, submitEngagement } from '../lib/api'
 import { Paperclip } from 'lucide-react'
@@ -83,9 +84,7 @@ export default function EngagementCreate() {
       toast.success('Draft saved successfully')
       navigate('/student/engagements')
     } catch (err) {
-      const detail = err.response?.data?.detail
-      if (typeof detail === 'string') toast.error(detail)
-      else toast.error('Failed to save draft')
+      handleError(err)
     } finally {
       setSaving(false)
     }
@@ -103,9 +102,7 @@ export default function EngagementCreate() {
       toast.success('Engagement submitted for cryptographic verification')
       navigate('/student/engagements')
     } catch (err) {
-      const detail = err.response?.data?.detail
-      if (typeof detail === 'string') toast.error(detail)
-      else toast.error('Submission failed. Please try again.')
+      handleError(err)
     } finally {
       setSubmitting(false)
     }

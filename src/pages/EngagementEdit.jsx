@@ -6,6 +6,7 @@ import { PageContainer } from '../components/workspace/SharedPrimitives'
 import EngagementSkillSelector from '../components/workspace/EngagementSkillSelector'
 import DatePickerField from '../components/workspace/DatePickerField'
 import { toast } from 'react-hot-toast'
+import { handleError } from '../lib/handleError'
 import { useNavigate, useParams } from 'react-router-dom'
 import { getEngagement, updateEngagement, submitEngagement } from '../lib/api'
 
@@ -64,10 +65,7 @@ export default function EngagementEdit() {
         setSkills(eng.skills?.map(s => s.name) || [])
       })
       .catch(err => {
-        const status = err.response?.status
-        if (status === 403) toast.error("You don't have access to this engagement")
-        else if (status === 404) toast.error('Engagement not found')
-        else toast.error('Failed to load engagement')
+        handleError(err)
         navigate('/student/engagements')
       })
       .finally(() => setLoading(false))
@@ -127,8 +125,7 @@ export default function EngagementEdit() {
       toast.success('Changes saved successfully')
       navigate(`/student/engagements/${id}`)
     } catch (err) {
-      const detail = err.response?.data?.detail
-      toast.error(typeof detail === 'string' ? detail : 'Failed to save changes')
+      handleError(err)
     } finally {
       setSaving(false)
     }
@@ -145,8 +142,7 @@ export default function EngagementEdit() {
       toast.success('Engagement resubmitted for verification')
       navigate('/student/engagements')
     } catch (err) {
-      const detail = err.response?.data?.detail
-      toast.error(typeof detail === 'string' ? detail : 'Failed to submit. Please try again.')
+      handleError(err)
     } finally {
       setSubmitting(false)
     }

@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom'
 import { CheckCircle2, XCircle, AlertCircle, ShieldAlert, Loader2, AlertTriangle, Trash2, ArrowLeft, Fingerprint, Link2 } from 'lucide-react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { toast } from 'react-hot-toast'
+import { handleError } from '../lib/handleError'
 import StudentLayout from '../components/workspace/StudentLayout'
 import SupervisorLayout from '../components/workspace/SupervisorLayout'
 import { EngagementHeader } from '../components/workspace/DetailElements'
@@ -73,7 +74,7 @@ export default function EngagementDetail() {
       const res = await getEngagement(id)
       setEngagement(res.data)
     } catch (err) {
-      toast.error(err.response?.data?.detail || 'Failed to submit engagement')
+      handleError(err)
     } finally {
       setSubmitting(false)
     }
@@ -86,7 +87,7 @@ export default function EngagementDetail() {
       toast.success('Engagement deleted')
       navigate('/student/engagements')
     } catch (err) {
-      toast.error(err.response?.data?.detail || 'Failed to delete engagement')
+      handleError(err)
     } finally {
       setDeleting(false)
       setConfirmAction(null)
@@ -113,7 +114,7 @@ export default function EngagementDetail() {
       }
       navigate('/supervisor/requests')
     } catch (err) {
-      toast.error(err.response?.data?.detail || 'Action failed. Please try again.')
+      handleError(err)
     } finally {
       setActioning(false)
       setConfirmAction(null)
