@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { Plus, X, Search, BadgeCheck, Shield, ChevronRight, Loader2, Save } from 'lucide-react'
 import toast from 'react-hot-toast'
 import StudentLayout from '../components/workspace/StudentLayout'
@@ -6,6 +7,7 @@ import { PageContainer } from '../components/workspace/SharedPrimitives'
 import { searchSkills, getUserSkills, addDeclaredSkills, deleteDeclaredSkill } from '../lib/api'
 
 export default function StudentSkills() {
+  const navigate = useNavigate()
   const [declaredSkills, setDeclaredSkills] = useState([])
   const [stagedSkills, setStagedSkills] = useState([])
   const [verifiedSkills, setVerifiedSkills] = useState([])
@@ -55,6 +57,7 @@ export default function StudentSkills() {
       const mappedVerified = data.verified.map((v, idx) => ({
         id: `V-ID: ${String(idx + 1).padStart(3, '0')}`,
         name: v.name,
+        rawCount: v.count,
         subtitle: `${v.count} verification${v.count > 1 ? 's' : ''} logged`,
         level: v.count > 3 ? "Gold Standard" : (v.count > 1 ? "Verified Level II" : "Verified Level I"),
         tags: ["Verified"]
@@ -127,20 +130,10 @@ export default function StudentSkills() {
             <div className="mb-12 relative border-b border-border/10 pb-8 pt-4">
               <div className="absolute inset-x-0 top-0 h-40 bg-primary/5 blur-[100px] rounded-full pointer-events-none -z-10"></div>
               
-              <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center mb-4">
                 <div className="flex items-center gap-2 px-3 py-1 bg-primary/10 border border-primary/20 rounded-full w-fit">
                    <Shield className="w-3 h-3 text-primary" />
                    <span className="text-[9px] font-bold uppercase tracking-widest text-primary">Cryptographic Registry</span>
-                </div>
-                
-                {/* Search / Filter Utility */}
-                <div className="hidden sm:flex items-center gap-2 bg-background/50 border border-border/50 rounded-full px-4 py-2 shadow-sm focus-within:border-primary/50 focus-within:ring-1 focus-within:ring-primary/50 transition-all">
-                  <Search className="w-4 h-4 text-muted-foreground" />
-                  <input 
-                    type="text" 
-                    placeholder="Search ledger..." 
-                    className="bg-transparent border-0 text-xs text-foreground placeholder:text-muted-foreground focus:ring-0 focus:outline-none w-48"
-                  />
                 </div>
               </div>
               
@@ -199,7 +192,10 @@ export default function StudentSkills() {
                   ))}
                   
                   {/* Request Verification Action Card */}
-                  <div className="bg-primary/5 border border-dashed border-primary/30 p-6 rounded-2xl flex flex-col items-center justify-center min-h-[180px] group hover:bg-primary/10 hover:border-primary/60 transition-all cursor-pointer">
+                  <div
+                    onClick={() => navigate('/student/engagements/create')}
+                    className="bg-primary/5 border border-dashed border-primary/30 p-6 rounded-2xl flex flex-col items-center justify-center min-h-[180px] group hover:bg-primary/10 hover:border-primary/60 transition-all cursor-pointer"
+                  >
                     <div className="w-12 h-12 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center mb-4 group-hover:scale-110 group-hover:bg-primary group-hover:text-primary-foreground transition-all">
                       <Plus className="w-5 h-5 text-primary group-hover:text-primary-foreground transition-colors" />
                     </div>
@@ -304,36 +300,38 @@ export default function StudentSkills() {
             <h3 className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground font-bold mb-8">Registry Stats</h3>
             
             <div className="space-y-6">
-              <div className="bg-background/40 p-5 rounded-xl border border-border/30">
-                <span className="text-[10px] uppercase tracking-[0.15em] text-muted-foreground font-bold block mb-2">Total Verifications</span>
-                <div className="text-4xl font-light text-foreground">32</div>
-              </div>
-              
-              <div className="bg-background/40 p-5 rounded-xl border border-border/30">
-                <span className="text-[10px] uppercase tracking-[0.15em] text-muted-foreground font-bold block mb-2">Unique Endorsers</span>
-                <div className="text-4xl font-light text-foreground">11</div>
-              </div>
-              
               <div className="bg-primary/10 p-5 rounded-xl border border-primary/20 relative overflow-hidden group">
                 <div className="absolute -right-4 -top-4 w-16 h-16 bg-primary/20 rounded-full blur-[20px] group-hover:bg-primary/30 transition-all"></div>
-                <span className="text-[10px] uppercase tracking-[0.15em] text-primary font-bold block mb-2 relative z-10">Network Trust Score</span>
-                <div className="text-4xl font-light text-primary relative z-10">94<span className="text-lg opacity-50">/100</span></div>
+                <span className="text-[10px] uppercase tracking-[0.15em] text-primary font-bold block mb-2 relative z-10">Verification Score</span>
+                <div className="text-4xl font-light text-primary relative z-10">
+                  {isLoading ? '—' : (() => {
+                    const total = verifiedSkills.length + declaredSkills.length
+                    const score = total === 0 ? 0 : Math.round((verifiedSkills.length / total) * 100)
+                    return <>{score}<span className="text-lg opacity-50">%</span></>
+                  })()}
+                </div>
+                <p className="text-[10px] text-primary/50 mt-2 relative z-10">
+                  of declared skills verified
+                </p>
+              </div>
+              
+              <div className="bg-background/40 p-5 rounded-xl border border-border/30">
+                <span className="text-[10px] uppercase tracking-[0.15em] text-muted-foreground font-bold block mb-2">Verified Skills</span>
+                <div className="text-4xl font-light text-foreground">
+                  {isLoading ? '—' : verifiedSkills.length}
+                </div>
+              </div>
+              
+              <div className="bg-background/40 p-5 rounded-xl border border-border/30">
+                <span className="text-[10px] uppercase tracking-[0.15em] text-muted-foreground font-bold block mb-2">Declared Skills</span>
+                <div className="text-4xl font-light text-foreground">
+                  {isLoading ? '—' : declaredSkills.length}
+                </div>
               </div>
             </div>
           </div>
           
-          <div className="mt-auto">
-             <div className="flex items-center gap-3 p-4 bg-muted/10 border border-border/20 rounded-xl cursor-pointer hover:bg-muted/20 transition-colors group">
-               <div className="w-10 h-10 rounded-full bg-background border border-border/30 flex items-center justify-center shrink-0">
-                 <Shield className="w-4 h-4 text-muted-foreground group-hover:text-foreground" />
-               </div>
-               <div className="flex-1">
-                 <h4 className="text-xs font-bold text-foreground">Export Ledger</h4>
-                 <p className="text-[10px] text-muted-foreground">Download verifiable JSON</p>
-               </div>
-               <ChevronRight className="w-4 h-4 text-muted-foreground group-hover:text-foreground transition-transform group-hover:translate-x-1" />
-             </div>
-          </div>
+
         </aside>
       </div>
 

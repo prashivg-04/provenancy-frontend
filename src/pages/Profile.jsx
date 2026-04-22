@@ -338,22 +338,74 @@ export default function Profile() {
                            <span className="text-[11px] text-muted-foreground uppercase tracking-widest font-bold">No skills declared yet</span>
                          </div>
                       ) : (
-                         <div className="flex flex-wrap gap-3 relative z-10">
-                           {skills.verified.map((skill, i) => (
-                             <div key={`v-${i}`} className="group relative overflow-hidden px-4 py-2 bg-primary/10 border border-primary/30 rounded-xl flex items-center gap-2 shadow-sm transition-all hover:bg-primary/20 hover:border-primary/50 hover:-translate-y-0.5 hover:shadow-[0_5px_15px_-3px_rgba(26,35,126,0.2)]">
-                                <div className="absolute inset-0 bg-linear-to-r from-primary/0 via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
-                                <Shield className="w-3.5 h-3.5 text-primary" />
-                                <span className="text-[12px] font-bold tracking-wide text-foreground capitalize relative z-10">{skill.name}</span>
-                                <span className="text-[8px] bg-primary/20 px-1.5 py-0.5 rounded text-primary border border-primary/20 uppercase tracking-widest font-bold relative z-10 ml-1">Verified</span>
-                             </div>
-                           ))}
-                           {skills.declared.map((skill, i) => (
-                             <div key={`d-${i}`} className="group relative overflow-hidden px-4 py-2 bg-background/50 backdrop-blur-sm border border-border/60 hover:border-border rounded-xl flex items-center gap-2 transition-all hover:bg-card/80 hover:-translate-y-0.5 shadow-sm hover:shadow-md cursor-default">
-                               <div className="absolute inset-0 bg-linear-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
-                               <span className="text-[12px] font-bold tracking-wide text-muted-foreground group-hover:text-foreground capitalize transition-colors relative z-10">{skill.name}</span>
-                             </div>
-                           ))}
-                         </div>
+                        <div className="flex flex-col gap-6 relative z-10 w-full">
+
+                            {/* Verified Skills */}
+                            {skills.verified.length > 0 && (
+                              <div className="flex flex-col gap-3">
+                                <div className="flex items-center gap-3">
+                                  <span className="text-[9px] font-bold uppercase tracking-[0.25em] text-primary">
+                                    Verified
+                                  </span>
+                                  <span className="px-2 py-0.5 bg-primary/10 border border-primary/20 rounded text-[9px] font-bold text-primary uppercase tracking-widest">
+                                    {skills.verified.length}
+                                  </span>
+                                  <span className="text-[9px] text-muted-foreground/50">
+                                    — backed by supervisor signatures
+                                  </span>
+                                </div>
+                                <div className="flex flex-wrap gap-2.5">
+                                  {skills.verified.map((skill, i) => (
+                                    <div key={`v-${i}`} className="group relative overflow-hidden px-4 py-2 bg-primary/10 border border-primary/30 rounded-xl flex items-center gap-2 shadow-sm transition-all hover:bg-primary/20 hover:border-primary/50 hover:-translate-y-0.5 hover:shadow-[0_5px_15px_-3px_rgba(26,35,126,0.2)]">
+                                      <div className="absolute inset-0 bg-linear-to-r from-primary/0 via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
+                                      <Shield className="w-3.5 h-3.5 text-primary" />
+                                      <span className="text-[12px] font-bold tracking-wide text-foreground capitalize relative z-10">{skill.name}</span>
+                                      <span className="text-[8px] bg-primary/20 px-1.5 py-0.5 rounded text-primary border border-primary/20 uppercase tracking-widest font-bold relative z-10 ml-1">Verified</span>
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
+                            )}
+
+                            {/* Divider — only shown when both sections have content */}
+                            {skills.verified.length > 0 && skills.declared.length > 0 && (
+                              <div className="flex items-center gap-4">
+                                <div className="flex-1 h-px bg-border/20" />
+                                <span className="text-[9px] font-bold uppercase tracking-[0.25em] text-muted-foreground/40">
+                                  Self-Declared
+                                </span>
+                                <div className="flex-1 h-px bg-border/20" />
+                              </div>
+                            )}
+
+                            {/* Declared Skills */}
+                            {skills.declared.length > 0 && (
+                              <div className="flex flex-col gap-3">
+                                {skills.verified.length === 0 && (
+                                  <div className="flex items-center gap-3">
+                                    <span className="text-[9px] font-bold uppercase tracking-[0.25em] text-muted-foreground">
+                                      Declared
+                                    </span>
+                                    <span className="text-[9px] text-muted-foreground/50">
+                                      — pending verification
+                                    </span>
+                                  </div>
+                                )}
+                                <div className="flex flex-wrap gap-2.5">
+                                  {skills.declared.map((skill, i) => (
+                                    <div key={`d-${i}`} className="group relative overflow-hidden px-4 py-2 bg-background/50 backdrop-blur-sm border border-border/60 hover:border-border rounded-xl flex items-center gap-2 transition-all hover:bg-card/80 hover:-translate-y-0.5 shadow-sm hover:shadow-md cursor-default">
+                                      <div className="absolute inset-0 bg-linear-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
+                                      <span className="text-[12px] font-bold tracking-wide text-muted-foreground group-hover:text-foreground capitalize transition-colors relative z-10">{skill.name}</span>
+                                    </div>
+                                  ))}
+                                </div>
+                                <p className="text-[10px] text-muted-foreground/50 leading-relaxed pt-1">
+                                  These skills are self-attested and will appear as verified once an engagement supervisor endorses them.
+                                </p>
+                              </div>
+                            )}
+
+                          </div>
                       )}
                     </div>
                   </div>

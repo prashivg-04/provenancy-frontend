@@ -25,7 +25,7 @@ export default function StudentLayout({ children, activeTitle = "Provenancy", ac
 
   return (
     <div className="flex h-screen w-full bg-background text-foreground overflow-hidden font-sans relative selection:bg-primary/30">
-      
+
       {/* Global Accent Glows */}
       <div className="absolute top-[-20%] left-[-10%] w-[40%] h-[40%] bg-primary/5 rounded-full blur-[120px] pointer-events-none"></div>
 
@@ -36,27 +36,26 @@ export default function StudentLayout({ children, activeTitle = "Provenancy", ac
       */}
       <aside className="w-72 border-r border-border/20 flex-col hidden md:flex shrink-0 bg-background/50 backdrop-blur-xl z-20 relative">
         <div className="absolute inset-0 bg-linear-to-b from-primary/5 to-transparent pointer-events-none opacity-50"></div>
-        
+
         <div className="px-8 pt-8 pb-4 relative z-10 flex flex-col justify-center gap-2">
           <Link to="/">
             <Logo textClassName="text-[17px]" iconSize={32} />
           </Link>
           <div className="flex items-center gap-2 mt-1 -ml-1">
-             <div className="w-1 h-3 bg-primary/30 rounded-full"></div>
-             <p className="text-[9px] text-primary uppercase tracking-[0.25em] font-bold">Digital Ledger</p>
+            <div className="w-1 h-3 bg-primary/30 rounded-full"></div>
+            <p className="text-[9px] text-primary uppercase tracking-[0.25em] font-bold">Digital Ledger</p>
           </div>
         </div>
-        
+
         <nav className="mt-8 px-5 grow relative z-10 max-h-[calc(100vh-250px)] overflow-y-auto no-scrollbar">
           <div className="space-y-2">
             {navLinks.map((link) => (
-              <NavLink 
+              <NavLink
                 key={link.name}
                 to={link.path}
-                className={({ isActive }) => 
-                  `flex items-center justify-between px-4 py-3.5 rounded-xl transition-all group ${
-                    isActive 
-                    ? "bg-primary/15 border border-primary/30 text-primary shadow-[0_0_20px_rgba(26,35,126,0.15)]" 
+                className={({ isActive }) =>
+                  `flex items-center justify-between px-4 py-3.5 rounded-xl transition-all group ${isActive
+                    ? "bg-primary/15 border border-primary/30 text-primary shadow-[0_0_20px_rgba(26,35,126,0.15)]"
                     : "border border-transparent text-muted-foreground hover:bg-muted/10 hover:border-border/30 hover:text-foreground"
                   }`
                 }
@@ -83,10 +82,10 @@ export default function StudentLayout({ children, activeTitle = "Provenancy", ac
         =============================================
       */}
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden bg-background relative z-10">
-        
+
         {/* Top Navbar */}
         <header className="h-20 shrink-0 border-b border-border/15 flex items-center justify-between px-10 bg-background/80 backdrop-blur-xl z-30">
-          
+
           <div className="flex items-center gap-4">
             <div className="hidden sm:block">
               {/* Optional Breadcrumb or Current Context area */}
@@ -96,13 +95,13 @@ export default function StudentLayout({ children, activeTitle = "Provenancy", ac
 
           <div className="flex items-center gap-6 bg-card/50 backdrop-blur-md px-2 py-1.5 rounded-full border border-border/30 shadow-sm">
             <NotificationDropdown />
-            
+
             <div className="h-5 w-px bg-border/40"></div>
-            
-            <a 
+
+            <a
               href={profile?.id ? `/profile/${profile.id}` : '#'}
               target="_blank"
-              rel="noopener noreferrer" 
+              rel="noopener noreferrer"
               className="flex items-center gap-3 pl-2 pr-4 cursor-pointer group"
             >
               <div className="relative">

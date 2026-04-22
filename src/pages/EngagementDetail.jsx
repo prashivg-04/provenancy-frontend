@@ -211,6 +211,11 @@ export default function EngagementDetail() {
             duration={formatDuration(engagement.start_date, engagement.end_date)}
             status={engagement.status.charAt(0).toUpperCase() + engagement.status.slice(1)}
             refId={engagement.id.slice(0, 8).toUpperCase()}
+            publicUrl={
+              engagement.status === 'verified' && engagement.student_profile_id
+                ? `${window.location.origin}/profile/${engagement.student_profile_id}/engagement/${engagement.id}`
+                : null
+            }
           />
 
           {/* Edit Feedback / Rejection Banner */}

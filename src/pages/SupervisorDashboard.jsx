@@ -165,7 +165,7 @@ export default function SupervisorDashboard() {
 
         {/* ── HERO ─────────────────────────────────────────────────────────── */}
         <div className="mb-12 relative">
-          <div className="absolute inset-0 bg-primary/5 blur-[120px] rounded-full pointer-events-none" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(var(--primary-rgb),0.05),transparent_70%)] pointer-events-none" />
           <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-8 relative z-10 border-b border-border/10 pb-8">
             <div>
               <div className="flex items-center gap-3 mb-4">
@@ -336,10 +336,33 @@ export default function SupervisorDashboard() {
                   </div>
                 ))
               ) : queueItems.length === 0 ? (
-                <div className="text-center py-16 border border-border/10 rounded-2xl bg-muted/5 border-dashed">
-                  <CheckCircle2 className="w-8 h-8 text-emerald-500 mx-auto mb-3 opacity-60" />
-                  <p className="text-sm text-muted-foreground">Verification queue is clear</p>
-                  <p className="text-[10px] text-muted-foreground/50 mt-1 uppercase tracking-widest font-mono">No pending engagements</p>
+                <div className="relative border border-border/15 rounded-2xl bg-card/10 px-8 py-16 flex flex-col items-center text-center gap-4">
+                  {/* Subtle Grid Pattern */}
+                  <div className="absolute inset-0 opacity-[0.03] rounded-2xl overflow-hidden" 
+                       style={{ backgroundImage: 'linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px)', backgroundSize: '32px 32px' }} />
+                  
+                  {/* Ambient Glow (without overflow wrapping clipping bugs) */}
+                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-56 h-56 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
+
+                  <div className="relative w-12 h-12 rounded-full border border-emerald-500/30 bg-emerald-500/5 flex items-center justify-center mb-1">
+                    <CheckCircle2 className="w-5 h-5 text-emerald-500 drop-shadow-[0_0_8px_rgba(16,185,129,0.3)]" strokeWidth={1.5} />
+                  </div>
+
+                  <div className="relative space-y-1.5 z-10">
+                    <p className="text-sm font-semibold text-foreground tracking-tight">You're all caught up</p>
+                    <p className="text-xs text-muted-foreground leading-relaxed max-w-xs">
+                      No engagements are awaiting your signature. New submissions from your students will appear here.
+                    </p>
+                  </div>
+
+                  <div className="relative z-10">
+                    <Link
+                      to="/supervisor/requests"
+                      className="inline-block mt-4 text-[10px] font-bold uppercase tracking-widest text-primary px-4 py-2 border border-primary/20 rounded-lg hover:bg-primary/10 transition-colors"
+                    >
+                      View Full Ledger
+                    </Link>
+                  </div>
                 </div>
               ) : (
                 queueItems.map((req) => (
