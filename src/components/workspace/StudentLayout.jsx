@@ -1,6 +1,7 @@
 import { NavLink, Link } from 'react-router-dom'
-import { LayoutDashboard, Briefcase, Medal, User, Bell, LogOut, ChevronRight, Fingerprint } from 'lucide-react'
+import { LayoutDashboard, Briefcase, Medal, User, Bell, LogOut, ChevronRight, Fingerprint, Sun, Moon } from 'lucide-react'
 import { useAuth } from '../../context/AuthContext'
+import { useTheme } from '../../context/ThemeContext'
 import Logo from '../Logo'
 import SystemStatusIndicator from './SystemStatusIndicator'
 import NotificationDropdown from './NotificationDropdown'
@@ -11,6 +12,7 @@ function getInitials(name = '') {
 
 export default function StudentLayout({ children, activeTitle = "Provenancy", activeSubtitle = "" }) {
   const { logout, profile, user } = useAuth()
+  const { theme, toggleTheme } = useTheme()
 
   // Prefer profile.full_name, fall back to user.email prefix
   const displayName = profile?.full_name || user?.email?.split('@')[0] || 'Student'
@@ -70,8 +72,39 @@ export default function StudentLayout({ children, activeTitle = "Provenancy", ac
           </div>
         </nav>
 
-        {/* System Integrity Indicator */}
-        <div className="px-5 pb-6 mt-auto relative z-10">
+        {/* System Integrity Indicator & Theme Toggle */}
+        <div className="px-5 pb-6 mt-auto relative z-10 space-y-3">
+          <button 
+            onClick={toggleTheme}
+            className="w-full flex items-center justify-between px-4 py-3 rounded-xl border border-border/10 bg-card/20 hover:bg-card/40 transition-colors group"
+          >
+            <span className="text-[12px] font-semibold tracking-wider uppercase text-muted-foreground group-hover:text-foreground transition-colors">Theme</span>
+            
+            {/* Animated Slider Switch */}
+            <div className="w-[52px] h-7 bg-black/20 dark:bg-white/10 rounded-full relative shadow-inner border border-border/10 p-1 flex items-center">
+              
+              {/* Background inactive icons in the track */}
+              <div className="w-full flex justify-between relative z-0 px-0.5">
+                <Sun className="w-3.5 h-3.5 text-muted-foreground/40" />
+                <Moon className="w-3.5 h-3.5 text-muted-foreground/40" />
+              </div>
+
+              {/* Sliding thumb that contains the active icon */}
+              <div 
+                className={`absolute left-1 w-5 h-5 rounded-full shadow-md transition-all duration-500 ease-out z-10 flex items-center justify-center ${
+                  theme === 'dark' 
+                    ? 'bg-primary translate-x-6' 
+                    : 'bg-amber-400 translate-x-0'
+                }`}
+              >
+                {theme === 'dark' ? (
+                  <Moon className="w-3 h-3 text-primary-foreground fill-primary-foreground/20" />
+                ) : (
+                  <Sun className="w-3.5 h-3.5 text-amber-900 fill-amber-900/20" />
+                )}
+              </div>
+            </div>
+          </button>
           <SystemStatusIndicator type="student" />
         </div>
       </aside>
