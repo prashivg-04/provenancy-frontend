@@ -1,11 +1,10 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { Building2, ChevronLeft, ChevronRight, Plus, Activity, Search, Loader2, AlertTriangle, FileText, Clock, CheckCircle2, XCircle, PenLine, Fingerprint, Calendar, ChevronRight as ChevronRightIcon } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import StudentLayout from '../components/workspace/StudentLayout'
 import { PageContainer, StatusBadge, EmptyState } from '../components/workspace/SharedPrimitives'
-import { getEngagements } from '../lib/api'
+import { useEngagements } from '../hooks/useStudentData'
 import { toast } from 'react-hot-toast'
-import { handleError } from '../lib/handleError'
 
 const STATUS_COLORS = {
   pending: {
@@ -197,12 +196,34 @@ export default function StudentEngagements() {
   const navigate = useNavigate()
   const [activeFilter, setActiveFilter] = useState('all')
   const [search, setSearch] = useState('')
-  const [engagements, setEngagements] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
-  
-  // Keep counts persistent when caching across tabs
-  const [counts, setCounts] = useState({})
+
+  // OPTIMIZATION: Use cached hook - data is fetched once, shared across pages
+  const { data: allEngagements = [], isLoading: loading, error, refetch } = useEngagements()
+
+  // OPTIMIZATION: Compute counts from cached data (no extra API calls)
+  const counts = useMemo(() => {
+    const c = { all: allEngagements.length }
+    for (const e of allEngagements) {
+      c[e.status] = (c[e.status] || 0) + 1
+    }
+    return c
+  }, [allEngagements])
+
+  // OPTIMIZATION: Filter locally - instant tab switching
+  const engagements = useMemo(() => {
+    if (activeFilter === 'all') return allEngagements
+    return allEngagements.filter(e => e.status === activeFilter)
+  }, [allEngagements, activeFilter])
+
+  // OPTIMIZED: Search filter with useMemo
+  const filtered = useMemo(() => {
+    if (!search.trim()) return engagements
+    const q = search.toLowerCase()
+    return engagements.filter(e =>
+      e.organization_name?.toLowerCase().includes(q) ||
+      e.role?.toLowerCase().includes(q)
+    )
+  }, [engagements, search])
 
   // Local pagination
   const [currentPage, setCurrentPage] = useState(1)
@@ -211,42 +232,6 @@ export default function StudentEngagements() {
   useEffect(() => {
     setCurrentPage(1)
   }, [activeFilter, search])
-
-  const fetchEngagements = useCallback(async (filter) => {
-    setLoading(true)
-    setError(null)
-    try {
-      const param = filter === 'all' ? undefined : filter
-      const res = await getEngagements(param)
-      const data = res.data || []
-      setEngagements(data)
-      
-      // If fetching "all", compute and cache the absolute counts
-      if (filter === 'all') {
-        const c = { all: data.length }
-        for (const e of data) {
-          c[e.status] = (c[e.status] || 0) + 1
-        }
-        setCounts(c)
-      }
-    } catch (err) {
-      const msg = err.response?.data?.detail || 'Failed to load engagements'
-      setError(msg)
-      handleError(err)
-    } finally {
-      setLoading(false)
-    }
-  }, [])
-
-  useEffect(() => {
-    fetchEngagements(activeFilter)
-  }, [activeFilter, fetchEngagements])
-
-  const filtered = engagements.filter(e => {
-    if (!search.trim()) return true
-    const q = search.toLowerCase()
-    return e.organization_name?.toLowerCase().includes(q) || e.role?.toLowerCase().includes(q)
-  })
 
   // Pagination metrics
   const totalPages = Math.max(1, Math.ceil(filtered.length / itemsPerPage))
@@ -385,8 +370,8 @@ export default function StudentEngagements() {
             ) : error ? (
               <div className="flex flex-col items-center justify-center py-20 gap-4">
                 <AlertTriangle className="w-8 h-8 text-destructive/50" />
-                <p className="text-sm text-muted-foreground">{error}</p>
-                <button onClick={() => fetchEngagements(activeFilter)} className="text-[10px] font-bold uppercase tracking-widest text-primary hover:underline">Retry</button>
+                <p className="text-sm text-muted-foreground">{error?.message ?? 'Failed to load engagements'}</p>
+                <button onClick={() => refetch()} className="text-[10px] font-bold uppercase tracking-widest text-primary hover:underline">Retry</button>
               </div>
             ) : filtered.length === 0 ? (
               <EmptyState

@@ -1,13 +1,12 @@
-import { useState, useEffect } from 'react'
-import { ChevronRight, ChevronLeft, ShieldCheck, Activity, Search, AlertCircle, Fingerprint, Loader2, Calendar, Building2 } from 'lucide-react'
+import { useState, useEffect, useMemo } from 'react'
+import { ChevronRight, ChevronLeft, ShieldCheck, Activity, Search, AlertCircle, Fingerprint, Calendar, Building2 } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import SupervisorLayout from '../components/workspace/SupervisorLayout'
 import { PageContainer, StatusBadge, EmptyState } from '../components/workspace/SharedPrimitives'
-import { getSupervisorEngagements, getEngagement, getStudentPublic } from '../lib/api'
-import { handleError } from '../lib/handleError'
+import { useSupervisorEngagements, useStudentPublic } from '../hooks/useSupervisorData'
 
-// Single source of truth for all per-status colors
-// Matches StatusBadge exactly: pending=amber, verified=primary, rejected=destructive, edit_requested=orange
+// ─── Static config ─────────────────────────────────────────────────────────────
+
 const STATUS_COLORS = {
   pending: {
     border:    'border-amber-500/20 hover:border-amber-500/50',
@@ -90,12 +89,14 @@ const STATUS_COLORS = {
 }
 
 const TABS = [
-  { key: 'all',           label: 'All'          },
-  { key: 'pending',       label: 'Pending'       },
-  { key: 'verified',      label: 'Verified'      },
-  { key: 'edit_requested',label: 'Edit Requested'},
-  { key: 'rejected',      label: 'Rejected'      },
+  { key: 'all',           label: 'All'           },
+  { key: 'pending',       label: 'Pending'        },
+  { key: 'verified',      label: 'Verified'       },
+  { key: 'edit_requested',label: 'Edit Requested' },
+  { key: 'rejected',      label: 'Rejected'       },
 ]
+
+// ─── Utility helpers ───────────────────────────────────────────────────────────
 
 function formatDate(d) {
   if (!d) return '—'
@@ -113,23 +114,27 @@ function formatDuration(start, end) {
   return `${months} months`
 }
 
-// Skeleton shimmer
 function Skeleton({ className = '' }) {
   return <div className={`animate-pulse bg-border/20 rounded-lg ${className}`} aria-hidden />
 }
 
-// Enriched request card — uses STATUS_COLORS for full visual consistency
-function RequestCard({ req, studentInfo, navigate }) {
+// ─── Request Card — resolves student independently via React Query ──────────────
+
+function RequestCard({ req }) {
+  const navigate = useNavigate()
   const c = STATUS_COLORS[req.status] || STATUS_COLORS.draft
+  // OPTIMIZATION: Each card resolves its own student — cached by student_profile_id
+  // No getEngagement() call needed — student_profile_id already comes from the list endpoint
+  const { data: studentInfo } = useStudentPublic(req.student_profile_id)
 
   return (
     <div
       onClick={() => navigate(`/supervisor/engagements/${req.id}`)}
       className={`group cursor-pointer bg-card/20 backdrop-blur-md p-8 border ${c.border} transition-all duration-300 rounded-4xl shadow-sm relative overflow-hidden`}
     >
-      {/* Left accent bar — color matches status */}
+      {/* Left accent bar */}
       <div className={`absolute inset-y-0 left-0 w-1 ${c.accent} opacity-0 group-hover:opacity-60 ${c.glow} transition-all duration-300`} />
-      {/* Corner glow — color matches status */}
+      {/* Corner glow */}
       <div className={`absolute top-0 right-0 w-48 h-48 ${c.cardGlow} rounded-full blur-2xl transition-colors pointer-events-none`} />
 
       {/* Top row: student + status */}
@@ -157,9 +162,12 @@ function RequestCard({ req, studentInfo, navigate }) {
                 </div>
               </>
             ) : (
+              // No student_profile_id on this engagement — show placeholder while resolving
               <div className="space-y-1">
-                <Skeleton className="h-5 w-36" />
-                <Skeleton className="h-3 w-48" />
+                {req.student_profile_id
+                  ? <><Skeleton className="h-5 w-36" /><Skeleton className="h-3 w-48" /></>
+                  : <p className="text-sm text-muted-foreground font-mono">{req.id.slice(0, 12).toUpperCase()}</p>
+                }
               </div>
             )}
           </div>
@@ -205,128 +213,59 @@ function RequestCard({ req, studentInfo, navigate }) {
   )
 }
 
+// ─── Main Page ─────────────────────────────────────────────────────────────────
+
 export default function SupervisorRequests() {
   const navigate = useNavigate()
   const [activeTab, setActiveTab] = useState('all')
-  const [engagements, setEngagements] = useState([])
-  const [counts, setCounts] = useState({})     // { all: n, pending: n, ... }
-  const [studentMap, setStudentMap] = useState({}) // { engagement_id: { full_name, ledger_id, institution } }
-  const [loading, setLoading] = useState(true)
-  const [search, setSearch] = useState('')
-
-  // Local pagination
+  const [searchInput, setSearchInput] = useState('')
+  const [debouncedSearch, setDebouncedSearch] = useState('')
   const [currentPage, setCurrentPage] = useState(1)
   const itemsPerPage = 5
 
+  // OPTIMIZATION: Shared React Query cache — zero API call if Dashboard was visited first
+  const { data: allEngagements = [], isLoading, isError, refetch } = useSupervisorEngagements()
+
+  // Debounce search input
+  useEffect(() => {
+    const timer = setTimeout(() => setDebouncedSearch(searchInput), 300)
+    return () => clearTimeout(timer)
+  }, [searchInput])
+
+  // Reset page on tab or search change
   useEffect(() => {
     setCurrentPage(1)
-  }, [activeTab, search])
+  }, [activeTab, debouncedSearch])
 
-  // Fetch engagements for the active tab
-  const loadEngagements = async (tab) => {
-    setLoading(true)
-    try {
-      const res = await getSupervisorEngagements(tab)
-      const data = res.data || []
-      setEngagements(data)
-
-      // Build per-status counts from whatever we loaded
-      if (tab === 'all') {
-        const c = { all: data.length }
-        for (const e of data) {
-          c[e.status] = (c[e.status] || 0) + 1
-        }
-        setCounts(c)
-      }
-
-      // EngagementListResponse has no student_profile_id —
-      // fetch full engagement for each item to get it, then batch-fetch student profiles
-      if (data.length > 0) {
-        // 1. Get full details for all engagements in parallel
-        const fullResults = await Promise.allSettled(data.map(e => getEngagement(e.id)))
-
-        // 2. Build engagementId -> student_profile_id map, deduplicate student ids
-        const engToStudentId = {}
-        const uniqueStudentIds = new Set()
-        fullResults.forEach((r, i) => {
-          if (r.status === 'fulfilled') {
-            const sid = r.value.data.student_profile_id
-            if (sid) {
-              engToStudentId[data[i].id] = sid
-              uniqueStudentIds.add(sid)
-            }
-          }
-        })
-
-        // 3. Fetch student public profile for each unique student id
-        const studentIds = [...uniqueStudentIds]
-        const studentResults = await Promise.allSettled(studentIds.map(id => getStudentPublic(id)))
-
-        // 4. Build studentId -> info lookup
-        const studentById = {}
-        studentResults.forEach((r, i) => {
-          if (r.status === 'fulfilled') {
-            const p = r.value.data
-            studentById[studentIds[i]] = {
-              full_name: p.full_name,
-              ledger_id: p.ledger_id,
-              institution: p.institution,
-            }
-          }
-        })
-
-        // 5. Build engagementId -> studentInfo and merge into state
-        const updates = {}
-        for (const [engId, stuId] of Object.entries(engToStudentId)) {
-          if (studentById[stuId]) {
-            updates[engId] = studentById[stuId]
-          }
-        }
-        if (Object.keys(updates).length > 0) {
-          setStudentMap(prev => ({ ...prev, ...updates }))
-        }
-      }
-    } catch (err) {
-      handleError(err)
-    } finally {
-      setLoading(false)
+  // OPTIMIZATION: Derive counts locally — no API calls
+  const counts = useMemo(() => {
+    const c = { all: allEngagements.length }
+    for (const e of allEngagements) {
+      c[e.status] = (c[e.status] || 0) + 1
     }
-  }
+    return c
+  }, [allEngagements])
 
-  // Load when tab changes
-  useEffect(() => {
-    loadEngagements(activeTab)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeTab])
+  // OPTIMIZATION: Filter by tab locally
+  const tabFiltered = useMemo(() => {
+    if (activeTab === 'all') return allEngagements
+    return allEngagements.filter(e => e.status === activeTab)
+  }, [allEngagements, activeTab])
 
-  // Load 'all' once on mount to populate counts
-  useEffect(() => {
-    getSupervisorEngagements('all').then(res => {
-      const data = res.data || []
-      const c = { all: data.length }
-      for (const e of data) {
-        c[e.status] = (c[e.status] || 0) + 1
-      }
-      setCounts(c)
-    }).catch(() => {})
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  // OPTIMIZATION: Search filter runs locally on cached data
+  const filtered = useMemo(() => {
+    if (!debouncedSearch.trim()) return tabFiltered
+    const q = debouncedSearch.toLowerCase()
+    return tabFiltered.filter(e =>
+      e.organization_name?.toLowerCase().includes(q) ||
+      e.role?.toLowerCase().includes(q)
+      // Note: student name search would require the student cache to be populated.
+      // For now, org + role search covers the vast majority of use cases without
+      // creating a dependency on studentMap state.
+    )
+  }, [tabFiltered, debouncedSearch])
 
-  // Client-side search filter (by org name, role, or student name / ledger_id)
-  const filtered = search.trim()
-    ? engagements.filter(e => {
-        const q = search.toLowerCase()
-        const s = studentMap[e.id]
-        return (
-          e.organization_name?.toLowerCase().includes(q) ||
-          e.role?.toLowerCase().includes(q) ||
-          s?.full_name?.toLowerCase().includes(q) ||
-          s?.ledger_id?.toLowerCase().includes(q)
-        )
-      })
-    : engagements
-
-  // Pagination metrics
+  // Pagination
   const totalPages = Math.max(1, Math.ceil(filtered.length / itemsPerPage))
   const paginatedItems = filtered.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
 
@@ -365,9 +304,9 @@ export default function SupervisorRequests() {
                 </div>
                 <input
                   type="text"
-                  value={search}
-                  onChange={e => setSearch(e.target.value)}
-                  placeholder="Search by student, org, role…"
+                  value={searchInput}
+                  onChange={e => setSearchInput(e.target.value)}
+                  placeholder="Search by org or role…"
                   className="w-full bg-background/50 border border-border/50 rounded-xl pl-11 pr-4 py-3.5 text-[11px] tracking-wider text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:ring-1 focus:ring-primary/50 focus:border-primary/50 transition-all"
                 />
               </div>
@@ -409,14 +348,14 @@ export default function SupervisorRequests() {
                 Page <span className="font-bold text-foreground mx-0.5">{currentPage}</span> of {totalPages}
               </span>
               <div className="flex gap-1 border-l border-border/30 pl-2">
-                <button 
+                <button
                   onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
                   disabled={currentPage === 1}
                   className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-background hover:text-foreground transition-colors text-muted-foreground disabled:opacity-30 disabled:hover:bg-transparent bg-background/50 border border-transparent hover:border-border/50"
                 >
                   <ChevronLeft className="w-4 h-4" />
                 </button>
-                <button 
+                <button
                   onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
                   disabled={currentPage === totalPages}
                   className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-background hover:text-foreground transition-colors text-muted-foreground disabled:opacity-30 disabled:hover:bg-transparent bg-background/50 border border-transparent hover:border-border/50"
@@ -432,7 +371,7 @@ export default function SupervisorRequests() {
 
             {/* Main list */}
             <div className="lg:col-span-8 flex flex-col gap-6">
-              {loading ? (
+              {isLoading ? (
                 <>
                   {[1, 2, 3].map(i => (
                     <div key={i} className="bg-card/20 p-8 rounded-4xl border border-border/20 space-y-6">
@@ -455,31 +394,37 @@ export default function SupervisorRequests() {
                     </div>
                   ))}
                 </>
+              ) : isError ? (
+                <div className="flex flex-col items-center justify-center py-12 text-center">
+                  <AlertCircle className="w-6 h-6 text-destructive mb-3" />
+                  <p className="text-sm text-destructive font-medium mb-3">Failed to load engagements</p>
+                  <button
+                    onClick={() => refetch()}
+                    className="text-[10px] text-primary hover:text-primary/80 font-bold uppercase tracking-widest"
+                  >
+                    Try again
+                  </button>
+                </div>
               ) : filtered.length > 0 ? (
                 paginatedItems.map(req => (
-                  <RequestCard
-                    key={req.id}
-                    req={req}
-                    studentInfo={studentMap[req.id] || null}
-                    navigate={navigate}
-                  />
+                  <RequestCard key={req.id} req={req} />
                 ))
               ) : (
                 <EmptyState
                   icon={ShieldCheck}
-                  title={search ? 'No matches found' : `No ${activeTab === 'all' ? '' : activeTab} engagements`}
+                  title={debouncedSearch ? 'No matches found' : `No ${activeTab === 'all' ? '' : activeTab} engagements`}
                   description={
-                    search
+                    debouncedSearch
                       ? 'Try a different search term.'
                       : 'The verification queue is clear for this category.'
                   }
                   actionText="View All"
-                  onAction={() => { setSearch(''); setActiveTab('all') }}
+                  onAction={() => { setSearchInput(''); setActiveTab('all') }}
                 />
               )}
             </div>
 
-            {/* Sidebar — real queue metrics */}
+            {/* Sidebar — queue metrics */}
             <div className="hidden lg:block lg:col-span-4 sticky top-24 h-max">
               <div className="bg-card/20 backdrop-blur-xl p-8 border border-border/30 rounded-3xl relative overflow-hidden shadow-sm">
                 <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full blur-2xl pointer-events-none" />
@@ -490,7 +435,6 @@ export default function SupervisorRequests() {
                 </div>
 
                 <div className="space-y-8 relative z-10">
-                  {/* Big number */}
                   <div className="flex items-end gap-3">
                     <span className="text-7xl font-light tracking-tighter text-foreground leading-none">
                       {(counts[activeTab] ?? 0).toString().padStart(2, '0')}
@@ -500,7 +444,6 @@ export default function SupervisorRequests() {
                     </span>
                   </div>
 
-                  {/* Status breakdown — colors from STATUS_COLORS */}
                   <div className="space-y-3">
                     {TABS.filter(t => t.key !== 'all').map(tab => (
                       <div key={tab.key} className="flex items-center justify-between">
@@ -512,7 +455,6 @@ export default function SupervisorRequests() {
                     ))}
                   </div>
 
-                  {/* Action hint */}
                   {(counts['pending'] ?? 0) > 0 && (
                     <div className="bg-primary/5 p-5 border border-primary/20 rounded-2xl flex gap-3 items-start">
                       <AlertCircle className="w-4 h-4 text-primary shrink-0 mt-0.5" />

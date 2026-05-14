@@ -10,6 +10,7 @@ import { EngagementHeader } from '../components/workspace/DetailElements'
 import { PageContainer, StatusBadge } from '../components/workspace/SharedPrimitives'
 import { getEngagement, deleteEngagement, submitEngagement, approveEngagement, rejectEngagement, requestEditEngagement, getStudentPublic } from '../lib/api'
 import { useAuth } from '../context/AuthContext'
+import { useInvalidateSupervisorEngagements } from '../hooks/useSupervisorData'
 
 function formatDate(dateStr) {
   if (!dateStr) return '—'
@@ -29,6 +30,8 @@ export default function EngagementDetail() {
   const role = user?.role || 'student'
   const isSupervisor = role === 'supervisor'
   const myLedgerId = profile?.ledger_id || user?.ledger_id || '—'
+  // OPTIMIZATION: Invalidate supervisor cache after approve/reject/edit so Dashboard reflects new status
+  const invalidateSupervisorEngagements = useInvalidateSupervisorEngagements()
 
   const [engagement, setEngagement] = useState(null)
   const [loading, setLoading] = useState(true)
@@ -112,6 +115,8 @@ export default function EngagementDetail() {
         await requestEditEngagement(id, actionReason.trim())
         toast.success('Edit request sent to student')
       }
+      // OPTIMIZATION: Bust cache so Dashboard + Requests reflect the new status immediately
+      invalidateSupervisorEngagements()
       navigate('/supervisor/requests')
     } catch (err) {
       handleError(err)

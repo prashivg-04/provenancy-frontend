@@ -1,10 +1,13 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Plus, X, Search, BadgeCheck, Shield, ChevronRight, Loader2, Save } from 'lucide-react'
 import toast from 'react-hot-toast'
 import StudentLayout from '../components/workspace/StudentLayout'
 import { PageContainer } from '../components/workspace/SharedPrimitives'
 import { searchSkills, getUserSkills, addDeclaredSkills, deleteDeclaredSkill } from '../lib/api'
+
+// OPTIMIZATION: Search result cache - avoid duplicate API calls
+const searchCache = new Map()
 
 export default function StudentSkills() {
   const navigate = useNavigate()
@@ -32,9 +35,20 @@ export default function StudentSkills() {
     }
 
     const delayDebounceFn = setTimeout(async () => {
+      // OPTIMIZATION: Check cache first
+      const cached = searchCache.get(searchQuery.toLowerCase())
+      if (cached) {
+        setSearchResults(cached)
+        setDropdownOpen(true)
+        setIsSearching(false)
+        return
+      }
+
       setIsSearching(true)
       try {
         const { data } = await searchSkills(searchQuery)
+        // OPTIMIZATION: Save to cache
+        searchCache.set(searchQuery.toLowerCase(), data)
         setSearchResults(data)
         setDropdownOpen(true)
       } catch (err) {

@@ -4,11 +4,13 @@ import StudentLayout from '../components/workspace/StudentLayout'
 import { FormSection } from '../components/workspace/FormElements'
 import { Link } from 'react-router-dom'
 import { PageContainer } from '../components/workspace/SharedPrimitives'
-import { getStudentMe, updateStudentMe, getUserSkills } from '../lib/api'
+import { updateStudentMe } from '../lib/api'
 import { handleError } from '../lib/handleError'
-import { useAuth } from '../context/AuthContext'
 import { useNavigate } from 'react-router-dom'
 import toast from 'react-hot-toast'
+import { useStudentProfile, useUserSkills } from '../hooks/useStudentData'
+import { useQueryClient } from '@tanstack/react-query'
+import { useAuth } from '../context/AuthContext'
 
 // ── Shared input classes ──────────────────────────────────────────────────────
 const inputCls = "w-full bg-background/60 backdrop-blur-sm border border-border/40 rounded-xl px-4 py-4 text-sm text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary/50 transition-all hover:bg-background/80 hover:border-border/60 shadow-[inset_0_2px_4px_rgba(0,0,0,0.05)] focus-within:shadow-[0_0_20px_rgba(var(--primary),0.1)]"
@@ -29,13 +31,19 @@ function Skeleton({ className = '' }) {
 }
 
 export default function Profile() {
-  const { user } = useAuth()
   const navigate = useNavigate()
+  const queryClient = useQueryClient()
+  const { user } = useAuth() // only for immutable email field
 
-  const [profileId, setProfileId] = useState(null) // UUID for public link
-  const [ledgerId, setLedgerId] = useState(null)
-  const [skills, setSkills] = useState({ declared: [], verified: [] })
-  const [loading, setLoading] = useState(true)
+  // OPTIMIZATION: Use React Query cache — no network call if Dashboard was visited first
+  const { data: studentData, isLoading: loadingProfile } = useStudentProfile()
+  const { data: skillsData, isLoading: loadingSkills } = useUserSkills()
+
+  const loading = loadingProfile || loadingSkills
+  const skills = skillsData ?? { declared: [], verified: [] }
+  const profileId = studentData?.profile?.id ?? null
+  const ledgerId = studentData?.ledger_id ?? null
+
   const [saving, setSaving] = useState(false)
   const [isEditing, setIsEditing] = useState(false)
 
@@ -48,35 +56,20 @@ export default function Profile() {
   })
   const [originalForm, setOriginalForm] = useState(null)
 
-  // ── Load profile on mount ──────────────────────────────────────────────────
+  // Sync form state when profile data loads from cache/API
   useEffect(() => {
-    async function load() {
-      try {
-        const [res, skillsRes] = await Promise.all([
-          getStudentMe(),
-          getUserSkills()
-        ])
-        const { profile, ledger_id } = res.data
-        setProfileId(profile.id)
-        setLedgerId(ledger_id)
-        setSkills(skillsRes.data)
-        const initialForm = {
-          full_name: profile.full_name ?? '',
-          title: profile.title ?? '',
-          bio: profile.bio ?? '',
-          institution: profile.institution ?? '',
-          linkedin_url: profile.linkedin_url ?? '',
-        }
-        setForm(initialForm)
-        setOriginalForm(initialForm)
-      } catch (err) {
-        handleError(err)
-      } finally {
-        setLoading(false)
-      }
+    if (!studentData?.profile) return
+    const p = studentData.profile
+    const initialForm = {
+      full_name: p.full_name ?? '',
+      title: p.title ?? '',
+      bio: p.bio ?? '',
+      institution: p.institution ?? '',
+      linkedin_url: p.linkedin_url ?? '',
     }
-    load()
-  }, [])
+    setForm(initialForm)
+    setOriginalForm(initialForm)
+  }, [studentData])
 
   // ── Handle form change ─────────────────────────────────────────────────────
   const handleChange = (e) => {
@@ -115,6 +108,8 @@ export default function Profile() {
       toast.success('Ledger updated successfully')
       setIsEditing(false)
       setOriginalForm(form)
+      // OPTIMIZATION: Invalidate cache so Dashboard reflects updated name/title
+      queryClient.invalidateQueries({ queryKey: ['student', 'profile'] })
     } catch (err) {
       handleError(err)
     } finally {

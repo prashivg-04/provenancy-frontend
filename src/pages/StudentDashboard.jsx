@@ -1,10 +1,9 @@
-import { useState, useEffect } from 'react'
+import { useMemo } from 'react'
 import { Terminal, Lightbulb, Activity, CheckCircle2, Clock, ShieldCheck, Network, Award, FileText, Plus } from 'lucide-react'
 import StudentLayout from '../components/workspace/StudentLayout'
 import { PageContainer, StatusBadge } from '../components/workspace/SharedPrimitives'
 import { useNavigate } from 'react-router-dom'
-import { getStudentMe, getUserSkills, getEngagements } from '../lib/api'
-import { handleError } from '../lib/handleError'
+import { useStudentProfile, useUserSkills, useEngagements } from '../hooks/useStudentData'
 
 // ── Skeleton shimmer ──────────────────────────────────────────────────────────
 function Skeleton({ className = '' }) {
@@ -18,42 +17,31 @@ function Skeleton({ className = '' }) {
 
 export default function StudentDashboard() {
   const navigate = useNavigate()
-  const [profileData, setProfileData] = useState(null)
-  const [skills, setSkills] = useState({ declared: [], verified: [] })
-  const [engagements, setEngagements] = useState([])      // latest 5 for timeline
-  const [allEngagements, setAllEngagements] = useState([]) // full list for counts
-  const [loading, setLoading] = useState(true)
 
-  useEffect(() => {
-    async function load() {
-      try {
-        const [profileRes, skillsRes, engRes] = await Promise.all([
-          getStudentMe(),
-          getUserSkills(),
-          getEngagements()
-        ])
-        setProfileData(profileRes.data)
-        setSkills(skillsRes.data)
-        const all = engRes.data || []
-        setAllEngagements(all)
-        // Latest 5 for timeline
-        const sorted = [...all]
-          .sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0))
-          .slice(0, 5)
-        setEngagements(sorted)
-      } catch (err) {
-        handleError(err)
-      } finally {
-        setLoading(false)
-      }
-    }
-    load()
-  }, [])
+  // OPTIMIZATION: All data from React Query cache — shared across all student pages
+  const { data: studentData, isLoading: loadingProfile } = useStudentProfile()
+  const { data: skills = { declared: [], verified: [] }, isLoading: loadingSkills } = useUserSkills()
+  const { data: allEngagements = [], isLoading: loadingEngagements } = useEngagements()
 
-  const profile = profileData?.profile
-  const ledgerId = profileData?.ledger_id
-  const verifiedCount = allEngagements.filter(e => e.status === 'verified').length
-  const pendingCount  = allEngagements.filter(e => e.status === 'pending').length
+  // OPTIMIZATION: Derive metrics locally from cached data (no extra API calls)
+  const engagements = useMemo(() => {
+    return [...allEngagements]
+      .sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0))
+      .slice(0, 5)
+  }, [allEngagements])
+
+  const verifiedCount = useMemo(
+    () => allEngagements.filter(e => e.status === 'verified').length,
+    [allEngagements]
+  )
+  const pendingCount = useMemo(
+    () => allEngagements.filter(e => e.status === 'pending').length,
+    [allEngagements]
+  )
+
+  const loading = loadingProfile || loadingSkills || loadingEngagements
+  const profile = studentData?.profile
+  const ledgerId = studentData?.ledger_id
 
   return (
     <StudentLayout>

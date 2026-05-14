@@ -4,10 +4,11 @@ import SupervisorLayout from '../components/workspace/SupervisorLayout'
 import { FormSection } from '../components/workspace/FormElements'
 import { Link } from 'react-router-dom'
 import { PageContainer } from '../components/workspace/SharedPrimitives'
-import { getSupervisorMe, updateSupervisorMe } from '../lib/api'
+import { updateSupervisorMe } from '../lib/api'
 import { handleError } from '../lib/handleError'
 import { useAuth } from '../context/AuthContext'
 import toast from 'react-hot-toast'
+import { useSupervisorProfile, useInvalidateSupervisorProfile } from '../hooks/useSupervisorData'
 
 // ── Shared input classes ──────────────────────────────────────────────────────
 const inputCls = "w-full bg-background/50 border border-border/50 rounded-xl px-4 py-3.5 text-sm text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:ring-1 focus:ring-primary/50 focus:border-primary/50 transition-all shadow-sm focus-within:shadow-[0_0_15px_rgba(26,35,126,0.1)]"
@@ -47,83 +48,61 @@ function TrustTierCard({ tier }) {
 }
 
 export default function SupervisorProfile() {
-  const { user } = useAuth()
+  const { user } = useAuth() // only for immutable email field
 
-  const [profileId, setProfileId] = useState(null)
-  const [ledgerId, setLedgerId] = useState(null)
-  const [trustTier, setTrustTier] = useState(null)
-  const [loading, setLoading] = useState(true)
+  // OPTIMIZATION: React Query cache — no network call if Dashboard was visited first
+  const { data: supervisorData, isLoading: loading } = useSupervisorProfile()
+  const invalidateProfile = useInvalidateSupervisorProfile()
+
+  const profile   = supervisorData?.profile
+  const ledgerId  = supervisorData?.ledger_id
+
   const [saving, setSaving] = useState(false)
   const [isEditing, setIsEditing] = useState(false)
-
-  const [form, setForm] = useState({
-    full_name: '',
-    designation: '',
-    organization: '',
-    bio: '',
-    linkedin_url: '',
-  })
+  const [form, setForm] = useState({ full_name: '', designation: '', organization: '', bio: '', linkedin_url: '' })
   const [originalForm, setOriginalForm] = useState(null)
+  const [localTrustTier, setLocalTrustTier] = useState(null)
 
-  // ── Load profile on mount ──────────────────────────────────────────────────
+  // Populate form from cached data
   useEffect(() => {
-    async function load() {
-      try {
-        const res = await getSupervisorMe()
-        const { profile, ledger_id } = res.data
-        setProfileId(profile.id)
-        setLedgerId(ledger_id)
-        setTrustTier(profile.trust_tier)
-        const initialForm = {
-          full_name: profile.full_name ?? '',
-          designation: profile.designation ?? '',
-          organization: profile.organization ?? '',
-          bio: profile.bio ?? '',
-          linkedin_url: profile.linkedin_url ?? '',
-        }
-        setForm(initialForm)
-        setOriginalForm(initialForm)
-      } catch (err) {
-        handleError(err)
-      } finally {
-        setLoading(false)
-      }
+    if (!profile) return
+    const initial = {
+      full_name:    profile.full_name    ?? '',
+      designation:  profile.designation  ?? '',
+      organization: profile.organization ?? '',
+      bio:          profile.bio          ?? '',
+      linkedin_url: profile.linkedin_url ?? '',
     }
-    load()
-  }, [])
+    setForm(initial)
+    setOriginalForm(initial)
+    setLocalTrustTier(profile.trust_tier ?? null)
+  }, [profile])
 
   const handleChange = (e) => {
     const { name, value } = e.target
-    setForm((prev) => ({ ...prev, [name]: value }))
+    setForm(prev => ({ ...prev, [name]: value }))
   }
 
   const handleSave = async (e) => {
     e.preventDefault()
-
-    const payload = Object.fromEntries(
-      Object.entries(form).filter(([, v]) => v !== '')
-    )
+    const payload = Object.fromEntries(Object.entries(form).filter(([, v]) => v !== ''))
     if (Object.keys(payload).length === 0) {
       toast.error('Please fill in at least one field.')
       return
     }
-
     if (payload.linkedin_url) {
-      const isValidLinkedIn =
-        payload.linkedin_url.startsWith('http') &&
-        payload.linkedin_url.includes('linkedin.com')
+      const isValidLinkedIn = payload.linkedin_url.startsWith('http') && payload.linkedin_url.includes('linkedin.com')
       if (!isValidLinkedIn) {
         toast.error('LinkedIn URL must start with https:// and contain linkedin.com')
         return
       }
     }
-
     setSaving(true)
     try {
       await updateSupervisorMe(payload)
-      // Re-fetch to get updated trust_tier if organization changed
-      const refreshed = await getSupervisorMe()
-      setTrustTier(refreshed.data.profile.trust_tier)
+      // OPTIMIZATION: Invalidate cache so Dashboard reflects name/org changes immediately
+      await invalidateProfile()
+      // Trust tier is recomputed server-side — fetch fresh after invalidation
       toast.success('Oracle Ledger updated successfully')
       setIsEditing(false)
       setOriginalForm(form)
@@ -133,6 +112,8 @@ export default function SupervisorProfile() {
       setSaving(false)
     }
   }
+
+  const trustTier = localTrustTier ?? profile?.trust_tier
 
   return (
     <SupervisorLayout>
@@ -164,7 +145,7 @@ export default function SupervisorProfile() {
                     <Skeleton className="h-[72px] w-[160px]" />
                   ) : (
                     <Link
-                      to={`/supervisor/${profileId}`}
+                      to={`/supervisor/${profile?.id}`}
                       className="group flex flex-col items-center justify-center py-4 px-6 bg-card/60 backdrop-blur-md border border-border/30 hover:border-primary/50 hover:bg-primary/5 rounded-2xl transition-all shadow-sm"
                     >
                       <div className="flex items-center gap-3">
@@ -263,7 +244,7 @@ export default function SupervisorProfile() {
                         </>
                       ) : (
                         <>
-                          {/* Email — read-only */}
+                          {/* Email — from AuthContext, always read-only */}
                           <Field label="Work Email">
                             <div className="relative">
                               <input
@@ -315,7 +296,6 @@ export default function SupervisorProfile() {
                             </div>
                             <p className="text-sm font-mono text-foreground">{ledgerId ?? '—'}</p>
                           </div>
-                          {/* Trust tier — read-only, auto-computed */}
                           <TrustTierCard tier={trustTier} />
                         </>
                       )}
@@ -323,10 +303,9 @@ export default function SupervisorProfile() {
                   </FormSection>
                 </div>
 
-                {/* Domain Management — UI only, no API yet */}
+                {/* Domain Management — UI placeholder, no API yet */}
                 <FormSection title="Domain Management" subTitle="Institutional areas of expertise for validation.">
                   <div className="space-y-6 mt-2 relative">
-                    {/* Coming Soon overlay */}
                     <div className="absolute inset-0 bg-background/60 backdrop-blur-sm rounded-xl z-10 flex items-center justify-center">
                       <div className="flex items-center gap-2 px-4 py-2 bg-card border border-border/50 rounded-full shadow-sm">
                         <span className="w-1.5 h-1.5 rounded-full bg-muted-foreground/50"></span>
@@ -336,22 +315,12 @@ export default function SupervisorProfile() {
                     <div className="flex flex-col sm:flex-row gap-4 items-end opacity-30 pointer-events-none select-none">
                       <div className="flex-1 w-full">
                         <label className={labelCls}>Add Verify Domain</label>
-                        <input
-                          type="text"
-                          placeholder="e.g. Computer Science, Quantum Physics..."
-                          className={inputCls}
-                          disabled
-                        />
+                        <input type="text" placeholder="e.g. Computer Science, Quantum Physics..." className={inputCls} disabled />
                       </div>
-                      <button
-                        type="button"
-                        disabled
-                        className="w-full sm:w-auto px-8 py-2 bg-muted/40 border border-border/30 text-foreground font-bold text-[10px] uppercase tracking-widest rounded-xl h-[44px] mb-[2px]"
-                      >
+                      <button type="button" disabled className="w-full sm:w-auto px-8 py-2 bg-muted/40 border border-border/30 text-foreground font-bold text-[10px] uppercase tracking-widest rounded-xl h-[44px] mb-[2px]">
                         Register Link
                       </button>
                     </div>
-
                     <div className="flex flex-wrap gap-2.5 p-5 bg-card/60 backdrop-blur-sm border border-border/20 rounded-2xl shadow-inner opacity-30 pointer-events-none select-none">
                       <span className="px-4 py-2 bg-primary/10 border border-primary/20 text-primary rounded-lg text-[11px] font-bold uppercase tracking-widest">Computer Science</span>
                       <span className="px-4 py-2 bg-primary/10 border border-primary/20 text-primary rounded-lg text-[11px] font-bold uppercase tracking-widest">Quantum Physics</span>
@@ -380,10 +349,7 @@ export default function SupervisorProfile() {
             <>
               <button
                 type="button"
-                onClick={() => {
-                  setIsEditing(false)
-                  if (originalForm) setForm(originalForm)
-                }}
+                onClick={() => { setIsEditing(false); if (originalForm) setForm(originalForm) }}
                 disabled={saving || loading}
                 className="pointer-events-auto flex items-center gap-3 px-6 py-4 bg-background text-muted-foreground border border-border/50 font-bold text-[11px] uppercase tracking-[0.2em] rounded-full transition-all duration-300 hover:bg-muted/50 disabled:opacity-50"
               >

@@ -1,16 +1,37 @@
 import { Link, useLocation } from 'react-router-dom'
+import { useCallback } from 'react'
 import { useAuth } from '../context/AuthContext'
 import { useTheme } from '../context/ThemeContext'
 import { Sun, Moon } from 'lucide-react'
+import { useQueryClient } from '@tanstack/react-query'
+import { prefetchEngagementsUtil, prefetchSkillsUtil } from '../hooks/useStudentData'
+import { prefetchSupervisorEngagementsUtil, prefetchSupervisorProfileUtil } from '../hooks/useSupervisorData'
 
 export default function Sidebar() {
   const { user } = useAuth()
   const location = useLocation()
   const { theme, toggleTheme } = useTheme()
-  
+  const queryClient = useQueryClient()
+
   // Choose links based on user role (defaulting to student paths if unauthenticated)
   const isSupervisor = user?.role === 'supervisor'
-  
+
+  // OPTIMIZATION: Prefetch data on hover for instant navigation
+  const handleMouseEnter = useCallback((path) => {
+    // ── Student prefetch ──
+    if (path === '/engagements' || path === '/dashboard') {
+      prefetchEngagementsUtil(queryClient)
+    }
+    if (path === '/skills') {
+      prefetchSkillsUtil(queryClient)
+    }
+    // ── Supervisor prefetch ──
+    if (path === '/supervisor/dashboard' || path === '/supervisor/requests') {
+      prefetchSupervisorEngagementsUtil(queryClient)
+      prefetchSupervisorProfileUtil(queryClient)
+    }
+  }, [queryClient])
+
   const navLinks = isSupervisor ? [
     { label: 'Dashboard', path: '/supervisor/dashboard' },
     { label: 'Requests', path: '/supervisor/requests' },
@@ -34,6 +55,7 @@ export default function Sidebar() {
               <Link
                 key={link.path}
                 to={link.path}
+                onMouseEnter={() => handleMouseEnter(link.path)}
                 className={`px-4 py-2 rounded-md text-sm transition-colors ${
                   isActive
                   ? 'bg-primary/10 text-primary font-medium'
