@@ -9,10 +9,12 @@ import { toast } from 'react-hot-toast'
 import { handleError } from '../lib/handleError'
 import { useNavigate, useParams } from 'react-router-dom'
 import { getEngagement, updateEngagement, submitEngagement } from '../lib/api'
+import { useInvalidateEngagements } from '../hooks/useStudentData'
 
 export default function EngagementEdit() {
   const { id } = useParams()
   const navigate = useNavigate()
+  const invalidateEngagements = useInvalidateEngagements()
 
   const [loading, setLoading] = useState(true)
   const [engagement, setEngagement] = useState(null)
@@ -123,6 +125,7 @@ export default function EngagementEdit() {
     try {
       await updateEngagement(id, buildPayload())
       toast.success('Changes saved successfully')
+      invalidateEngagements()
       navigate(`/student/engagements/${id}`)
     } catch (err) {
       handleError(err)
@@ -140,6 +143,7 @@ export default function EngagementEdit() {
       await updateEngagement(id, buildPayload())
       await submitEngagement(id)
       toast.success('Engagement resubmitted for verification')
+      invalidateEngagements()
       navigate('/student/engagements')
     } catch (err) {
       handleError(err)

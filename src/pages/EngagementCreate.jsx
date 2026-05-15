@@ -10,6 +10,7 @@ import { handleError } from '../lib/handleError'
 import { useNavigate } from 'react-router-dom'
 import { createEngagement, submitEngagement } from '../lib/api'
 import { Paperclip } from 'lucide-react'
+import { useInvalidateEngagements } from '../hooks/useStudentData'
 
 const INITIAL_FORM = {
   organization_name: '',
@@ -22,6 +23,7 @@ const INITIAL_FORM = {
 
 export default function EngagementCreate() {
   const navigate = useNavigate()
+  const invalidateEngagements = useInvalidateEngagements()
   const [form, setForm] = useState(INITIAL_FORM)
   const [highlights, setHighlights] = useState(['', '', ''])
   const [links, setLinks] = useState([''])
@@ -82,6 +84,7 @@ export default function EngagementCreate() {
     try {
       await createEngagement(buildPayload())
       toast.success('Draft saved successfully')
+      invalidateEngagements()
       navigate('/student/engagements')
     } catch (err) {
       handleError(err)
@@ -100,6 +103,7 @@ export default function EngagementCreate() {
       const engagementId = created.data.id
       await submitEngagement(engagementId)
       toast.success('Engagement submitted for cryptographic verification')
+      invalidateEngagements()
       navigate('/student/engagements')
     } catch (err) {
       handleError(err)
