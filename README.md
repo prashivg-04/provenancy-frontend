@@ -12,6 +12,7 @@ Provenancy is a work verification platform where students log internship and fre
 | Build Tool       | Vite                              |
 | Routing          | React Router v6                   |
 | HTTP             | Axios (centralized instance)      |
+| Data Fetching    | TanStack React Query v5           |
 | Styling          | Tailwind CSS v4                   |
 | Components       | shadcn/ui                         |
 | Notifications    | react-hot-toast                   |
@@ -37,7 +38,11 @@ provenancy_frontend/
 │   │   ├── Logo.jsx
 │   │   └── Footer.jsx
 │   ├── context/
-│   │   └── AuthContext.jsx      # Global auth state, login/logout, /me fetch
+│   │   ├── AuthContext.jsx      # Global auth state, login/logout, /me fetch
+│   │   └── ThemeContext.jsx     # Light/dark mode toggle, persisted in localStorage
+│   ├── hooks/
+│   │   ├── useStudentData.js    # React Query hooks for student portal
+│   │   └── useSupervisorData.js # React Query hooks for supervisor portal
 │   ├── lib/
 │   │   ├── api.js               # Centralized Axios instance + interceptors
 │   │   └── handleError.js       # Central API error handler (toast + return)
@@ -60,10 +65,10 @@ provenancy_frontend/
 │   │   ├── PublicEngagementView.jsx
 │   │   └── NotFound.jsx
 │   ├── App.jsx                  # Routes and ProtectedRoute wrappers
-│   └── main.jsx                 # Entry point — ErrorBoundary wrap
+│   └── main.jsx                 # Entry point — QueryClientProvider + ErrorBoundary
 ├── vercel.json                  # SPA rewrite rule for Vercel
-├── README.md                 
-├── CHANGELOG.md 
+├── README.md
+├── CHANGELOG.md
 ├── .env
 └── .gitignore
 ```
@@ -97,7 +102,7 @@ npm install
 npm run dev
 ```
 
-The app will be available at `http://localhost:3000` or `http://localhost:5173` (or whichever port Vite assigns).
+The app will be available at `http://localhost:5173` (or whichever port Vite assigns).
 
 ---
 

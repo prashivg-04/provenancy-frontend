@@ -4,6 +4,64 @@ All notable changes to the Provenancy frontend are documented here.
 
 ---
 
+## [1.1.0] — May 2026
+
+### Performance — React Query Migration
+- Installed `@tanstack/react-query` v5 and wrapped app in `QueryClientProvider`
+- Created `src/hooks/useStudentData.js` — centralized student portal hooks:
+  - `useStudentProfile()` — cached 5 minutes
+  - `useUserSkills()` — cached 5 minutes
+  - `useEngagements()` — cached 5 minutes
+  - `useInvalidateEngagements()` — cache busting after mutations
+  - Sidebar hover prefetch utilities for engagements and skills routes
+- Created `src/hooks/useSupervisorData.js` — centralized supervisor portal hooks:
+  - `useSupervisorProfile()` — cached 5 minutes
+  - `useSupervisorEngagements()` — cached 5 minutes
+  - `useStudentPublic()` — cached permanently (immutable within session)
+  - `useInvalidateSupervisorEngagements()` and `useInvalidateSupervisorProfile()`
+  - Sidebar hover prefetch utilities for supervisor routes
+
+### Performance — Student Portal
+- `StudentDashboard` — replaced `useEffect` with React Query hooks, `useMemo` for derived skill counts
+- `StudentEngagements` — single fetch, all tab filtering and search done locally via `useMemo` — zero API calls on tab switch or search
+- `Profile` — React Query hooks, cache invalidation on save, dashboard stays in sync
+- `EngagementCreate` — cache invalidated after draft save and submit — list reflects new engagement immediately
+- `EngagementEdit` — cache invalidated after save and resubmit — list reflects changes immediately
+- `Sidebar` — hover prefetch warms engagements and skills cache before user clicks
+
+### Performance — Supervisor Portal (Full Rewrite)
+- `SupervisorDashboard` — dropped manual JS cache and broken retry logic, rebuilt with React Query — cold load reduced from ~17 API calls to 2
+- `SupervisorRequests` — dropped N+1 cascade and manual cache, rebuilt with shared hook — zero API calls if Dashboard visited first
+- `SupervisorProfile` — migrated to React Query, zero API call if Dashboard visited first, cache invalidation on save
+- `EngagementDetail` — cache invalidated after approve, reject, request-edit — supervisor dashboard counts update instantly on return
+- `Sidebar` — hover prefetch for supervisor dashboard and requests routes
+
+### Performance — Results
+| Scenario | Before | After |
+|---|---|---|
+| Supervisor dashboard cold load | ~17 API calls | 2 API calls |
+| Full supervisor session (dashboard + requests) | ~28 API calls | 2 API calls |
+| Tab switch in engagements/requests | 1 API call | 0 API calls |
+| Navigate away and return | 1 API call | 0 API calls |
+| Hover sidebar link | Nothing | Data prefetched |
+
+### Theme
+- Added light/dark mode toggle
+- Created `ThemeContext.jsx` — defaults to dark, persists preference in localStorage
+- Added `.light` CSS variable overrides in `index.css` — dark theme code untouched
+- Toggle button added to Navbar (Sun/Moon icon via lucide-react)
+- Dark theme remains default
+
+### Error Handling
+- Fixed broken retry buttons across supervisor portal — replaced `useRef` counter pattern with React Query `refetch()`
+- Per-section error states in supervisor dashboard — one section failing no longer blanks out the page
+- Global 401 interceptor added to `api.js` — auto-logout and redirect to `/login` on session expiry, skips redirect if already on `/login`
+- `ErrorBoundary.jsx` added — catches runtime crashes, shows fallback UI with Try Again and Go Home buttons
+- `NotFound.jsx` added — 404 catch-all route for unmatched URLs
+- Consistent `handleError` usage across `EngagementCreate`, `EngagementEdit`, `EngagementDetail`, `StudentEngagements`
+
+---
+
 ## [1.0.0] — April 2026
 
 First complete release of the Provenancy frontend. Built from scratch over the course of the project.
@@ -46,9 +104,6 @@ First complete release of the Provenancy frontend. Built from scratch over the c
 - Central `handleError.js` utility covering 400, 401, 403, 404, 422, 500 and network errors
 - Consistent usage across all pages via `handleError(error)` in catch blocks
 - UI validation toasts kept as direct `toast.error()` — intentionally separate from API errors
-- Global 401 interceptor for session expiry auto-logout
-- React Error Boundary wrapping entire app — catches runtime crashes with fallback UI
-- 404 Not Found page for unmatched routes
 
 ### Other
 - `vercel.json` configured for React Router — prevents 404 on page refresh
@@ -62,8 +117,7 @@ First complete release of the Provenancy frontend. Built from scratch over the c
 
 - Refresh token support for silent session renewal
 - Email notifications UI (when backend adds email support)
-- Pagination on engagement and skills lists
 - Mobile responsive improvements
-- Dark/light mode toggle
 - PDF export of public verification profile
 - Recruiter-facing search dashboard
+- Bundle code splitting — 839KB chunk, dynamic imports for heavy pages
