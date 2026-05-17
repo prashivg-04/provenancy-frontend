@@ -4,6 +4,12 @@ Provenancy is a work verification platform where students log internship and fre
 
 ---
 
+**Live App:** https://provenancy-frontend.vercel.app  
+**Backend Repo:** https://github.com/sumeet-pi/provenancy-backend  
+**API Docs:** https://provenancy-backend-1.onrender.com/docs
+
+---
+
 ## Tech Stack
 
 | Concern          | Technology                        |
