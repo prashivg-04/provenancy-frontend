@@ -10,6 +10,28 @@ Provenancy is a work verification platform where students log internship and fre
 
 ---
 
+## Demo Credentials
+
+Seeded demo accounts are available for HR/recruiters to explore and test the platform.
+
+### Students
+
+| Email | Password |
+|---|---|
+| `pooja.iyer@student.nit.ac.in` | `Demo@1234` |
+| `rahul.gupta@student.vit.ac.in` | `Demo@1234` |
+
+### Supervisors
+
+| Email | Password |
+|---|---|
+| `arjun.patel@wipro.com` | `Demo@1234` |
+| `kavya.nair@tcs.com` | `Demo@1234` |
+
+> These are demo accounts with seeded data and are intended only for testing and evaluation.
+
+---
+
 ## Tech Stack
 
 | Concern          | Technology                        |
